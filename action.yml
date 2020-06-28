@@ -1,0 +1,34 @@
+name: "allcontributors-action"
+author: "Vanessa Sochat"
+description: "Update your .all-contributorsrc with repository members, optionally produce or update a .zenodo.json"
+
+inputs:
+  zenodo_file:
+    description: .zenodo.json to update. If does not exist, must define zenodo_doi
+    default: .zenodo.json
+  zenodo_doi:
+    description: "Zenodo DOI needed for init. Leave unset to skip init."
+    required: false
+  log_level: 
+    description: "Log level to use (default INFO)"
+    default: "INFO"
+  threshold:
+    description: "the minimum number of contributions required to add a user"
+    default: 1
+  force:
+    description: "if files exist, overwrite."
+    default: false
+  ctype:
+    description: "Contribution type, which defaults to code if not set."
+    default: code
+  skip_generate:
+    description: "skip running all-contributors generate"
+    default: false
+
+runs:
+  using: docker
+  image: Dockerfile
+
+branding:
+  icon: link
+  color: blue
