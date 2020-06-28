@@ -1,0 +1,40 @@
+name: "tributors-action"
+author: "Vanessa Sochat"
+description: "Update your contributor metadata files with repository members"
+
+inputs:
+  parsers:
+    description: space separated list of parsers to use. Defaults to all
+    default: all 
+  zenodo_file:
+    description: .zenodo.json to update. If does not exist, must define doi variable
+    default: .zenodo.json
+  zenodo_doi:
+    description: "Zenodo DOI needed for init. Leave unset to skip init."
+    required: false
+  log_level: 
+    description: "Log level to use (default INFO)"
+    default: "INFO"
+  threshold:
+    description: "the minimum number of contributions required to add a user"
+    default: 1
+  force:
+    description: "if any files exist, overwrite."
+    default: false
+  allcontrib_file:
+    description: All contributors filename (defaults to .all-contributorsrc)
+    default: .all-contributorsrc
+  allcontrib_type:
+    description: "All Contributors contribution type, which defaults to code if not set."
+    default: code
+  allcontrib_skip_generate:
+    description: "skip running all-contributors generate"
+    default: false
+
+runs:
+  using: docker
+  image: Dockerfile
+
+branding:
+  icon: link
+  color: blue

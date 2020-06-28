@@ -1,0 +1,62 @@
+name: allcontributors-zenodo
+
+on:
+  pull_request: []
+
+jobs:
+  Update:
+    name: Generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Generate Updated Zenodo and Contributors
+      
+        # Important! Update to release https://github.com/con/tributors
+        uses: con/tributors@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:        
+
+          # Single text list (space separated) of parsers, or all (default)
+          parsers: all
+
+          # INFO, DEBUG, ERROR, WARNING, etc.
+          log_level: DEBUG
+
+          # If files already exist and an init is done, force overwrite
+          force: true
+
+          # the minimum number of contributions required to add a user
+          threshold: 1
+
+          # ".zenodo.json to update. If does not exist, must define zenodo_doi"
+          zenodo_file: .zenodo.json
+
+          # Zenodo DOI needed for init. Leave unset to skip init.
+          zenodo_doi: 10.5281/zenodo.1012531
+
+          # Contribution type, which defaults to "code" if not set.
+          allcontrib_type: code
+
+          # All contributors filename (defaults to .all-contributorsrc)
+          allcontrib_file: .all-contributorsrc
+
+          # skip running all-contributors generate
+          allcontrib_skip_generate: false
+
+      - name: Upload zenodo data as artifact
+        uses: actions/upload-artifact@v2-preview
+
+        # Path is relative to GITHUB_WORKSPACE
+        with:
+          name: zenodo
+          path: .zenodo.json
+
+      - name: Upload allcontributors data as artifact
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: allcontrib
+          path: 
+           - .all-contributorsrc
+           - README.md
