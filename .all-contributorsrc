@@ -19,6 +19,15 @@
                 "code",
                 "doc"
             ]
+        },
+        {
+            "login": "vsoch",
+            "name": "Vanessasaurus",
+            "avatar_url": "https://avatars0.githubusercontent.com/u/814322?v=4",
+            "profile": "https://vsoch.github.io",
+            "contributions": [
+                "code"
+            ]
         }
     ],
     "contributorsPerLine": 7

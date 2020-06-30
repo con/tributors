@@ -11,6 +11,10 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from tributors.main.github import get_contributors, get_user
 from tributors.main.orcid import get_orcid
 
+import logging
+
+bot = logging.getLogger("tributors")
+
 
 class ParserBase:
     """A parser base exists to provide structure to init and update contributor
@@ -78,6 +82,8 @@ class ParserBase:
             entry = {"name": user.get("name") or login}
             if login in self.cache:
                 entry = self.cache[login]
+            else:
+                bot.info(f"⭐️ new contributor {login}")
 
             # Update cache with fields that aren't defined yet
             for key in ["email", "bio", "blog"]:

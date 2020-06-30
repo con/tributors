@@ -14,5 +14,6 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.0.x](https://github.com/con/tributors/tree/master) (0.0.x)
+ - adding codemeta as a parser (0.0.11)
  - refactor of GitHub action and container deployment (0.0.1)
  - skeleton release (0.0.0)
