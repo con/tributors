@@ -1,0 +1,25 @@
+{
+    "projectName": "tributors",
+    "projectOwner": "con",
+    "repoType": "github",
+    "repoHost": "https://github.com",
+    "files": [
+        "README.md"
+    ],
+    "imageSize": 100,
+    "commit": true,
+    "commitConvention": "none",
+    "contributors": [
+        {
+            "login": "yarikoptic",
+            "name": "Yaroslav Halchenko",
+            "avatar_url": "https://avatars3.githubusercontent.com/u/39889?v=4",
+            "profile": "www.onerussian.com",
+            "contributions": [
+                "code",
+                "doc"
+            ]
+        }
+    ],
+    "contributorsPerLine": 7
+}
