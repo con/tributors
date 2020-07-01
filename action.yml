@@ -21,6 +21,9 @@ inputs:
   force:
     description: "if any files exist, overwrite."
     default: false
+  codemeta_file:
+    description: codemeta filename (skipped if not defined)
+    default: codemeta.json
   allcontrib_file:
     description: All contributors filename (defaults to .all-contributorsrc)
     default: .all-contributorsrc

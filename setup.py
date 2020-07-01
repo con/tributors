@@ -75,6 +75,7 @@ if __name__ == "__main__":
     INSTALL_REQUIRES = get_reqs(lookup)
     TESTS_REQUIRES = get_reqs(lookup, "TESTS_REQUIRES")
     ALL_REQUIRES = get_reqs(lookup, "ALL_REQUIRES")
+    CODEMETA_REQUIRES = get_reqs(lookup, "CODEMETA_REQUIRES")
 
     setup(
         name=NAME,
@@ -95,7 +96,7 @@ if __name__ == "__main__":
         setup_requires=["pytest-runner"],
         install_requires=INSTALL_REQUIRES,
         tests_require=TESTS_REQUIRES,
-        extras_require={"all": ALL_REQUIRES,},
+        extras_require={"all": ALL_REQUIRES, "codemeta": CODEMETA_REQUIRES},
         classifiers=[
             "Intended Audience :: Science/Research",
             "Intended Audience :: Developers",

@@ -51,7 +51,13 @@ You'll notice that the present working directory is the `/github/workspace`,
 and we do this so the container runs easily for a GitHub action (where the 
 code for the user is found here).
 
-### 2. Generate .all-contributorsrc
+### 2. Generate 
+
+Generation coincides with initializing a new file. This is supported for
+all-contributors and zenodo.json. For codemeta, there are already a 
+suite of [tools available](https://codemeta.github.io/tools/).
+
+#### Generate .all-contributorsrc
 
 Let's now change directory to where we bound our repository as a volume.
 
@@ -112,7 +118,7 @@ $ cat .all-contributorsrc
 }
 ```
 
-### 2. Generate .zenodo.json
+#### Generate .zenodo.json
 
 If you want to generate a fresh Zenodo.json, you can do that as follows:
 
@@ -197,6 +203,15 @@ INFO:zenodo:Updating .zenodo.json
 ```
 
 You can again export `GITHUB_REPOSITORY` instead.
+
+#### Update codemeta
+
+You can quickly update your contributors for a codemeta.json or codemeta.jsonld file
+that already exists.
+
+```bash
+$ tributors update codemeta
+```
 
 ## Local Usage
 
@@ -454,6 +469,7 @@ Inputs are listed below.
 | allcontrib_file |The all contributors file | false | .all-contributorsrc |
 | allcontrib_type |Contribution type, which defaults to "code" if not set. | false | code |
 | allcontrib_skip_generate | skip running all-contributors generate | false | false |
+| codemeta-file | the codemeta file to update, if defined | false | unset |
 
 If you aren't familiar with all-contributors, you'll need to add some
 [commenting in your repository README](https://allcontributors.org/docs/en/cli/usage)

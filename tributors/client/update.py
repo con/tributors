@@ -21,7 +21,7 @@ def main(args, extra):
 
     if "all" in args.parsers:
         client.update(
-            parsers=["zenodo", "allcontrib"],
+            parsers=["zenodo", "allcontrib", "codemeta"],
             thresh=args.thresh,
             repo=args.repo,
             params=extra,

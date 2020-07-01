@@ -19,7 +19,7 @@ jobs:
         with:        
 
           # Single text list (space separated) of parsers, or all (default)
-          parsers: all
+          parsers: zenodo allcontrib
 
           # INFO, DEBUG, ERROR, WARNING, etc.
           log_level: DEBUG
