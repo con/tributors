@@ -67,15 +67,14 @@ def record_search(url, token, email):
     if response.status_code != 200:
         return
 
-    result = response.json().get("result", [])
+    result = response.json().get("result", []) or []
+
+    if not result:
+        return
 
     # We found only one matching result
     if len(result) == 1:
         return result[0]["orcid-identifier"]["path"]
-
-    # No results
-    if not result:
-        return
 
     # One or more results
     ids = "\n".join([x["orcid-identifier"]["path"] for x in result])
@@ -106,8 +105,8 @@ def get_orcid(email, token, name=None):
         first, last = parts[0], " ".join(parts[1:])
         url = (
             "https://pub.orcid.org/v3.0/search/?q=given-names:%s+AND+family-name:%s"
-            % (first, last,)
+            % (first, last)
         )
-        orcid_id = record_search(url, token, email)
+        orcid_id = record_search(url, token, name)
 
     return orcid_id
