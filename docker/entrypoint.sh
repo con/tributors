@@ -25,10 +25,14 @@ export LOG_LEVEL="${INPUT_LOG_LEVEL}"
 # Determine if we are running each parser
 RUN_ALLCONTRIB="false"
 RUN_ZENODO="false"
+RUN_CODEMETA="true"
 
 if [ "${INPUT_PARSERS}" == "all" ]; then
     RUN_ALLCONTRIB="true"
     RUN_ZENODO="true"
+    RUN_CODEMETA="true"
+elif [[ "${INPUT_PARSERS}" == *"codemeta"* ]]; then
+    RUN_CODEMETA="true"
 elif [[ "${INPUT_PARSERS}" == *"zenodo"* ]]; then
     RUN_ZENODO="true"
 elif [[ "${INPUT_PARSERS}" == *"allcontrib"* ]]; then
@@ -38,6 +42,7 @@ fi
 # Update the user:
 printf "Run zenodo: ${RUN_ZENODO}\n"
 printf "Run allcontrib: ${RUN_ALLCONTRIB}\n"
+printf "Run codemeta: ${RUN_CODEMETA}\n"
 
 # The .all-contributorsrc is required, generate headless if doesn't exist
 if [ ! -f "${INPUT_ALLCONTRIB_FILE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
@@ -61,6 +66,9 @@ fi
 COMMAND="tributors update ${INPUT_PARSERS} --thresh ${INPUT_THRESHOLD}" 
 if [ ! -z "${INPUT_ALLCONTRIB_TYPE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
     COMMAND="${COMMAND} --allcontrib-type ${INPUT_ALLCONTRIB_TYPE}"
+fi
+if [ "${RUN_CODEMETA}" == "true" ]; then
+    COMMAND="${COMMAND} --codemeta-file ${INPUT_CODEMETA_FILE}"
 fi
 
 echo $COMMAND

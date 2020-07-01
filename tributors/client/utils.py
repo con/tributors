@@ -19,6 +19,7 @@ def parse_extra(extra):
         "--doi",
         "--allcontrib-type",
         "--allcontrib-file",
+        "--codemeta-file",
     ]
     known_bool = []
 

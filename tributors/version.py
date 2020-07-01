@@ -22,8 +22,7 @@ LICENSE = "LICENSE"
 
 
 INSTALL_REQUIRES = (("requests", {"min_version": "2.23.0"}),)
-
+CODEMETA_REQUIRES = (("codemetapy", {"min_version": "0.3.2"}),)
 TESTS_REQUIRES = (("pytest", {"min_version": "4.6.2"}),)
 
-
-ALL_REQUIRES = INSTALL_REQUIRES
+ALL_REQUIRES = INSTALL_REQUIRES + CODEMETA_REQUIRES
