@@ -88,6 +88,7 @@ class TributorsClient:
         for parser in parsers:
             client = get_named_parser(parser, repo)
             client.orcid_token = self.orcid_token
+            client.cache = self.cache
             client.update(
                 params=params, repo=repo, contributors=self.contributors, thresh=thresh
             )
