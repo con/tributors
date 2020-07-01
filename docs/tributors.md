@@ -2,7 +2,7 @@
 
 You can save a single metadata file in your repository that includes common fields
 to use to update other metadata files. As an example, here we see a file generated
-after an intial run - we index by the GitHub username since on GitHub that is our
+after an initial run - we index by the GitHub username since on GitHub that is our
 "unit of truth." These are a few entries for Singularity Registry Server:
 
 ```bash
