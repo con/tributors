@@ -3,7 +3,7 @@
 ![docs/assets/img/logo.png](docs/assets/img/logo.png)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## What is tributors?
@@ -79,22 +79,6 @@ so the client knows where to write.
   <tr>
     <td align="center"><a href="www.onerussian.com"><img src="https://avatars3.githubusercontent.com/u/39889?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yaroslav Halchenko</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=yarikoptic" title="Code">💻</a> <a href="https://github.com/con/tributors/commits?author=yarikoptic" title="Documentation">📖</a></td>
     <td align="center"><a href="https://vsoch.github.io"><img src="https://avatars0.githubusercontent.com/u/814322?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vanessasaurus</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=vsoch" title="Code">💻</a></td>
-    <td align="center"><a href="tschoonj.github.io"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Tom Schoonjans</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=tschoonj" title="Code">💻</a></td>
-    <td align="center"><a href="antoinecully.com"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Antoine Cully</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=Aneoshun" title="Code">💻</a></td>
-    <td align="center"><a href="https://dctrud.sdf.org"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>David Trudgian</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=dctrud" title="Code">💻</a></td>
-    <td align="center"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Sergio López Huguet</b></sub><br /><a href="https://github.com/con/tributors/commits?author=serlophug" title="Code">💻</a></td>
-    <td align="center"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>jbd</b></sub><br /><a href="https://github.com/con/tributors/commits?author=jbd" title="Code">💻</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="http://alex.hirzel.us/"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Alex Hirzel</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=alhirzel" title="Code">💻</a></td>
-    <td align="center"><a href="http://tangiblecomputationalbiology.blogspot.com"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Steffen Möller</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=smoe" title="Code">💻</a></td>
-    <td align="center"><a href="http://sourceforge.net/u/victorsndvg/profile/"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>victorsndvg</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=victorsndvg" title="Code">💻</a></td>
-    <td align="center"><a href="arfon.org"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Arfon Smith</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=arfon" title="Code">💻</a></td>
-    <td align="center"><a href="https://ransomwareroundup.com"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Brie Carranza</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=bbbbbrie" title="Code">💻</a></td>
-    <td align="center"><a href="https://orcid.org/0000-0002-6178-3585"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Dan Fornika</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=dfornika" title="Code">💻</a></td>
-    <td align="center"><img src="?s=100" width="100px;" alt=""/><br /><sub><b>Ronald Ensing</b></sub><br /><a href="https://github.com/con/tributors/commits?author=RonaldEnsing" title="Code">💻</a></td>
-  </tr>
-  <tr>
     <td align="center"><a href="https://github.com/pgrimaud"><img src="https://avatars1.githubusercontent.com/u/1866496?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pierre Grimaud</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=pgrimaud" title="Code">💻</a></td>
   </tr>
 </table>

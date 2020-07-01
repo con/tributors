@@ -13,7 +13,7 @@ contributors. Tribute interacts with several well-known repository metadata file
 
  - [all-contributors](https://github.com/all-contributors)
  - [Zenodo](https://zenodo.org)
- - [CodeMeta](https://codemeta.github.io/) **under development**
+ - [CodeMeta](https://codemeta.github.io/)
 
 Each of the services above allows you to generate some kind of metadata file
 that has one or more repository contributors. This file typically needs to be

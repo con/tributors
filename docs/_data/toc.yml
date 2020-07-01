@@ -19,6 +19,8 @@
           url: "docs/parsers/allcontrib"
         - title: Zenodo
           url: "docs/parsers/zenodo"
+        - title: CodeMeta
+          url: "docs/parsers/codemeta"
     - title: "About"
       url: "about"
     - title: "News"
