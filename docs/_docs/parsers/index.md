@@ -15,6 +15,7 @@ currently supports several interfaces to common metadata formats:
 
  - [All-Contributors](allcontrib)
  - [Zenodo](zenodo)
+ - [Codemeta](codemeta)
 
 
 Would you like to see another metadata type? Please [open an issue])({{ site.repo }}/issues/new).
