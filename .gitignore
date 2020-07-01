@@ -2,3 +2,4 @@
 __pycache__
 tributors.egg-info
 dist
+docs/_site

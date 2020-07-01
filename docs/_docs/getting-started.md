@@ -1,10 +1,16 @@
-# Usage
+---
+title: Getting Started
+tags: 
+ - allcontrib
+ - zenodo
+ - docker
+description: Getting started with tributors
+---
 
-The following sections include:
- 
- - [Docker Usage](#docker-usage)
- - [Local Usage](#local-usage)
+# Getting Started
 
+This guide will provide getting started instructions for local and Docker Usage,
+along with GitHub Workflows.
 
 ## Docker Usage
 
@@ -149,7 +155,7 @@ INFO:zenodo:Updating .zenodo.json
 INFO:allcontrib:Updating .all-contributorsrc
 ```
 Note that for the update, we query the GitHub API to update both the zenodo.json
-and contributors file. We also use a cached [.tributors](tributors.md) file to
+and contributors file. We also use a cached [.tributors]({{ site.baseurl }}/docs/tributors) file to
 keep track of shared contributors.
 
 #### Update allcontributors
@@ -215,7 +221,7 @@ pip install .[all]
 or for a development install:
 
 ```bash
-pip instal -e .[all]
+pip install -e .[all]
 ```
 
 ### 2. Environment
@@ -350,7 +356,7 @@ Now that we've initialized one or more files and possibly also have a .tributors
 lookup (if one of the parsers generates it on init) we would want to use
 the GitHub API to discover contributors to the repository,
 for either both the `.all-contributorsrc` and the `.zenodo.json`, or just one of the two.
-Note that you can read more about the [.tributors](tributors.md) file, and notably
+Note that you can read more about the [.tributors]({{ site.baseurl }}/docs/tributors) file, and notably
 you can edit it to add or change metadata that you want then used across your
 files.
 
@@ -427,3 +433,28 @@ INFO:zenodo:Updating .zenodo.json
 ```
 
 You can also provide the filename via `--zenodo-file` if different from the default.
+
+## GitHub Workflows
+
+Since [all-contributors](https://github.com/all-contributors) requires node,
+you might find it easiest to interact with the tool via a GitHub action.
+You can see examples in the [examples](https://github.com/con/tributors/tree/master/examples) folder.
+Inputs are listed below.
+
+#### Inputs
+
+| name | description | required | default |
+|------|-------------|----------|---------|
+| parsers | a space separated list of parsers (e.g., "zenodo allcontrib") or just "all" | false | all | 
+| zenodo_file | .zenodo.json to update. If does not exist, must define zenodo_doi | false | .zenodo.json | 
+| zenodo_doi | Zenodo DOI needed for init. Leave unset to skip init. | false | unset | 
+| log_level | Log level to use, one of INFO, DEBUG, CRITICAL, ERROR, WARNING, FATAL (default INFO) | false | INFO | 
+| threshold | the minimum number of contributions required to add a user | false | 1 | 
+| force | if files exist, force overwrit | false | false |
+| allcontrib_file |The all contributors file | false | .all-contributorsrc |
+| allcontrib_type |Contribution type, which defaults to "code" if not set. | false | code |
+| allcontrib_skip_generate | skip running all-contributors generate | false | false |
+
+If you aren't familiar with all-contributors, you'll need to add some
+[commenting in your repository README](https://allcontributors.org/docs/en/cli/usage)
+so the client knows where to write.

@@ -1,3 +1,12 @@
+---
+title: The Tributors File
+tags: 
+ - allcontrib
+ - zenodo
+ - docker
+description: The .tributors file is a shared metadata file.
+---
+
 # The Tributors File
 
 You can save a single metadata file in your repository that includes common fields

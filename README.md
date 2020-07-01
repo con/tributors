@@ -1,5 +1,7 @@
 # tributors
 
+![docs/assets/img/logo.png](docs/assets/img/logo.png)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
