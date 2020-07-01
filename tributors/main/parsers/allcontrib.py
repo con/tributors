@@ -89,7 +89,7 @@ class AllContribParser(ParserBase):
         bot.info(f"Generating {filename} for {repo}")
         owner, repo = repo.split("/")[:2]
 
-        # Write metadata to empty all contributors flie.
+        # Write metadata to empty all contributors file.
         metadata = {
             "projectName": repo,
             "projectOwner": owner,
