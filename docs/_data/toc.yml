@@ -1,0 +1,27 @@
+- title: Documentation
+  url: docs
+  links:
+    - title: "Getting Started"
+      url: "docs/getting-started"
+      children:
+        - title: Local Usage
+          url: "docs/getting-started#local-usage"
+        - title: Docker Usage
+          url: "docs/getting-started#docker"
+        - title: GitHub Workflow
+          url: "docs/getting-started#github-workflow"
+    - title: "The .tributors File"
+      url: "docs/tributors"
+    - title: "Parsers"
+      url: "docs/parsers"
+      children:
+        - title: All-Contributors
+          url: "docs/parsers/allcontrib"
+        - title: Zenodo
+          url: "docs/parsers/zenodo"
+    - title: "About"
+      url: "about"
+    - title: "News"
+      url: "news"
+    - title: "Tags"
+      url: "tags"
