@@ -136,17 +136,17 @@ class AllContribParser(ParserBase):
 
         # Update the lookup
         for login, metadata in self.cache.items():
-
-            entry = {
-                "login": login,
-                "name": metadata.get("name") or login,
-                "avatar_url": self.contributors[login]["avatar_url"],
-                "profile": metadata.get("blog") or self.contributors[login]["html_url"],
-                "contributions": [ctype],
-            }
-
             if login in self.lookup:
                 entry = self.lookup[login]
+            else:
+                entry = {
+                    "login": login,
+                    "name": metadata.get("name") or login,
+                    "avatar_url": self.contributors.get(login, {}).get("avatar_url"),
+                    "profile": metadata.get("blog")
+                    or self.contributors.get(login, {}).get("html_url"),
+                    "contributions": [ctype],
+                }
             if ctype not in entry["contributions"]:
                 entry["contributions"].append(ctype)
             self.lookup[login] = entry
