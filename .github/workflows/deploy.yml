@@ -9,7 +9,7 @@ jobs:
   docker-deploy:
     runs-on: ubuntu-latest
     env:
-      CONTAINER: quay.io/vanessa/tributors
+      CONTAINER: quay.io/con/tributors
     steps:
       - uses: actions/checkout@v2
       - name: Build Docker Image
