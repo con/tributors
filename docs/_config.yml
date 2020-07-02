@@ -22,9 +22,6 @@ description: > # this means to ignore newlines until "baseurl:"
 # DO NOT CHANGE THE LINE OF THIS FILE without editing .circleci/circle_urls.sh
 baseurl: "/tributors" # the subpath of your site, e.g. /blog
 
-# This is mostly for testing
-url: "https://con.github.io/tributors" # the base hostname & protocol for your site
-
 # Social (First three Required)
 repo: "https://github.com/con/tributors"
 github_user: "con"
