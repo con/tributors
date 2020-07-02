@@ -55,8 +55,12 @@ jobs:
 
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@users.noreply.github.com"
-
-          git add ./*
+          git status
+ 
+          # Make sure to add files or paths/* with changed files here
+          git add .tributors
+          git add README.md
+          git add .all-contributorsrc
 
           if git diff-index --quiet HEAD --; then
              export OPEN_PULL_REQUEST=0
@@ -64,7 +68,7 @@ jobs:
           else
              export OPEN_PULL_REQUEST=1
              printf "Changes\n"
-             git commit -m "Automated deployment to update software database $(date '+%Y-%m-%d')"
+             git commit -m "Automated deployment to update contributors $(date '+%Y-%m-%d')"
              git push origin "${BRANCH_FROM}"
           fi
           echo "::set-env name=OPEN_PULL_REQUEST::${OPEN_PULL_REQUEST}"
