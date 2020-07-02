@@ -69,6 +69,7 @@ class TributorsClient:
 
         for parser in parsers:
             client = get_named_parser(parser, repo)
+            client.cache = self.cache
             client.init(params=params, force=force)
             self.cache.update(client.cache)
 
