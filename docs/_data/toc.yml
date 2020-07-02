@@ -9,7 +9,7 @@
         - title: Docker Usage
           url: "docs/getting-started#docker"
         - title: GitHub Workflow
-          url: "docs/getting-started#github-workflow"
+          url: "docs/getting-started#github-workflows"
     - title: "The .tributors File"
       url: "docs/tributors"
     - title: "Parsers"
