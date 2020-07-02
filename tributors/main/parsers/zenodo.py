@@ -13,10 +13,6 @@ import requests
 import os
 import sys
 
-from tributors.main.github import (
-    get_github_repository,
-    get_topics,
-)
 from tributors.utils.file import read_json, write_json
 from .base import ParserBase
 
@@ -31,7 +27,7 @@ class ZenodoParser(ParserBase):
         filename = filename or ".zenodo.json"
         super().__init__(filename, repo)
 
-    def init(self, repo, params=None, force=False, contributors=None):
+    def init(self, params=None, force=False, contributors=None):
         """Generate an empty .zenodo.json if it doesn't exist
         """
         params = params or {}
@@ -47,30 +43,26 @@ class ZenodoParser(ParserBase):
             sys.exit("%s exists, set --force to overwrite." % zenodo_file)
 
         bot.info("Generating %s" % zenodo_file)
-        self._repo = get_github_repository(repo)
         record = get_zenodo_record(doi)
 
         # Assume we want to add known contributors
         creators = record["metadata"].get("creators", [])
         self.update_cache()
 
-        for login, metadata in self.cache.items():
-            entry = {"name": metadata.get("name") or login}
-            if "orcid" in metadata:
-                entry["orcid"] = metadata["orcid"]
-            if "bio" in metadata or "affiliation" in metadata:
-                entry["affilitation"] = metadata.get("affiliation", metadata.get("bio"))
+        for login, _ in self.repo.contributors.items():
+            cache = self.cache.get(login) or {}
+            entry = {"name": cache.get("name") or login}
+            if "orcid" in cache:
+                entry["orcid"] = cache["orcid"]
+            if "bio" in cache or "affiliation" in cache:
+                entry["affilitation"] = cache.get("affiliation", cache.get("bio"))
             creators.append(entry)
-
-        # Get keywords from GitHub topis
-        keywords = get_topics(self.repo)
-        keywords = list(set(record["metadata"]["keywords"] + keywords))
 
         # Update final metadata
         metadata = {
             "creators": creators,
             "upload_type": record["metadata"]["resource_type"]["type"],
-            "keywords": keywords,
+            "keywords": self.repo.topics(record["metadata"]["keywords"]),
             "access_right": record["metadata"]["access_right"],
             "license": record["metadata"]["license"]["id"],
         }
@@ -78,7 +70,7 @@ class ZenodoParser(ParserBase):
         write_json(metadata, zenodo_file)
         return metadata
 
-    def update(self, repo=None, params=None, contributors=None, thresh=1):
+    def update(self, params=None, contributors=None, thresh=1):
         """Given an existing .zenodo.json file, update it with contributors
            from an allcontributors file.
         """
@@ -97,19 +89,19 @@ class ZenodoParser(ParserBase):
         self.lookup = data.get("creators", [])
         creators = []
 
-        self._repo = get_github_repository(repo)
         self.update_cache()
 
-        for login, metadata in self.cache.items():
-            entry = {"name": metadata.get("name") or login}
+        for login, _ in self.repo.contributors.items():
+            cache = self.cache.get(login) or {}
+            entry = {"name": cache.get("name") or login}
             if login in self.cache:
                 for field in ["name", "affiliation", "orcid"]:
                     if field in self.cache[login]:
                         entry[field] = self.cache[login][field]
-            if "orcid" in metadata and "orcid" not in entry:
-                entry["orcid"] = metadata["orcid"]
-            if "affiliation" in metadata and "affiliation" not in entry:
-                entry["affilitation"] = metadata["affiliation"]
+            if "orcid" in cache and "orcid" not in entry:
+                entry["orcid"] = cache["orcid"]
+            if "affiliation" in cache and "affiliation" not in entry:
+                entry["affilitation"] = cache["affiliation"]
             creators.append(entry)
 
         data["creators"] = creators

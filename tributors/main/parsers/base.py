@@ -8,8 +8,8 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from tributors.main.github import get_contributors, get_user
-from tributors.main.orcid import get_orcid
+from tributors.main.github import get_user
+from tributors.main.orcid import get_orcid, OrcidIdentifier
 
 import logging
 
@@ -57,16 +57,13 @@ class ParserBase:
         """
         raise NotImplementedError
 
-    def update_cache(self, contributors=None):
+    def update_cache(self):
         """A shared function to get updated GitHub contributors to update
            the local cache. This is where we parse all the data that we need 
            and return common fields that some given parser might need.
            For users that have an email, we can attempt lookup with Orcid. 
         """
-        # This updates GitHub contributors, without parsing
-        self.contributors = contributors or get_contributors(self.repo)
-
-        for login, contributor in self.contributors.items():
+        for login, contributor in self.repo.contributors.items():
 
             # If they don't meet the threshold, continue
             if contributor["contributions"] < self.thresh:
@@ -91,9 +88,24 @@ class ParserBase:
                     entry[key] = user.get(key)
 
             # If we have an email, and orcid isn't defined
-            orcid = get_orcid(entry.get("email"), self.orcid_token, entry.get("name"))
-            if orcid:
-                entry["orcid"] = orcid
+            if "orcid" not in entry:
+                orcid = get_orcid(
+                    entry.get("email"), self.orcid_token, entry.get("name")
+                )
+                if orcid:
+                    entry["orcid"] = orcid
+                    cli = OrcidIdentifier(orcid, self.orcid_token)
+
+                    # If we found the record, update metadata
+                    if (
+                        cli.found
+                        and not entry.get("name")
+                        or entry.get("name") == login
+                    ):
+                        entry["name"] = "%s %s" % (cli.firstName, cli.lastName)
+                    if cli.affiliation and not entry.get("affiliation"):
+                        entry["affiliation"] = cli.affiliation
+
             self.cache[login] = entry
 
         # If the parser has it's own function to update cache, use it

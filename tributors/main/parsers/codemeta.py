@@ -12,10 +12,6 @@ import logging
 import os
 import sys
 
-from tributors.main.github import (
-    get_github_repository,
-    get_topics,
-)
 from tributors.utils.file import read_json, write_json
 from .base import ParserBase
 
@@ -28,16 +24,17 @@ class CodeMetaParser(ParserBase):
 
     def __init__(self, filename=None, repo=None, **kwargs):
         filename = filename or "codemeta.json"
+        self.data = {}
         super().__init__(filename, repo)
 
-    def init(self, repo, params=None, force=False, contributors=None):
+    def init(self, params=None, force=False, contributors=None):
         """Codemeta already has many good generators.
         """
         print(
             "Codemeta provides several tools to generate this for you: https://codemeta.github.io/tools/"
         )
 
-    def update(self, repo=None, params=None, contributors=None, thresh=1):
+    def update(self, params=None, contributors=None, thresh=1):
         """Given an existing .zenodo.json file, update it with contributors
            from an allcontributors file.
         """
@@ -52,16 +49,17 @@ class CodeMetaParser(ParserBase):
         bot.info("Updating %s" % filename)
 
         # We don't currently have a reliable identifier for zenodo, so we recreate each time
-        data = read_json(filename)
-        self.lookup = data.get("contributor", [])
-
-        self._repo = get_github_repository(repo)
+        self.data = read_json(filename)
+        self.lookup = self.data.get("contributor", [])
         self.update_cache()
+
+        # Get fields from repo
+        self.update_metadata()
 
         # Keep track of orcids and emails that we've seen
         seen = set()
 
-        # First update current members with emails, orcids
+        # First update current members with emails, orcids in the cache
         for entry in self.lookup:
             email = entry.get("email")
             orcid = entry.get("@id")
@@ -69,37 +67,39 @@ class CodeMetaParser(ParserBase):
                 orcid = orcid.split("/")[-1]
 
             # Find matches based on orcid and/or email
-            for login, metadata in self.cache.items():
-                compare_orcid = metadata.get("orcid")
-                compare_email = metadata.get("email")
+            for login, cache in self.cache.items():
+                compare_orcid = cache.get("orcid")
+                compare_email = cache.get("email")
                 seen.add(compare_email)
                 seen.add(compare_orcid)
 
-                # We have a match based on orcid
+                # We have a match based on orcid or email
                 if (compare_orcid and orcid and compare_orcid == orcid) or (
                     compare_email and email and compare_email == email
                 ):
                     if (
                         "givenName" not in entry
                         and "familyName" not in entry
-                        and "name" in metadata
+                        and "name" in cache
                     ):
-                        entry["givenName"] = metadata["name"].split(" ")[0]
-                        entry["familyName"] = " ".join(metadata["name"].split(" ")[1:])
-                    if "email" not in entry and "email" in metadata:
-                        entry["email"] = metadata["email"]
-                    if "orcid" not in entry and "orcid" in metadata:
-                        entry["@id"] = "https://orcid.org/%s" % metadata["orcid"]
+                        entry["givenName"] = cache["name"].split(" ")[0]
+                        entry["familyName"] = " ".join(cache["name"].split(" ")[1:])
+                    if "email" not in entry and "email" in cache:
+                        entry["email"] = cache["email"]
+                    if "orcid" not in entry and "orcid" in cache:
+                        entry["@id"] = "https://orcid.org/%s" % cache["orcid"]
                     break
 
-        # Now add users from cache with a known email or orcid that isn't present
+        # Ensure empty records are not considered seen
         for item in [None, ""]:
             if item in seen:
                 seen.remove(item)
 
-        for login, metadata in self.cache.items():
-            email = metadata.get("email")
-            orcid = metadata.get("orcid")
+        # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
+        for login, _ in self.repo.contributors.items():
+            cache = self.cache.get(login) or {}
+            email = cache.get("email")
+            orcid = cache.get("orcid")
 
             # We can only update if we have an email or orcid
             if (email != None or orcid != None) and (
@@ -107,8 +107,8 @@ class CodeMetaParser(ParserBase):
             ):
                 entry = {
                     "@type": "Person",
-                    "givenName": metadata["name"].split(" ")[0],
-                    "familyName": " ".join(metadata["name"].split(" ")[1:]),
+                    "givenName": cache["name"].split(" ")[0],
+                    "familyName": " ".join(cache["name"].split(" ")[1:]),
                 }
                 if email != None:
                     entry["email"] = email
@@ -116,13 +116,23 @@ class CodeMetaParser(ParserBase):
                     entry["@id"] = "https://orcid.org/%s" % orcid
                 self.lookup.append(entry)
 
-        # Update topics
-        data["keywords"] = list(set(data.get("keywords", []) + get_topics(self.repo)))
+        self.data["contributor"] = self.lookup
+        write_json(self.data, filename)
+        return self.data
 
-        # TODO: add license, programming language, and other metadata here
-        data["contributor"] = self.lookup
-        write_json(data, filename)
-        return data
+    def update_metadata(self):
+        """Update codemeta metadata from the repository, if we can.
+        """
+        self.data["keywords"] = self.repo.topics(self.data["keywords"])
+        self.data["description"] = self.data.get("description") or self.repo.description
+        self.data["codeRepository"] = (
+            self.data.get("codeRepository") or self.repo.html_url
+        )
+        self.data["name"] = self.data.get("name") or self.repo.name
+        self.data["issueTracker"] = (
+            self.data.get("issueTracker") or self.repo.issues_url
+        )
+        self.data["license"] = self.data.get("license") or self.repo.license
 
     def _update_cache(self):
         """We can only keep track of users here based on email addresses or

@@ -20,6 +20,68 @@ repository_regex = "(?P<owner>[\w,\-,\_]+)/(?P<repo>[\w,\-,\_\.]+)"
 bot = logging.getLogger("github")
 
 
+class GitHubRepository:
+    """A GitHub repository parses a repo and exposes repository and contributor
+       metadata.
+    """
+
+    def __init__(self, repo):
+        self._repo = {}
+        self._contributors = []
+        self._topics = []
+        self.uid = get_github_repository(repo)
+
+    def __str__(self):
+        return "[github][%s]" % self.uid
+
+    def __repr__(self):
+        return self.__str__()
+
+    @property
+    def repo(self):
+        """Retrieve the GitHub repository, if we don't have it yet
+        """
+        if not self._repo:
+            self._repo = get_repo(self.uid)
+        return self._repo
+
+    @property
+    def contributors(self):
+        """Return list of contributors, and retrieve if we don't have yet
+        """
+        if not self._contributors:
+            self._contributors = get_contributors(self.uid)
+        return self._contributors
+
+    def topics(self, topics=None):
+        """Return list of topics, optionally add extras and return unique set
+        """
+        if not self._topics:
+            self._topics = get_topics(self.uid)
+        topics = topics or []
+        return list(set(self._topics + topics))
+
+    @property
+    def description(self):
+        return self.repo["description"]
+
+    @property
+    def html_url(self):
+        return self.repo["html_url"]
+
+    @property
+    def name(self):
+        return self.repo["name"]
+
+    @property
+    def issues_url(self):
+        return "%s/issues" % self.repo["html_url"]
+
+    @property
+    def license(self):
+        return "https://spdx.org/licenses/%s" % self.repo["license"]["spdx_id"]
+
+
 def get_topics(repo):
     """Given a repository, get topics associated.
     """
