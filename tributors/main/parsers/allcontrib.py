@@ -130,7 +130,7 @@ class AllContribParser(ParserBase):
         repo = "%s/%s" % (data["projectOwner"], data["projectName"])
         if repo != self.repo.uid:
             bot.warning(
-                "Found different repository in {filename}, updating from {self.repo.uid}"
+                f"Found different repository in {filename}, updating from {self.repo.uid}"
             )
             self._repo = GitHubRepository(repo)
 

@@ -38,6 +38,4 @@ def main(args, extra):
 
     else:
         parsers = [x for x in args.parsers if x != "unset"]
-        client.init(
-            parsers=parsers, repo=args.repo, params=extra, force=args.force
-        )
+        client.init(parsers=parsers, repo=args.repo, params=extra, force=args.force)
