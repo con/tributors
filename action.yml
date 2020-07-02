@@ -4,8 +4,8 @@ description: "Update your contributor metadata files with repository members"
 
 inputs:
   parsers:
-    description: space separated list of parsers to use. Defaults to all
-    default: all 
+    description: space separated list of parsers to use. Defaults to unset (auto-detect)
+    default: unset
   zenodo_file:
     description: .zenodo.json to update. If does not exist, must define doi variable
     default: .zenodo.json

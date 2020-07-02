@@ -25,12 +25,24 @@ export LOG_LEVEL="${INPUT_LOG_LEVEL}"
 # Determine if we are running each parser
 RUN_ALLCONTRIB="false"
 RUN_ZENODO="false"
-RUN_CODEMETA="true"
+RUN_CODEMETA="false"
 
 if [ "${INPUT_PARSERS}" == "all" ]; then
     RUN_ALLCONTRIB="true"
     RUN_ZENODO="true"
     RUN_CODEMETA="true"
+elif [ "${INPUT_PARSERS}" == "unset" ]; then
+
+    # If unset, files have to already exist
+    if [ -f "${INPUT_ALLCONTRIB_FILE}" ]; then
+        RUN_ALLCONTRIB="true"
+    fi
+    if [ -f "${INPUT_ZENODO_FILE}" ]; then
+        RUN_ZENODO="true"
+    fi
+    if [ -f "${INPUT_CODEMETA_FILE}" ]; then
+        RUN_CODEMETA="true"
+    fi
 elif [[ "${INPUT_PARSERS}" == *"codemeta"* ]]; then
     RUN_CODEMETA="true"
 elif [[ "${INPUT_PARSERS}" == *"zenodo"* ]]; then

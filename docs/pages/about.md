@@ -12,7 +12,7 @@ contributors. Tribute interacts with several well-known repository metadata file
 
  - [all-contributors](https://github.com/all-contributors)
  - [Zenodo](https://zenodo.org)
- - [CodeMeta](https://codemeta.github.io/) **under development**
+ - [CodeMeta](https://codemeta.github.io/)
 
 Each of the services above allows you to generate some kind of metadata file
 that has one or more repository contributors. This file typically needs to be
@@ -33,7 +33,7 @@ get started.
 
 ## How was it started?
 
-In late June 2020, [@yarikoptic](https://github.com/yarikoptic) [opened an issue]()
+In late June 2020, [@yarikoptic](https://github.com/yarikoptic) [opened an issue](https://github.com/con/tributors/issues/1)
 to request some kind of tool to convert between the all-contributors metadata file
 (.all-contributorsrc) and a Zenodo metadata file (.zenodo.json). 
 [@vsoch](https://github.com/vsoch) jumped on the opportunity, and decided
@@ -89,7 +89,7 @@ It produces .all-contributorsrc (json) such as
 
 which contains pointers to github logins, names, their contributions etc.
 
-There is also zenodo.org which is used by many projects to get citeable references for their research software.  See e.g. our DataLad's [.zenodo.json](https://github.com/datalad/datalad/blob/master/.zenodo.json) for an example.  A typical entry in that one would contain also affiliation and an [orcid id]():
+There is also zenodo.org which is used by many projects to get citeable references for their research software.  See e.g. our DataLad's [.zenodo.json](https://github.com/datalad/datalad/blob/master/.zenodo.json) for an example.  A typical entry in that one would contain also affiliation and an [orcid id](https://orcid.org/):
 
 ```json
 {
