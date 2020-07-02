@@ -14,12 +14,34 @@ along with GitHub Workflows.
 
 ## Quick Start
 
+### 1. Install
 Install tributors
 
 ```bash
 pip install tributors
 ```
 
+### 2. Environment
+
+Especially if you need orcid ids in your metadata, for a first time go you
+should export an id and secret to interact with the Orcid API. It'a also recommended
+to export a GitHub token to increase your API limit:
+
+```bash
+export ORCID_ID=APP-XXXXXXX
+export ORCID_SECRET=12345678910111213141516171819202122
+export GITHUB_TOKEN=XXXXXXXXXXXXXXX
+```
+
+Once you generate an orcid token, it will be written to a temporary file,
+and you can read the file and export the variable for later discovery (and you'll
+no longer need the ID and secret):
+
+```bash
+export ORCID_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+### 3. Update
 If you have a repository with files already defined, you can use the auto-detect
 update (not specifying a particular contributor parser):
 
@@ -35,6 +57,7 @@ $ tributors update zenodo
 $ tributors update codemeta
 ```
 
+### 3. Init
 You can also create empty files if you don't have them yet:
 
 ```bash
@@ -43,7 +66,8 @@ $ tributors init zenodo
 ```
 
 You can read more about the various [parsers]({{ site.baseurl }}/docs/parsers)
-for specific-parser arguments.
+for specific-parser arguments, and more details about the above commands in the
+sections below.
 
 ## Docker Usage
 

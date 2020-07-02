@@ -150,11 +150,19 @@ class AllContribParser(ParserBase):
                 entry = {
                     "login": login,
                     "name": cache.get("name") or login,
-                    "avatar_url": self.contributors.get(login, {}).get("avatar_url"),
-                    "profile": cache.get("blog")
-                    or self.contributors.get(login, {}).get("html_url"),
                     "contributions": [ctype],
                 }
+
+            # Only add profile and profile if not added yet
+            if "profile" not in entry:
+                entry["profile"] = cache.get("blog") or self.repo.contributors.get(
+                    login, {}
+                ).get("html_url")
+            if "avatar_url" not in entry:
+                entry["avatar_url"] = (
+                    self.repo.contributors.get(login, {}).get("avatar_url"),
+                )
+
             if ctype not in entry["contributions"]:
                 entry["contributions"].append(ctype)
             self.lookup[login] = entry
