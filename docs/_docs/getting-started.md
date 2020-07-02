@@ -12,6 +12,39 @@ description: Getting started with tributors
 This guide will provide getting started instructions for local and Docker Usage,
 along with GitHub Workflows.
 
+## Quick Start
+
+Install tributors
+
+```bash
+pip install tributors
+```
+
+If you have a repository with files already defined, you can use the auto-detect
+update (not specifying a particular contributor parser):
+
+```bash
+$ tributors update
+```
+
+or update a specific one:
+
+```bash
+$ tributors update allcontrib
+$ tributors update zenodo
+$ tributors update codemeta
+```
+
+You can also create empty files if you don't have them yet:
+
+```bash
+$ tributors init allcontrib
+$ tributors init zenodo
+```
+
+You can read more about the various [parsers]({{ site.baseurl }}/docs/parsers)
+for specific-parser arguments.
+
 ## Docker Usage
 
 If you don't want to use the GitHub Action and don't want to install npm on
@@ -153,16 +186,19 @@ and do the following:
 $ tributors update all
 ```
 
-"all" is the default, so this works too:
+#### Update (auto)
+
+If you have a repository with one or more default contributor files, you can
+update all of these files that are detected by leaving out the parser name:
 
 ```bash
 $ tributors update
 INFO:zenodo:Updating .zenodo.json
 INFO:allcontrib:Updating .all-contributorsrc
 ```
-Note that for the update, we query the GitHub API to update both the zenodo.json
-and contributors file. We also use a cached [.tributors]({{ site.baseurl }}/docs/tributors) file to
-keep track of shared contributors.
+Note that for any multiple updates, we query the GitHub API to get updated contributors,
+and also use a cached [.tributors]({{ site.baseurl }}/docs/tributors) file to
+keep track of shared metadata.
 
 #### Update allcontributors
 
@@ -386,7 +422,10 @@ INFO:zenodo:Updating .zenodo.json
 INFO:allcontrib:Updating .all-contributorsrc
 ```
 
-or just 
+#### Update (auto)
+
+If you have a repository with one or more default contributor files, you can
+update all of these files that are detected by leaving out the parser name:
 
 ```bash
 $ tributors update

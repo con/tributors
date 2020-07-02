@@ -10,6 +10,10 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from tributors.main import TributorsClient
 from .utils import parse_extra
+import logging
+import sys
+
+bot = logging.getLogger("github")
 
 
 def main(args, extra):
@@ -18,6 +22,11 @@ def main(args, extra):
 
     # Parse extra arguments
     extra = parse_extra(extra)
+
+    # Tell the user to init a particular parser
+    if "unset" in args.parsers:
+        bot.info("Please specify one or more parsers, one of zenodo, codemeta")
+        sys.exit(0)
 
     if "all" in args.parsers:
         client.init(
@@ -28,6 +37,7 @@ def main(args, extra):
         )
 
     else:
+        parsers = [x for x in args.parsers if x != "unset"]
         client.init(
-            parsers=args.parsers, repo=args.repo, params=extra, force=args.force
+            parsers=parsers, repo=args.repo, params=extra, force=args.force
         )
