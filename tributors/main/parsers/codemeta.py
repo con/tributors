@@ -97,7 +97,7 @@ class CodeMetaParser(ParserBase):
 
         # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
         for login, _ in self.repo.contributors.items():
-            cache = self.cache.get(login)
+            cache = self.cache.get(login) or {}
             email = cache.get("email")
             orcid = cache.get("orcid")
 

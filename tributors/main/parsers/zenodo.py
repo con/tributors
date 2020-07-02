@@ -50,7 +50,7 @@ class ZenodoParser(ParserBase):
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
-            cache = self.cache.get(login)
+            cache = self.cache.get(login) or {}
             entry = {"name": cache.get("name") or login}
             if "orcid" in cache:
                 entry["orcid"] = cache["orcid"]
@@ -92,7 +92,7 @@ class ZenodoParser(ParserBase):
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
-            cache = self.cache.get(login)
+            cache = self.cache.get(login) or {}
             entry = {"name": cache.get("name") or login}
             if login in self.cache:
                 for field in ["name", "affiliation", "orcid"]:

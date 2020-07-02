@@ -137,7 +137,7 @@ class AllContribParser(ParserBase):
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
-            cache = self.cache.get(login)
+            cache = self.cache.get(login) or {}
             if login in self.lookup:
                 entry = self.lookup[login]
             else:
