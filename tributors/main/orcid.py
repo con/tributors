@@ -16,6 +16,79 @@ import requests
 bot = logging.getLogger("github")
 
 
+class OrcidIdentifier:
+    """A simple class to retrieve an orcid record, and expose needed fields
+    """
+
+    def __init__(self, orcid, token=None):
+        self.orcid = orcid
+        self._record = {}
+        self.found = False
+        self.token = token
+
+    def __str__(self):
+        if self.orcid:
+            return "[orcid][%s]" % self.orcid
+        return "[orcid]"
+
+    def __repr__(self):
+        return self.__str__()
+
+    @property
+    def record(self):
+        """Given an orcid id, retrieve a record for it
+        """
+        if not self._record and self.orcid and self.token:
+            self.get_record()
+        return self._record
+
+    @property
+    def firstName(self):
+        return (
+            self.record.get("person", {})
+            .get("name", {})
+            .get("given-names", {})
+            .get("value")
+        )
+
+    @property
+    def affiliation(self):
+        """We consider the affiliation the most recent employment (top of the list)
+        """
+        employer = (
+            self.record.get("activities-summary", {})
+            .get("employments", {})
+            .get("employment-summary", [])
+        )
+        if employer:
+            return employer[0].get("organization", {}).get("name")
+
+    @property
+    def lastName(self):
+        return (
+            self.record.get("person", {})
+            .get("name", {})
+            .get("family-name", {})
+            .get("value")
+        )
+
+    def get_record(self):
+        if not self.orcid or not self.token:
+            return
+
+        response = requests.get(
+            "https://pub.orcid.org/v2.1/%s/record" % self.orcid,
+            headers={
+                "Authorization": "bearer %s" % self.token,
+                "Accept": "application/json",
+            },
+        )
+        if response.status_code != 200:
+            return
+        self.found = True
+        self._record = response.json()
+
+
 def get_orcid_token():
     """If the user has exported a token, we discover and return it here.
        Otherwise we prompt him or her to open a browser and copy paste a code
@@ -60,6 +133,8 @@ def get_orcid_token():
 
 
 def record_search(url, token, email):
+    """Given a url (with a name or email) do a record search looking for an orcid id
+    """
     response = requests.get(
         url,
         headers={"Authorization": "bearer %s" % token, "Accept": "application/json"},

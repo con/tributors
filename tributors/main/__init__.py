@@ -11,6 +11,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from tributors.main.parsers import get_named_parser
 from tributors.utils.file import write_json, read_json
 from .orcid import get_orcid_token
+from .github import GitHubRepository
 import logging
 import os
 
@@ -32,7 +33,6 @@ class TributorsClient:
         if not skip_cache:
             self.load_cache()
         self.skip_cache = skip_cache
-        self.contributors = {}
 
     def load_cache(self):
         """load a cache to serve as a lookup for contributors.
@@ -64,14 +64,12 @@ class TributorsClient:
         """
         parsers = parsers or []
 
+        # Generate a shared repository object
+        repo = GitHubRepository(repo)
+
         for parser in parsers:
             client = get_named_parser(parser, repo)
-            client.init(
-                params=params, repo=repo, force=force, contributors=self.contributors
-            )
-
-            # Update contributors caches
-            self.contributors.update(client.contributors)
+            client.init(params=params, force=force)
             self.cache.update(client.cache)
 
         # Save the cache
@@ -85,16 +83,14 @@ class TributorsClient:
         parsers = parsers or []
         self.orcid_token = get_orcid_token()
 
+        # Generate a shared repository object
+        repo = GitHubRepository(repo)
+
         for parser in parsers:
             client = get_named_parser(parser, repo)
             client.orcid_token = self.orcid_token
             client.cache = self.cache
-            client.update(
-                params=params, repo=repo, contributors=self.contributors, thresh=thresh
-            )
-
-            # Update contributors caches
-            self.contributors.update(client.contributors)
+            client.update(params=params, thresh=thresh)
             self.cache.update(client.cache)
 
         # Save the cache

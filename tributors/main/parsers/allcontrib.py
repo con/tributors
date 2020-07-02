@@ -14,7 +14,7 @@ import logging
 import os
 import sys
 
-from tributors.main.github import get_github_repository
+from tributors.main.github import GitHubRepository
 from tributors.utils.file import read_json, write_json
 from .base import ParserBase
 
@@ -63,7 +63,7 @@ class AllContribParser(ParserBase):
         filename = filename or ".all-contributorsrc"
         super().__init__(filename, repo)
 
-    def init(self, repo=None, params=None, force=False, contributors=None):
+    def init(self, params=None, force=False, contributors=None):
         """Given an allcontributors file (we default to the one expected) and
            a preference to force, write the empty file to the repository.
            If the file exists and force is false, exit on error. If the user
@@ -80,14 +80,8 @@ class AllContribParser(ParserBase):
         if os.path.exists(filename) and not force:
             sys.exit("%s exists, set --force to overwrite." % filename)
 
-        # A repository is required via the command line or environment
-        repo = get_github_repository(repo)
-
-        # Set the repository for other clients to use
-        self._repo = repo
-
-        bot.info(f"Generating {filename} for {repo}")
-        owner, repo = repo.split("/")[:2]
+        bot.info(f"Generating {filename} for {self.repo.uid}")
+        owner, repo = self.repo.uid.split("/")[:2]
 
         # Write metadata to empty all contributors file.
         metadata = {
@@ -131,19 +125,27 @@ class AllContribParser(ParserBase):
         # Load the previous contributors, create a lookup
         data = read_json(filename)
         self.lookup = {x["login"]: x for x in data.get("contributors", [])}
-        self._repo = "%s/%s" % (data["projectOwner"], data["projectName"])
+
+        # Sanity check that we have the correct repository
+        repo = "%s/%s" % (data["projectOwner"], data["projectName"])
+        if repo != self.repo.uid:
+            bot.warning(
+                "Found different repository in {filename}, updating from {self.repo.uid}"
+            )
+            self._repo = GitHubRepository(repo)
+
         self.update_cache()
 
-        # Update the lookup
-        for login, metadata in self.cache.items():
+        for login, _ in self.repo.contributors.items():
+            cache = self.cache.get(login)
             if login in self.lookup:
                 entry = self.lookup[login]
             else:
                 entry = {
                     "login": login,
-                    "name": metadata.get("name") or login,
+                    "name": cache.get("name") or login,
                     "avatar_url": self.contributors.get(login, {}).get("avatar_url"),
-                    "profile": metadata.get("blog")
+                    "profile": cache.get("blog")
                     or self.contributors.get(login, {}).get("html_url"),
                     "contributions": [ctype],
                 }
@@ -158,12 +160,12 @@ class AllContribParser(ParserBase):
 
     def _update_cache(self):
         """Each client optionally has it's own function to update the cache.
-            In the case of allcontributors, we run this function on update after
-            self.lookup is defined with current data. We use this lookup to
-            update a shared cache that might be used for other clients. Since
-            we also have self.contributors (with GitHub responses) we don't need
-            to add items that would be found there.
-         """
+           In the case of allcontributors, we run this function on update after
+           self.lookup is defined with current data. We use this lookup to
+           update a shared cache that might be used for other clients. Since
+           we also have self.contributors (with GitHub responses) we don't need
+           to add items that would be found there.
+        """
         for login, metadata in self.lookup.items():
             entry = {}
             if login in self.cache:
