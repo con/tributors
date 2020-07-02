@@ -57,6 +57,21 @@ class ParserBase:
         """
         raise NotImplementedError
 
+    def include_contributor(self, login):
+        """Given a threshold (and preference to not include bots) return a boolean
+           to indicate including the contributor or not
+        """
+        contributor = self.repo.contributors.get(login)
+
+        # If they don't meet the threshold, continue
+        if contributor["contributions"] < self.thresh:
+            return False
+
+        # Skip GitHub bots
+        if contributor["type"] == "Bot" or "[bot]" in contributor["login"]:
+            return False
+        return True
+
     def update_cache(self):
         """A shared function to get updated GitHub contributors to update
            the local cache. This is where we parse all the data that we need 
@@ -64,14 +79,6 @@ class ParserBase:
            For users that have an email, we can attempt lookup with Orcid. 
         """
         for login, contributor in self.repo.contributors.items():
-
-            # If they don't meet the threshold, continue
-            if contributor["contributions"] < self.thresh:
-                continue
-
-            # Skip GitHub bots
-            if contributor["type"] == "Bot" or "[bot]" in contributor["login"]:
-                continue
 
             # Look up a GitHub username, possibly email and site
             user = get_user(login)

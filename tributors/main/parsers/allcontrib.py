@@ -128,15 +128,21 @@ class AllContribParser(ParserBase):
 
         # Sanity check that we have the correct repository
         repo = "%s/%s" % (data["projectOwner"], data["projectName"])
+
         if repo != self.repo.uid:
             bot.warning(
-                f"Found different repository in {filename}, updating from {self.repo.uid}"
+                f"Found different repository {repo} in {filename}, updating from {self.repo.uid}"
             )
             self._repo = GitHubRepository(repo)
 
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
+
+            # Check against contribution threshold, and not bot
+            if not self.include_contributor(login):
+                continue
+
             cache = self.cache.get(login) or {}
             if login in self.lookup:
                 entry = self.lookup[login]
