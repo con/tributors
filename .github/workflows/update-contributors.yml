@@ -16,7 +16,7 @@ jobs:
       - name: Generate Updated Zenodo and Contributors
       
         # Important! Update to release https://github.com/con/tributors
-        uses: con/tributors@master
+        uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:        
