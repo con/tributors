@@ -39,7 +39,7 @@ jobs:
           BRANCH_AGAINST: "master"
         run: |
           printf "GitHub Actor: ${GITHUB_ACTOR}\n"
-          export BRANCH_FROM="[tributors] Update on $(date '+%Y-%m-%d')"
+          export BRANCH_FROM="tributors/update-$(date '+%Y-%m-%d')"
           git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
           BRANCH_EXISTS=$(git ls-remote --heads origin ${BRANCH_FROM})
@@ -69,7 +69,7 @@ jobs:
           fi
           echo "::set-env name=OPEN_PULL_REQUEST::${OPEN_PULL_REQUEST}"
           echo "::set-env name=PULL_REQUEST_FROM_BRANCH::${BRANCH_FROM}"
-          echo "::set-env name=PULL_REQUEST_TITLE::[downsize-images] ${BRANCH_FROM}"
+          echo "::set-env name=PULL_REQUEST_TITLE::[tributors] ${BRANCH_FROM}"
           echo "::set-env name=PULL_REQUEST_BODY::Downsizing images automated pull request."
 
       - name: Open Pull Request
