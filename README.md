@@ -1,10 +1,12 @@
 # tributors
 
-![docs/assets/img/logo.png](docs/assets/img/logo.png)
+![docs/assets/img/logo.png](https://raw.githubusercontent.com/con/tributors/master/docs/assets/img/logo.png)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+[Documentation](https://con.github.io/tributors/)
 
 ## What is tributors?
 
@@ -13,7 +15,7 @@ contributors. Tribute interacts with several well-known repository metadata file
 
  - [all-contributors](https://github.com/all-contributors)
  - [Zenodo](https://zenodo.org)
- - [CodeMeta](https://codemeta.github.io/) **under development**
+ - [CodeMeta](https://codemeta.github.io/)
 
 Each of the services above allows you to generate some kind of metadata file
 that has one or more repository contributors. This file typically needs to be
@@ -27,48 +29,11 @@ or use an interactive mode to make decisions as you go.
 
 ## How does it work?
 
-Tributors uses the following sources of information to update your contributor
-files.
+Tributors uses the GitHub API, Zenodo API, and Orcid API to look up shared identifiers
+for common metadata services like all contributors, Zenodo, and CodeMeta. The
+tool is available for local or container usage, and as a GitHub Action (see the [examples](examples) folder).
+See the full [documentation](https://con.github.io/tributors/) for getting started.
 
-### GitHub API
-
-Since these files are served in GitHub repositories, it's fairly easy to
-retrieve repository contributors using the GitHub API in both cases.
-
-### Orcid
-
-Given that you provide an Orcid token and secret to request API tokens, we can find [Orcid records](https://members.orcid.org/api/tutorial/read-orcid-records) based on email addresses.
-
-### Zenodo
-
-Zenodo also has a [rest API](https://developers.zenodo.org/) that can be used to create an initial `.zenodo.json` for a repository. 
-
-The GitHub Action details are included below. See the [docs](docs) for more detailed
-usage, both on your local machine, and via a Docker container.
-
-## GitHub Action
-
-Since [all-contributors](https://github.com/all-contributors) requires node,
-you might find it easiest to interact with the tool via a GitHub action.
-You can see examples in the [examples](examples) folder.
-
-#### Inputs
-
-| name | description | required | default |
-|------|-------------|----------|---------|
-| parsers | a space separated list of parsers (e.g., "zenodo allcontrib") or just "all" | false | all | 
-| zenodo_file | .zenodo.json to update. If does not exist, must define zenodo_doi | false | .zenodo.json | 
-| zenodo_doi | Zenodo DOI needed for init. Leave unset to skip init. | false | unset | 
-| log_level | Log level to use, one of INFO, DEBUG, CRITICAL, ERROR, WARNING, FATAL (default INFO) | false | INFO | 
-| threshold | the minimum number of contributions required to add a user | false | 1 | 
-| force | if files exist, force overwrit | false | false |
-| allcontrib_file |The all contributors file | false | .all-contributorsrc |
-| allcontrib_type |Contribution type, which defaults to "code" if not set. | false | code |
-| allcontrib_skip_generate | skip running all-contributors generate | false | false |
-
-If you aren't familiar with all-contributors, you'll need to add some
-[commenting in your repository README](https://allcontributors.org/docs/en/cli/usage)
-so the client knows where to write.
 
 ## Contributors
 
@@ -86,8 +51,3 @@ so the client knows where to write.
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-
-## @vsoch TODO
-
- - an example should be added to push to a repository / open PR

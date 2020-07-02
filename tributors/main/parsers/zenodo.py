@@ -50,6 +50,11 @@ class ZenodoParser(ParserBase):
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
+
+            # Check against contribution threshold, and not bot
+            if not self.include_contributor(login):
+                continue
+
             cache = self.cache.get(login) or {}
             entry = {"name": cache.get("name") or login}
             if "orcid" in cache:
@@ -92,6 +97,11 @@ class ZenodoParser(ParserBase):
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
+
+            # Check against contribution threshold, and not bot
+            if not self.include_contributor(login):
+                continue
+
             cache = self.cache.get(login) or {}
             entry = {"name": cache.get("name") or login}
             if login in self.cache:

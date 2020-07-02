@@ -87,6 +87,10 @@ files) that you want rendered.
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ```
 
+Read more about this
+[commenting in your repository README](https://allcontributors.org/docs/en/cli/usage)
+so the client knows where to write. 
+
 ### The .tributors file
 
 After you run this command, you'll also notice you have a `.tributors` file

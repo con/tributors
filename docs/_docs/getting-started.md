@@ -12,6 +12,63 @@ description: Getting started with tributors
 This guide will provide getting started instructions for local and Docker Usage,
 along with GitHub Workflows.
 
+## Quick Start
+
+### 1. Install
+Install tributors
+
+```bash
+pip install tributors
+```
+
+### 2. Environment
+
+Especially if you need orcid ids in your metadata, for a first time go you
+should export an id and secret to interact with the Orcid API. It'a also recommended
+to export a GitHub token to increase your API limit:
+
+```bash
+export ORCID_ID=APP-XXXXXXX
+export ORCID_SECRET=12345678910111213141516171819202122
+export GITHUB_TOKEN=XXXXXXXXXXXXXXX
+```
+
+Once you generate an orcid token, it will be written to a temporary file,
+and you can read the file and export the variable for later discovery (and you'll
+no longer need the ID and secret):
+
+```bash
+export ORCID_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+### 3. Update
+If you have a repository with files already defined, you can use the auto-detect
+update (not specifying a particular contributor parser):
+
+```bash
+$ tributors update
+```
+
+or update a specific one:
+
+```bash
+$ tributors update allcontrib
+$ tributors update zenodo
+$ tributors update codemeta
+```
+
+### 3. Init
+You can also create empty files if you don't have them yet:
+
+```bash
+$ tributors init allcontrib
+$ tributors init zenodo
+```
+
+You can read more about the various [parsers]({{ site.baseurl }}/docs/parsers)
+for specific-parser arguments, and more details about the above commands in the
+sections below.
+
 ## Docker Usage
 
 If you don't want to use the GitHub Action and don't want to install npm on
@@ -153,16 +210,19 @@ and do the following:
 $ tributors update all
 ```
 
-"all" is the default, so this works too:
+#### Update (auto)
+
+If you have a repository with one or more default contributor files, you can
+update all of these files that are detected by leaving out the parser name:
 
 ```bash
 $ tributors update
 INFO:zenodo:Updating .zenodo.json
 INFO:allcontrib:Updating .all-contributorsrc
 ```
-Note that for the update, we query the GitHub API to update both the zenodo.json
-and contributors file. We also use a cached [.tributors]({{ site.baseurl }}/docs/tributors) file to
-keep track of shared contributors.
+Note that for any multiple updates, we query the GitHub API to get updated contributors,
+and also use a cached [.tributors]({{ site.baseurl }}/docs/tributors) file to
+keep track of shared metadata.
 
 #### Update allcontributors
 
@@ -386,7 +446,10 @@ INFO:zenodo:Updating .zenodo.json
 INFO:allcontrib:Updating .all-contributorsrc
 ```
 
-or just 
+#### Update (auto)
+
+If you have a repository with one or more default contributor files, you can
+update all of these files that are detected by leaving out the parser name:
 
 ```bash
 $ tributors update

@@ -82,8 +82,8 @@ def get_parser():
             "parsers",
             help="Metadata file parsers to update or initialize.",
             nargs="*",
-            default="all",
-            choices=["zenodo", "allcontrib", "codemeta", "all"],
+            default="unset",
+            choices=["zenodo", "allcontrib", "codemeta", "all", "unset"],
         )
         command.add_argument(
             "--repo", help="The repository URI, if not exported to GITHUB_REPOSITORY",

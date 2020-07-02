@@ -128,15 +128,21 @@ class AllContribParser(ParserBase):
 
         # Sanity check that we have the correct repository
         repo = "%s/%s" % (data["projectOwner"], data["projectName"])
+
         if repo != self.repo.uid:
             bot.warning(
-                "Found different repository in {filename}, updating from {self.repo.uid}"
+                f"Found different repository {repo} in {filename}, updating from {self.repo.uid}"
             )
             self._repo = GitHubRepository(repo)
 
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
+
+            # Check against contribution threshold, and not bot
+            if not self.include_contributor(login):
+                continue
+
             cache = self.cache.get(login) or {}
             if login in self.lookup:
                 entry = self.lookup[login]
@@ -144,11 +150,19 @@ class AllContribParser(ParserBase):
                 entry = {
                     "login": login,
                     "name": cache.get("name") or login,
-                    "avatar_url": self.contributors.get(login, {}).get("avatar_url"),
-                    "profile": cache.get("blog")
-                    or self.contributors.get(login, {}).get("html_url"),
                     "contributions": [ctype],
                 }
+
+            # Only add profile and profile if not added yet
+            if "profile" not in entry:
+                entry["profile"] = cache.get("blog") or self.repo.contributors.get(
+                    login, {}
+                ).get("html_url")
+            if "avatar_url" not in entry:
+                entry["avatar_url"] = (
+                    self.repo.contributors.get(login, {}).get("avatar_url"),
+                )
+
             if ctype not in entry["contributions"]:
                 entry["contributions"].append(ctype)
             self.lookup[login] = entry

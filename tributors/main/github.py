@@ -163,7 +163,7 @@ def get_github_repository(repo):
         # Issue running command
         if command.returncode != 0 or not command.out:
             sys.exit("Could not determine repository from local .git.")
-        repo = command.out[0]
+        repo = "/".join(command.out[0].strip().split("/")[-2:])
 
     match = re.search(repository_regex, repo)
 
