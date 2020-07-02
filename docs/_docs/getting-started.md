@@ -523,7 +523,7 @@ Inputs are listed below.
 
 | name | description | required | default |
 |------|-------------|----------|---------|
-| parsers | a space separated list of parsers (e.g., "zenodo allcontrib") or just "all" | false | all | 
+| parsers | a space separated list of parsers (e.g., "zenodo allcontrib") or "all" or "unset" for autodetect | false | unset | 
 | zenodo_file | .zenodo.json to update. If does not exist, must define zenodo_doi | false | .zenodo.json | 
 | zenodo_doi | Zenodo DOI needed for init. Leave unset to skip init. | false | unset | 
 | log_level | Log level to use, one of INFO, DEBUG, CRITICAL, ERROR, WARNING, FATAL (default INFO) | false | INFO | 
