@@ -21,6 +21,8 @@
           url: "docs/parsers/zenodo"
         - title: CodeMeta
           url: "docs/parsers/codemeta"
+        - title: Mailmap
+          url: "docs/parsers/mailmap"
     - title: "About"
       url: "about"
     - title: "News"
