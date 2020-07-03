@@ -16,5 +16,8 @@
         "name": "Pierre Grimaud",
         "blog": "https://github.com/pgrimaud",
         "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator"
+    },
+    "github-actions[bot]": {
+        "name": "github-actions[bot]"
     }
 }
