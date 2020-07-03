@@ -629,20 +629,18 @@ dashes.
 | allcontrib_file |The all contributors file | false | .all-contributorsrc |
 | allcontrib_type |Contribution type, which defaults to "code" if not set. | false | code |
 | allcontrib_skip_generate | skip running all-contributors generate | false | false |
-| codemeta_file | the codemeta file to update, if defined | false | unset |
+| codemeta_file | the codemeta file to update, if defined | false | codemeta.json |
+| mailmap_file | the mailmap file to use for update-lookup, if needed | false | .mailmap |
 | update_lookup | one or more resources to use to update the .tributors file before running update | false | unset |
 
 If you define `update_lookup`, you should list the (space separated) names of the parsers that you want to use. For example:
 
 ```yaml
-   update_lookup: "mailmap"
+   update_lookup: mailmap zenodo
 ```
 
-And if you have a custom filename from the default, you should also include it here:
+The same file names (e.g., *_file) will be used.
 
-```yaml
-   update_lookup: "mailmap --mailmap-file subfolder/.mailmap
-```
 
 If you aren't familiar with all-contributors, you'll need to add some
 [commenting in your repository README](https://allcontributors.org/docs/en/cli/usage)
