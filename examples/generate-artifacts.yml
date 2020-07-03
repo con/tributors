@@ -27,6 +27,9 @@ jobs:
           # This file will be used for running update-lookup
           mailmap_file: "tests/.mailmap"
 
+          # Skip one or more usernames (space separated)
+          skip_users: user1 user2
+
           # INFO, DEBUG, ERROR, WARNING, etc.
           log_level: DEBUG
 

@@ -44,7 +44,8 @@ def main(args, extra):
 
     if "all" in resources:
         client.update_resource(
-            resources=["zenodo", "allcontrib", "codemeta", "mailmap"], params=extra,
+            resources=["zenodo", "allcontrib", "codemeta", "mailmap", "github"],
+            params=extra,
         )
 
     else:

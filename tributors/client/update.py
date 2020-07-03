@@ -24,6 +24,11 @@ def main(args, extra):
     # Start with user provided parsers
     parsers = args.parsers
 
+    # Skip users
+    skip_users = []
+    if args.skip_users != "unset":
+        skip_users = args.skip_users
+
     # If unset, try to detect files
     if "unset" in parsers:
         lookup = {
@@ -47,7 +52,14 @@ def main(args, extra):
             thresh=args.thresh,
             repo=args.repo,
             params=extra,
+            skip_users=skip_users,
         )
 
     else:
-        client.update(parsers=parsers, repo=args.repo, params=extra, thresh=args.thresh)
+        client.update(
+            parsers=parsers,
+            repo=args.repo,
+            params=extra,
+            thresh=args.thresh,
+            skip_users=skip_users,
+        )

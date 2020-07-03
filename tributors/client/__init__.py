@@ -76,7 +76,7 @@ def get_parser():
         help="One or more files to use for update.",
         nargs="*",
         default="unset",
-        choices=["mailmap", "allcontrib", "codemeta", "zenodo", "unset"],
+        choices=["mailmap", "allcontrib", "codemeta", "zenodo", "unset", "github"],
     )
 
     # Update an existing contributors file
@@ -99,6 +99,13 @@ def get_parser():
         )
         command.add_argument(
             "--repo", help="The repository URI, if not exported to GITHUB_REPOSITORY",
+        )
+        command.add_argument(
+            "--skip-users",
+            help="GitHub aliases to skip adding to .tributors file",
+            dest="skip_users",
+            nargs="*",
+            default="unset",
         )
 
     return parser

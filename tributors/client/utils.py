@@ -21,6 +21,7 @@ def parse_extra(extra):
         "--allcontrib-file",
         "--codemeta-file",
         "--mailmap-file",
+        "--skip-users",
     ]
     known_bool = []
 

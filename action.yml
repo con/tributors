@@ -9,6 +9,10 @@ inputs:
   update_lookup:
     description: before running update, update the .tributors metadata file from these resources
     required: false
+  skip_users:
+    description: one or more GitHub logins (space separated) to skip.
+    required: false
+    default: unset
   zenodo_file:
     description: .zenodo.json to update. If does not exist, must define doi variable
     default: .zenodo.json

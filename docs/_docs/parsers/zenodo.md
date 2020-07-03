@@ -29,8 +29,15 @@ Here we show basic commands for interacting with the allcontrib generator, and a
 If you want to generate a fresh Zenodo.json, you can do that as follows:
 
 ```bash
+$ tributors init zenodo
+```
+
+To get additional metadata using the Zenodo API, add a `--doi`:
+
+```bash
 $ tributors init zenodo --doi 10.5281/zenodo.1012531
 ```
+
 You can also change the zenodo.json file from the default, for example, if you
 are generating one in a subfolder:
 
@@ -40,7 +47,7 @@ $ tributors init zenodo --doi 10.5281/zenodo.1012531 --zenodo-file subfolder/.ze
 
 And akin to the all contributors parser, the client will either extract
 the GitHub repository name directly via git, or you can export it to 
- `GITHUB_REPOSITORY`. By default, we parse contributors
+ `GITHUB_REPOSITORY`. By default, we parse contributor login names
 from the GitHub API, and include the creators already defined in Zenodo.
 You will need this `.zenodo.json` file to exist in order to update it.
 

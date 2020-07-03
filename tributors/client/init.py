@@ -23,6 +23,11 @@ def main(args, extra):
     # Parse extra arguments
     extra = parse_extra(extra)
 
+    # Skip users, if a space separated list is defined
+    skip_users = []
+    if args.skip_users != "unset":
+        skip_users = args.skip_users
+
     # Tell the user to init a particular parser
     if "unset" in args.parsers:
         bot.info("Please specify one or more parsers, one of zenodo, codemeta")
@@ -34,8 +39,15 @@ def main(args, extra):
             repo=args.repo,
             params=extra,
             force=args.force,
+            skip_users=skip_users,
         )
 
     else:
         parsers = [x for x in args.parsers if x != "unset"]
-        client.init(parsers=parsers, repo=args.repo, params=extra, force=args.force)
+        client.init(
+            parsers=parsers,
+            repo=args.repo,
+            params=extra,
+            force=args.force,
+            skip_users=skip_users,
+        )

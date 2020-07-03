@@ -37,8 +37,6 @@ class ZenodoParser(ParserBase):
         """
         # A doi is required
         doi = self.params.get("--doi")
-        if not doi:
-            sys.exit("Please provide the zenodo doi with --doi")
 
         # Zenodo file defaults to expected .zenodo.json
         zenodo_file = self.params.get("--zenodo-file", self.filename)
@@ -46,12 +44,17 @@ class ZenodoParser(ParserBase):
             sys.exit("%s exists, set --force to overwrite." % zenodo_file)
 
         bot.info("Generating %s" % zenodo_file)
-        record = get_zenodo_record(doi)
 
-        # Assume we want to add known contributors
-        creators = record["metadata"].get("creators", [])
+        # If a doi is provided, generate
+        creators = []
+        record = None
+        if doi:
+            record = get_zenodo_record(doi)
+            creators = record["metadata"].get("creators", [])
+
         self.update_cache(update_lookup=False)
 
+        # GitHub contributors are the source of truth
         for login, _ in self.repo.contributors.items():
 
             # Check against contribution threshold, and not bot
@@ -69,11 +72,16 @@ class ZenodoParser(ParserBase):
         # Update final metadata
         metadata = {
             "creators": creators,
-            "upload_type": record["metadata"]["resource_type"]["type"],
-            "keywords": self.repo.topics(record["metadata"]["keywords"]),
-            "access_right": record["metadata"]["access_right"],
-            "license": record["metadata"]["license"]["id"],
+            "upload_type": "software",
+            "keywords": self.repo.topics(),
         }
+
+        # If we have a zenodo record, update it
+        if record:
+            metadata["upload_type"] = record["metadata"]["resource_type"]["type"]
+            metadata["keywords"] = self.repo.topics(record["metadata"]["keywords"])
+            metadata["access_right"] = record["metadata"]["access_right"]
+            metadata["license"] = record["metadata"]["license"]["id"]
 
         write_json(metadata, zenodo_file)
         return metadata

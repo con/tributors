@@ -123,7 +123,7 @@ def get_orcid_token():
             orcid_token,
             orcid_refresh,
         )
-        write_file(content, tmp_file)
+        write_file(tmp_file, content)
         print(
             f"Orcid token exports written to {tmp_file}. "
             "In the future export these variables for headless usage."
