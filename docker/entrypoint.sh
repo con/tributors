@@ -53,7 +53,7 @@ fi
 
 # First update via a lookup, if specified
 if [ ! -z "${INPUT_UPDATE_LOOKUP}" ]; then
-    tributors update-lookup "${INPUT_UPDATE_LOOKUP}"
+    tributors update-lookup ${INPUT_UPDATE_LOOKUP}
 fi
 
 # Update the user:
