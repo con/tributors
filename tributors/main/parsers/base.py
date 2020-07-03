@@ -91,7 +91,7 @@ class ParserBase:
             return False
         return True
 
-    def update_cache(self):
+    def update_cache(self, update_lookup=True):
         """A shared function to get updated GitHub contributors to update
            the local cache. This is where we parse all the data that we need 
            and return common fields that some given parser might need.
@@ -135,5 +135,5 @@ class ParserBase:
             self.cache[login] = entry
 
         # If the parser can be used as a resource, use it to update .tributors
-        if hasattr(self, "update_lookup"):
+        if hasattr(self, "update_lookup") and update_lookup:
             self.update_lookup()

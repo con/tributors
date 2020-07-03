@@ -50,7 +50,7 @@ class ZenodoParser(ParserBase):
 
         # Assume we want to add known contributors
         creators = record["metadata"].get("creators", [])
-        self.update_cache()
+        self.update_cache(update_lookup=False)
 
         for login, _ in self.repo.contributors.items():
 
@@ -84,7 +84,7 @@ class ZenodoParser(ParserBase):
         """
         self.thresh = thresh
         self.load_data()
-        bot.info("Updating %s" % self.fliename)
+        bot.info("Updating %s" % self.filename)
 
         # We don't currently have a reliable identifier for zenodo, so we recreate each time
         self.lookup = self.data.get("creators", [])
@@ -111,7 +111,7 @@ class ZenodoParser(ParserBase):
             creators.append(entry)
 
         self.data["creators"] = creators
-        write_json(self.data, self.fliename)
+        write_json(self.data, self.filename)
         return self.data
 
     def update_lookup(self):

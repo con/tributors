@@ -20,6 +20,7 @@ def parse_extra(extra):
         "--allcontrib-type",
         "--allcontrib-file",
         "--codemeta-file",
+        "--mailmap-file",
     ]
     known_bool = []
 
