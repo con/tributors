@@ -7,7 +7,10 @@
     "yarikoptic": {
         "name": "Yaroslav Halchenko",
         "bio": "Cheers!",
-        "blog": "www.onerussian.com"
+        "blog": "www.onerussian.com",
+        "orcid": "0000-0003-3456-2493",
+        "affiliation": "Dartmouth College",
+        "email": "debian@onerussian.com"
     },
     "pgrimaud": {
         "name": "Pierre Grimaud",
