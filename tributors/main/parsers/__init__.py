@@ -8,6 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
+from tributors.main.github import GitHubRepository
 from .allcontrib import AllContribParser
 from .codemeta import CodeMetaParser
 from .zenodo import ZenodoParser
@@ -35,6 +36,8 @@ def get_named_parser(name, repo=None, filename=None, params=None):
     # These parsers only update .tributors metadata
     elif re.search("mailmap", name):
         parser = MailmapParser(filename=filename, params=params)
+    elif re.search("github", name):
+        parser = GitHubRepository(repo=repo, params=params)
 
     if not parser:
         raise NotImplementedError(f"There is no matching parser for {name}")

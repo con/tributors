@@ -117,7 +117,9 @@ class AllContribParser(ParserBase):
             )
 
         # Load the previous contributors, create a lookup
-        self.lookup = {x["login"]: x for x in self.data.get("contributors", [])}
+        self.lookup = {
+            x["login"]: x for x in self.data.get("contributors", []) if "login" in x
+        }
 
         # Sanity check that we have the correct repository
         repo = "%s/%s" % (self.data["projectOwner"], self.data["projectName"])
@@ -175,7 +177,9 @@ class AllContribParser(ParserBase):
            to add items that would be found there.
         """
         self.load_data()
-        self.lookup = {x["login"]: x for x in self.data.get("contributors", [])}
+        self.lookup = {
+            x["login"]: x for x in self.data.get("contributors", []) if "login" in x
+        }
         bot.info(f"Updating .tributors cache from {self.filename}")
         for login, metadata in self.lookup.items():
             if login in self.cache:

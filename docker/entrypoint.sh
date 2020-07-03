@@ -53,7 +53,7 @@ fi
 
 # First update via a lookup, if specified
 if [ ! -z "${INPUT_UPDATE_LOOKUP}" ]; then
-    tributors update-lookup "${INPUT_UPDATE_LOOKUP}" --mailmap-file "${INPUT_MAILMAP_FILE}" --allcontrib-file "${INPUT_ALLCONTRIB_FILE}" --zenodo-file "${INPUT_ZENODO_FILE}" --codemeta-file "${INPUT_CODEMETA_FILE}"
+    tributors update-lookup "${INPUT_UPDATE_LOOKUP}" --mailmap-file "${INPUT_MAILMAP_FILE}" --allcontrib-file "${INPUT_ALLCONTRIB_FILE}" --zenodo-file "${INPUT_ZENODO_FILE}" --codemeta-file "${INPUT_CODEMETA_FILE}" --skip-users "${INPUT_SKIP_USERS}"
 fi
 
 # Update the user:
@@ -64,7 +64,7 @@ printf "Run codemeta: ${RUN_CODEMETA}\n"
 # The .all-contributorsrc is required, generate headless if doesn't exist
 if [ ! -f "${INPUT_ALLCONTRIB_FILE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
     printf "Generating ${INPUT_ALLCONTRIB_FILE} for ${GITHUB_REPOSITORY}\n"
-    tributors init allcontrib
+    tributors init allcontrib --skip-users "${INPUT_SKIP_USERS}"
     cat "${INPUT_ALLCONTRIB_FILE}"
 else
     printf "${INPUT_ALLCONTRIB_FILE} already exists.\n"
@@ -73,14 +73,14 @@ fi
 # If a Zenodo DOI is set, use it to init the repository
 if [ ! -z "${INPUT_ZENODO_DOI}" ] && [ "${RUN_ZENODO}" == "true" ]; then
     if [ "$INPUT_FORCE" == "true" ]; then
-        tributors init zenodo --doi "${INPUT_ZENODO_DOI}" --zenodo-file "${INPUT_ZENODO_FILE}" --force
+        tributors init zenodo --doi "${INPUT_ZENODO_DOI}" --zenodo-file "${INPUT_ZENODO_FILE}" --force --skip-users "${INPUT_SKIP_USERS}"
     else
-        tributors init zenodo --doi "${INPUT_ZENODO_DOI}" --zenodo-file "${INPUT_ZENODO_FILE}"
+        tributors init zenodo --doi "${INPUT_ZENODO_DOI}" --zenodo-file "${INPUT_ZENODO_FILE}" --skip-users "${INPUT_SKIP_USERS}"
     fi
 fi
 
 # Update all types request
-COMMAND="tributors update ${INPUT_PARSERS} --thresh ${INPUT_THRESHOLD}" 
+COMMAND="tributors update ${INPUT_PARSERS} --thresh ${INPUT_THRESHOLD} --skip-users ${INPUT_SKIP_USERS}"
 if [ ! -z "${INPUT_ALLCONTRIB_TYPE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
     COMMAND="${COMMAND} --allcontrib-type ${INPUT_ALLCONTRIB_TYPE}"
 fi

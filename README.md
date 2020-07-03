@@ -51,7 +51,3 @@ See the full [documentation](https://con.github.io/tributors/) for getting start
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-## TODO:
-
- - orcid and github should be resources? or just orcid?

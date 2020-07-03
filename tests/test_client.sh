@@ -24,9 +24,9 @@ fi
 
 echo
 echo "#### Testing init zenodo"
-runTest 1 $output tributors init zenodo --zenodo-file $tmpdir/.zenodo.json
-runTest 0 $output tributors init zenodo --zenodo-file $tmpdir/.zenodo.json --doi 10.5281/zenodo.1012531 --repo singularityhub/sregistry
+runTest 0 $output tributors init zenodo --zenodo-file $tmpdir/.zenodo.json
 runTest 1 $output tributors init zenodo --zenodo-file $tmpdir/.zenodo.json --doi 10.5281/zenodo.1012531 --repo singularityhub/sregistry
+runTest 0 $output tributors init zenodo --zenodo-file $tmpdir/.zenodo.json --doi 10.5281/zenodo.1012531 --repo singularityhub/sregistry --force
 
 echo
 echo "#### Testing init allcontrib"
@@ -59,6 +59,11 @@ echo
 echo "#### Testing update-lookup zenodo"
 runTest 0 $output tributors update-lookup zenodo --zenodo-file $tmpdir/.zenodo.json
 runTest 1 $output tributors update-lookup zenodo
+
+echo
+echo "#### Testing update-lookup github"
+runTest 0 $output tributors update-lookup github
+
 
 echo
 echo "#### Testing update-lookup codemeta"

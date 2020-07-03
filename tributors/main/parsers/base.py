@@ -8,7 +8,6 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from tributors.main.github import get_user
 from tributors.main.orcid import get_orcid, OrcidIdentifier
 from tributors.utils.file import read_json
 
@@ -82,6 +81,10 @@ class ParserBase:
         """
         contributor = self.repo.contributors.get(login)
 
+        # if the login is marked to skip
+        if login in self.repo.skip_users:
+            return False
+
         # If they don't meet the threshold, continue
         if contributor["contributions"] < self.thresh:
             return False
@@ -92,26 +95,15 @@ class ParserBase:
         return True
 
     def update_cache(self, update_lookup=True):
-        """A shared function to get updated GitHub contributors to update
-           the local cache. This is where we parse all the data that we need 
-           and return common fields that some given parser might need.
-           For users that have an email, we can attempt lookup with Orcid. 
+        """A shared function to run additional parsing on the cache, such
+           as adding an orcid id when an email is defined. 
         """
-        for login, contributor in self.repo.contributors.items():
+        # If the parser can be used as a resource, use it to update .tributors
+        if hasattr(self, "update_lookup") and update_lookup:
+            self.update_lookup()
 
-            # Look up a GitHub username, possibly email and site
-            user = get_user(login)
-
-            entry = {"name": user.get("name") or login}
-            if login in self.cache:
-                entry = self.cache[login]
-            else:
-                bot.info(f"⭐️ new contributor {login}")
-
-            # Update cache with fields that aren't defined yet
-            for key in ["email", "bio", "blog"]:
-                if user.get(key) and key not in entry:
-                    entry[key] = user.get(key)
+        # Then add an Orcid lookup
+        for login, entry in self.cache.items():
 
             # If we have an email, and orcid isn't defined
             if "orcid" not in entry:
@@ -133,7 +125,3 @@ class ParserBase:
                         entry["affiliation"] = cli.affiliation
 
             self.cache[login] = entry
-
-        # If the parser can be used as a resource, use it to update .tributors
-        if hasattr(self, "update_lookup") and update_lookup:
-            self.update_lookup()

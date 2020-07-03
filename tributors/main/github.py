@@ -25,11 +25,60 @@ class GitHubRepository:
        metadata.
     """
 
-    def __init__(self, repo):
+    def __init__(self, repo, skip_users=None, params=None):
         self._repo = {}
         self._contributors = []
         self._topics = []
         self.uid = get_github_repository(repo)
+        self.skip_users = skip_users or []
+        self.params = params or {}
+        self.cache = {}
+
+    def include_contributor(self, login):
+        """Given a threshold (and preference to not include bots) return a boolean
+           to indicate including the contributor or not
+        """
+        contributor = self.contributors.get(login)
+
+        # if the login is marked to skip
+        if login in self.skip_users:
+            return False
+
+        # Skip GitHub bots
+        if contributor["type"] == "Bot" or "[bot]" in contributor["login"]:
+            return False
+        return True
+
+    # GitHub repository can serve as a metadata parser
+    def update_lookup(self):
+        """update the .tributors file using GitHub contributors
+        """
+        if not self.skip_users:
+            self.skip_users = self.params.get("--skip-users", "").split(" ")
+
+        # Iterate through GitHub and update metadata
+        for login, contributor in self.contributors.items():
+
+            # Don't include bots, and others specified with --skip-user
+            if not self.include_contributor(login):
+                continue
+
+            # Look up a GitHub username, possibly email and site
+            user = get_user(login)
+
+            entry = {"name": user.get("name") or login}
+            if login in self.cache:
+                entry = self.cache[login]
+            else:
+                bot.info(f"⭐️ new contributor {login}")
+
+            # Update cache with fields that aren't defined yet
+            for key in ["email", "bio", "blog"]:
+                if user.get(key) and key not in entry:
+                    entry[key] = user.get(key)
+                    bot.info(f"  Updating {login} with {key}: {entry[key]}")
+            self.cache[login] = entry
+        return self.cache
 
     def __str__(self):
         return "[github][%s]" % self.uid

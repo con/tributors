@@ -58,14 +58,14 @@ class TributorsClient:
     def __repr__(self):
         return self.__str__()
 
-    def init(self, parsers=None, repo=None, params=None, force=False):
+    def init(self, parsers=None, repo=None, params=None, force=False, skip_users=None):
         """Init one or more contributor parsers. Specifically, this is the
            action that runs the parser.init() to generate some initial file.
         """
         parsers = parsers or []
 
         # Generate a shared repository object
-        repo = GitHubRepository(repo)
+        repo = GitHubRepository(repo, skip_users)
 
         for parser in parsers:
             client = get_named_parser(name=parser, repo=repo, params=params)
@@ -76,7 +76,7 @@ class TributorsClient:
         # Save the cache
         self.save_cache()
 
-    def update_resource(self, resources=None, params=None):
+    def update_resource(self, resources=None, params=None, skip_users=None):
         """Given one or more resource types (an external file or source of
            metadata) update the .tributors cache lookup
         """
@@ -89,7 +89,7 @@ class TributorsClient:
         # Save the cache
         self.save_cache()
 
-    def update(self, parsers=None, repo=None, params=None, thresh=1):
+    def update(self, parsers=None, repo=None, params=None, thresh=1, skip_users=None):
         """Update one or more contributor parsers. Specifically, this is the
            action that runs the parser.update() after obtaining contributions
            from GitHub or a cache.
@@ -98,7 +98,7 @@ class TributorsClient:
         self.orcid_token = get_orcid_token()
 
         # Generate a shared repository object
-        repo = GitHubRepository(repo)
+        repo = GitHubRepository(repo, skip_users=skip_users)
 
         for parser in parsers:
             client = get_named_parser(name=parser, repo=repo, params=params)

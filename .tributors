@@ -1,20 +1,20 @@
 {
-    "yarikoptic": {
-        "name": "Yaroslav Halchenko",
-        "blog": "www.onerussian.com",
-        "email": "debian@onerussian.com",
-        "bio": "Cheers!",
-        "orcid": "0000-0003-3456-2493",
-        "affiliation": "Dartmouth College"
-    },
     "vsoch": {
         "name": "Vanessasaurus",
-        "blog": "https://vsoch.github.io",
-        "bio": "I'm the Vanessasaurus!"
+        "bio": "I'm the Vanessasaurus!",
+        "blog": "https://vsoch.github.io"
+    },
+    "yarikoptic": {
+        "name": "Yaroslav Halchenko",
+        "bio": "Cheers!",
+        "blog": "www.onerussian.com",
+        "orcid": "0000-0003-3456-2493",
+        "affiliation": "Dartmouth College",
+        "email": "debian@onerussian.com"
     },
     "pgrimaud": {
         "name": "Pierre Grimaud",
-        "blog": "https://github.com/pgrimaud",
-        "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator"
+        "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator",
+        "blog": "https://github.com/pgrimaud"
     }
 }

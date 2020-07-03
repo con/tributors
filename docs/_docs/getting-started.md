@@ -33,14 +33,7 @@ $ tributors update allcontrib
 
 To share metadata between these files, tributors uses a shared cache, the 
 [.tributors]({{ site.baseurl }}/docs/tributors) file. This file is updated when
-you run `tributors update` in the case that any of your metadata files have additional
-information on a person. For example, let's say that we have a list of contributors
-in an `.zenodo.json`, but they are missing Orcid Ids. By default, tributors will ping
-the GitHub API to look for new contributors, and during this process we might
-discover email addresses. We can then use the email addresses to query the Orcid API
-and discover the correct identifiers. The associated emails, names, and orcid ids
-are then stored to the .tributors cache file. If any future call using a metadata
-parser is looking for one of these fields, we will find it there.
+you run `tributors update-lookup`, and is indexed by the GitHub login. 
 
 ### Lookup From
 
@@ -80,6 +73,9 @@ cache without touching any files. We can do that with `tributors update-lookup`:
 ```bash
 # auto-detect lookup files in the present working directory
 $ tributors update-lookup
+
+# update from the GitHub API
+$ tributors update-lookup github
 
 # target a specific metadata file, .mailmap
 $ tributors update-lookup mailmap
@@ -121,6 +117,26 @@ no longer need the ID and secret):
 export ORCID_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
+### 3. Update Lookups
+
+Before you update your contribution files, you probably want to update your .tributors
+file, since we can update the contribution files using it. You can do this update
+by running `tributors update-lookup`:
+
+```bash
+# auto-detect known metadata files in the present working directory
+$ tributors update-lookup
+
+# update from the GitHub API
+$ tributors update-lookup github
+
+# update from a mailmap
+$ tributors update-lookup mailmap
+```
+
+Once you've updated from the sources that you need, you can move forward to
+update your contribution metadata files, discussed next.
+
 ### 3. Update
 If you have a repository with files already defined, you can use the auto-detect
 update (not specifying a particular contributor parser):
@@ -149,19 +165,6 @@ You can read more about the various [parsers]({{ site.baseurl }}/docs/parsers)
 for specific-parser arguments, and more details about the above commands in the
 sections below.
 
-### 4. Update Lookups
-
-If you have a file that might be used as a lookup to find additional metadata
-fields (e.g., a .mailmap doesn't list contributors but has a list of names and emails)
-you can update your .tributors shared metadata cache using it before running `tributors update`:
-
-```bash
-# auto-detect known metadata files in the present working directory
-$ tributors update-lookup
-
-# update from a mailmap
-$ tributors update-lookup mailmap
-```
 
 ## Docker Usage
 
