@@ -6,6 +6,9 @@ inputs:
   parsers:
     description: space separated list of parsers to use. Defaults to unset (auto-detect)
     default: unset
+  update_lookup:
+    description: before running update, update the .tributors metadata file from these resources
+    required: false
   zenodo_file:
     description: .zenodo.json to update. If does not exist, must define doi variable
     default: .zenodo.json
@@ -24,6 +27,9 @@ inputs:
   codemeta_file:
     description: codemeta filename (skipped if not defined)
     default: codemeta.json
+  mailmap_file:
+    description: A mailmap file for update-lookup (defaults to .mailmap)
+    default: .mailmap
   allcontrib_file:
     description: All contributors filename (defaults to .all-contributorsrc)
     default: .all-contributorsrc

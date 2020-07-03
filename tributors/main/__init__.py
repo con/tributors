@@ -68,10 +68,23 @@ class TributorsClient:
         repo = GitHubRepository(repo)
 
         for parser in parsers:
-            client = get_named_parser(parser, repo)
+            client = get_named_parser(name=parser, repo=repo, params=params)
             client.cache = self.cache
-            client.init(params=params, force=force)
+            client.init(force=force)
             self.cache.update(client.cache)
+
+        # Save the cache
+        self.save_cache()
+
+    def update_resource(self, resources=None, params=None):
+        """Given one or more resource types (an external file or source of
+           metadata) update the .tributors cache lookup
+        """
+        resources = resources or []
+        for name in resources:
+            resource = get_named_parser(name=name, params=params)
+            resource.cache = self.cache
+            resource.update_lookup()
 
         # Save the cache
         self.save_cache()
@@ -88,10 +101,10 @@ class TributorsClient:
         repo = GitHubRepository(repo)
 
         for parser in parsers:
-            client = get_named_parser(parser, repo)
+            client = get_named_parser(name=parser, repo=repo, params=params)
             client.orcid_token = self.orcid_token
             client.cache = self.cache
-            client.update(params=params, thresh=thresh)
+            client.update(thresh=thresh)
             self.cache.update(client.cache)
 
         # Save the cache

@@ -38,11 +38,35 @@ echo
 echo "#### Testing init with malformed name"
 runTest 1 $output tributors init --allcontrib-file $tmpdir/.all-contributorsrc --repo pancakes-hub
 
-
+echo
 echo "#### Testing update zenodo"
 runTest 0 $output tributors update zenodo --zenodo-file $tmpdir/.zenodo.json
 
+echo
 echo "#### Testing update allcontrib"
 runTest 0 $output tributors update allcontrib --allcontrib-file $tmpdir/.all-contributorsrc
+
+echo
+echo "#### Testing update-lookup allcontrib"
+runTest 0 $output tributors update-lookup allcontrib --allcontrib-file $tmpdir/.all-contributorsrc
+
+echo
+echo "#### Testing update-lookup mailmap"
+runTest 0 $output tributors update-lookup mailmap --mailmap-file $here/.mailmap
+runTest 1 $output tributors update-lookup mailmap
+
+echo
+echo "#### Testing update-lookup zenodo"
+runTest 0 $output tributors update-lookup zenodo --zenodo-file $tmpdir/.zenodo.json
+runTest 1 $output tributors update-lookup zenodo
+
+echo
+echo "#### Testing update-lookup codemeta"
+runTest 0 $output tributors update-lookup codemeta --codemeta-file $here/codemeta.json
+runTest 1 $output tributors update-lookup codemeta
+
+echo
+echo "#### Testing update-lookup (discover)"
+runTest 0 $output tributors update-lookup
 
 rm -rf ${tmpdir}

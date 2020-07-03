@@ -141,6 +141,22 @@ Response 403: rate limit exceeded, cannot retrieve user RonaldEnsing.
 
 and definitely then should export a `GITHUB_TOKEN` to increase it!
 
+## Update .tributors
+
+Let's say that we have a local .all-contributorsrc, and we just want to use it to update our
+.tributors file. We could do:
+
+```bash
+$ tributors update-lookup allcontrib
+```
+
+And if you want it auto-discovered (with other known files) you can just do:
+
+```bash
+$ tributors update-lookup
+```
+
+
 ## Generate 
 
 Once you've update your .all-contributorsrc, you can either [install](https://allcontributors.org/docs/en/cli/overview) the

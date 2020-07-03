@@ -1,20 +1,85 @@
 {
-    "vsoch": {
-        "name": "Vanessasaurus",
-        "bio": "I'm the Vanessasaurus!",
-        "blog": "https://vsoch.github.io"
-    },
     "yarikoptic": {
         "name": "Yaroslav Halchenko",
-        "bio": "Cheers!",
         "blog": "www.onerussian.com",
+        "email": "debian@onerussian.com",
+        "bio": "Cheers!",
         "orcid": "0000-0003-3456-2493",
-        "affiliation": "Dartmouth College",
-        "email": "debian@onerussian.com"
+        "affiliation": "Dartmouth College"
+    },
+    "vsoch": {
+        "name": "Vanessasaurus",
+        "blog": "https://vsoch.github.io",
+        "bio": "I'm the Vanessasaurus!"
     },
     "pgrimaud": {
         "name": "Pierre Grimaud",
-        "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator",
-        "blog": "https://github.com/pgrimaud"
+        "blog": "https://github.com/pgrimaud",
+        "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator"
+    },
+    "tschoonj": {
+        "name": "Tom Schoonjans",
+        "bio": "I'm a research software engineer working @rosalindfranklininstitute, and am passionate about developing quality open source software.",
+        "blog": "tschoonj.github.io"
+    },
+    "Aneoshun": {
+        "name": "Antoine Cully",
+        "blog": "antoinecully.com"
+    },
+    "dctrud": {
+        "name": "David Trudgian",
+        "email": "dave@trudgian.net",
+        "bio": "Work and collaborations.\r\n\r\nPersonal code at https://git.randomroad.net",
+        "blog": "https://dctrud.sdf.org"
+    },
+    "serlophug": {
+        "name": "Sergio L\u00f3pez Huguet",
+        "email": "sergio.lophug@gmail.com",
+        "bio": "Ph.D Student "
+    },
+    "dependabot[bot]": {
+        "name": "dependabot[bot]"
+    },
+    "jbd": {
+        "name": "jbd",
+        "bio": "jbdenis.net"
+    },
+    "alhirzel": {
+        "name": "Alex Hirzel",
+        "bio": "easygoing thinker/tinkerer type",
+        "blog": "http://alex.hirzel.us/"
+    },
+    "smoe": {
+        "name": "Steffen M\u00f6ller",
+        "email": "steffen_moeller@gmx.de",
+        "blog": "http://tangiblecomputationalbiology.blogspot.com"
+    },
+    "github-actions[bot]": {
+        "name": "github-actions[bot]"
+    },
+    "victorsndvg": {
+        "name": "victorsndvg",
+        "email": "victorsv@gmail.com",
+        "bio": "Scientific software engineer",
+        "blog": "http://sourceforge.net/u/victorsndvg/profile/"
+    },
+    "arfon": {
+        "name": "Arfon Smith",
+        "bio": "Head of Data Science Mission Office @spacetelescope. Ex GitHubber. @zooniverse co-founder. Editor-in-chief of the Journal of Open Source Software.",
+        "blog": "arfon.org"
+    },
+    "bbbbbrie": {
+        "name": "Brie Carranza",
+        "bio": "I like Linux, reading, writing in Python or Go, containers and automation, music, broccoli, math, pizza, documentation, grammar and cute animals!",
+        "blog": "https://ransomwareroundup.com"
+    },
+    "dfornika": {
+        "name": "Dan Fornika",
+        "email": "dfornika@gmail.com",
+        "bio": "Genomics Specialist\r\n",
+        "blog": "https://orcid.org/0000-0002-6178-3585"
+    },
+    "RonaldEnsing": {
+        "name": "Ronald Ensing"
     }
 }

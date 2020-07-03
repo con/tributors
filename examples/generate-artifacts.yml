@@ -18,8 +18,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:        
 
-          # Single text list (space separated) of parsers, or all (default)
-          parsers: all
+          # Single text list (space separated) of parsers, all, or auto-detect (default when "unset")
+          parsers: unset
+
+          # One or more resources (and optional arguments) to update .tributors
+          update_lookup: mailmap 
+ 
+          # This file will be used for running update-lookup
+          mailmap_file: "tests/.mailmap"
 
           # INFO, DEBUG, ERROR, WARNING, etc.
           log_level: DEBUG

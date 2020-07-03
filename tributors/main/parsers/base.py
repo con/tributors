@@ -10,8 +10,11 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from tributors.main.github import get_user
 from tributors.main.orcid import get_orcid, OrcidIdentifier
+from tributors.utils.file import read_json
 
 import logging
+import os
+import sys
 
 bot = logging.getLogger("tributors")
 
@@ -23,7 +26,7 @@ class ParserBase:
 
     name = "base"
 
-    def __init__(self, filename=None, repo=None):
+    def __init__(self, filename=None, repo=None, params=None):
         """initialize a new contributor parser.
         """
         self.filename = filename
@@ -32,6 +35,8 @@ class ParserBase:
         self.contributors = {}
         self.thresh = 1
         self.orcid_token = None
+        self.params = params or {}
+        self.data = {}
 
     def __str__(self):
         if self.filename:
@@ -57,6 +62,20 @@ class ParserBase:
         """
         raise NotImplementedError
 
+    def _load_data(self, fileattr):
+        """Load self.filename unless a file attribute is defined
+        """
+        if not self.data:
+            filename = self.params.get(fileattr, self.filename)
+
+            # Ensure codemeta file already exists
+            if not os.path.exists(filename):
+                sys.exit("%s does not exist" % filename)
+
+            self.data = read_json(filename)
+            self.filename = filename
+        return self.data
+
     def include_contributor(self, login):
         """Given a threshold (and preference to not include bots) return a boolean
            to indicate including the contributor or not
@@ -72,7 +91,7 @@ class ParserBase:
             return False
         return True
 
-    def update_cache(self):
+    def update_cache(self, update_lookup=True):
         """A shared function to get updated GitHub contributors to update
            the local cache. This is where we parse all the data that we need 
            and return common fields that some given parser might need.
@@ -115,6 +134,6 @@ class ParserBase:
 
             self.cache[login] = entry
 
-        # If the parser has it's own function to update cache, use it
-        if hasattr(self, "_update_cache"):
-            self._update_cache()
+        # If the parser can be used as a resource, use it to update .tributors
+        if hasattr(self, "update_lookup") and update_lookup:
+            self.update_lookup()

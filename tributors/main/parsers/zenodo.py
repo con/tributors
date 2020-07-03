@@ -13,32 +13,35 @@ import requests
 import os
 import sys
 
-from tributors.utils.file import read_json, write_json
+from tributors.utils.file import write_json
 from .base import ParserBase
 
-bot = logging.getLogger("zenodo")
+bot = logging.getLogger("    zenodo")
 
 
 class ZenodoParser(ParserBase):
 
     name = "zenodo"
 
-    def __init__(self, filename=None, repo=None, **kwargs):
+    def __init__(self, filename=None, repo=None, params=None, **kwargs):
         filename = filename or ".zenodo.json"
-        super().__init__(filename, repo)
+        super().__init__(filename, repo, params)
 
-    def init(self, params=None, force=False, contributors=None):
+    def load_data(self):
+        """A shared function to load the zenodo file, if data is not defined
+        """
+        return self._load_data("--zenodo-file")
+
+    def init(self, force=False):
         """Generate an empty .zenodo.json if it doesn't exist
         """
-        params = params or {}
-
         # A doi is required
-        doi = params.get("--doi")
+        doi = self.params.get("--doi")
         if not doi:
             sys.exit("Please provide the zenodo doi with --doi")
 
         # Zenodo file defaults to expected .zenodo.json
-        zenodo_file = params.get("--zenodo-file", self.filename)
+        zenodo_file = self.params.get("--zenodo-file", self.filename)
         if os.path.exists(zenodo_file) and not force:
             sys.exit("%s exists, set --force to overwrite." % zenodo_file)
 
@@ -47,7 +50,7 @@ class ZenodoParser(ParserBase):
 
         # Assume we want to add known contributors
         creators = record["metadata"].get("creators", [])
-        self.update_cache()
+        self.update_cache(update_lookup=False)
 
         for login, _ in self.repo.contributors.items():
 
@@ -75,23 +78,16 @@ class ZenodoParser(ParserBase):
         write_json(metadata, zenodo_file)
         return metadata
 
-    def update(self, params=None, contributors=None, thresh=1):
+    def update(self, thresh=1):
         """Given an existing .zenodo.json file, update it with contributors
            from an allcontributors file.
         """
-        params = params or {}
         self.thresh = thresh
-        zenodo_file = params.get("--zenodo-file", self.filename)
-
-        # Ensure contributors file and zenodo.json exist
-        if not os.path.exists(zenodo_file):
-            sys.exit("%s does not exist" % zenodo_file)
-
-        bot.info("Updating %s" % zenodo_file)
+        self.load_data()
+        bot.info("Updating %s" % self.filename)
 
         # We don't currently have a reliable identifier for zenodo, so we recreate each time
-        data = read_json(zenodo_file)
-        self.lookup = data.get("creators", [])
+        self.lookup = self.data.get("creators", [])
         creators = []
 
         self.update_cache()
@@ -114,17 +110,33 @@ class ZenodoParser(ParserBase):
                 entry["affilitation"] = cache["affiliation"]
             creators.append(entry)
 
-        data["creators"] = creators
-        write_json(data, zenodo_file)
-        return data
+        self.data["creators"] = creators
+        write_json(self.data, self.filename)
+        return self.data
 
-    def _update_cache(self):
+    def update_lookup(self):
         """Each client optionally has it's own function to update the cache.
             In the case of zenodo, we aren't necessarily aware of GitHub
             login (the current mapping mechanism) so we cannot update the
             cache yet. When orcid is added this might be an option.
-         """
-        pass
+        """
+        self.load_data()
+        bot.info(f"Updating .tributors cache from {self.filename}")
+
+        # We have to update based on orcid
+        lookup = {}
+        for entry in self.data.get("creators", []):
+            if "orcid" in entry:
+                lookup[entry["orcid"]] = entry
+
+        # Now loop through cache
+        for login, cache in self.cache.items():
+            if "orcid" in cache and cache["orcid"] in lookup:
+                for field in ["name", "affiliation"]:
+                    if field in lookup[cache["orcid"]] and field not in cache:
+                        value = lookup[cache]["orcid"][field]
+                        bot.info(f"   Updating {login} with {field}: {value}")
+                        cache[field] = value
 
 
 def get_zenodo_record(doi):

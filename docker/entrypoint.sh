@@ -51,6 +51,11 @@ elif [[ "${INPUT_PARSERS}" == *"allcontrib"* ]]; then
     RUN_ALLCONTRIB="true"
 fi
 
+# First update via a lookup, if specified
+if [ ! -z "${INPUT_UPDATE_LOOKUP}" ]; then
+    tributors update-lookup "${INPUT_UPDATE_LOOKUP}" --mailmap-file "${INPUT_MAILMAP_FILE}" --allcontrib-file "${INPUT_ALLCONTRIB_FILE}" --zenodo-file "${INPUT_ZENODO_FILE}" --codemeta-file "${INPUT_CODEMETA_FILE}"
+fi
+
 # Update the user:
 printf "Run zenodo: ${RUN_ZENODO}\n"
 printf "Run allcontrib: ${RUN_ALLCONTRIB}\n"

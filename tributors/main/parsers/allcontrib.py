@@ -15,7 +15,7 @@ import os
 import sys
 
 from tributors.main.github import GitHubRepository
-from tributors.utils.file import read_json, write_json
+from tributors.utils.file import write_json
 from .base import ParserBase
 
 bot = logging.getLogger("allcontrib")
@@ -59,11 +59,14 @@ class AllContribParser(ParserBase):
         "video",
     ]
 
-    def __init__(self, filename=None, repo=None):
+    def __init__(self, filename=None, repo=None, params=None):
         filename = filename or ".all-contributorsrc"
-        super().__init__(filename, repo)
+        super().__init__(filename, repo, params)
 
-    def init(self, params=None, force=False, contributors=None):
+    def load_data(self):
+        return self._load_data("--allcontrib-file")
+
+    def init(self, force=False):
         """Given an allcontributors file (we default to the one expected) and
            a preference to force, write the empty file to the repository.
            If the file exists and force is false, exit on error. If the user
@@ -75,8 +78,7 @@ class AllContribParser(ParserBase):
             - force (bool)   : if the contributors file exists, overwrite
             - filename (str) : default filename to write to.
         """
-        params = params or {}
-        filename = params.get("--allcontrib-file", self.filename)
+        filename = self.params.get("--allcontrib-file", self.filename)
         if os.path.exists(filename) and not force:
             sys.exit("%s exists, set --force to overwrite." % filename)
 
@@ -99,42 +101,34 @@ class AllContribParser(ParserBase):
         write_json(metadata, filename)
         return metadata
 
-    def update(self, params=None, repo=None, contributors=None, thresh=1):
+    def update(self, thresh=1):
         """Given an existing contributors file, use the GitHub API to retrieve
            all contributors, and then use subprocess to update the file
         """
-        params = params or {}
         self.thresh = thresh
-
-        filename = params.get("--allcontrib-file", self.filename)
-        if not os.path.exists(filename):
-            sys.exit(
-                "%s does not exist, set --allcontrib-filename or run init to create"
-                % self.filename
-            )
-
-        bot.info(f"Updating {filename}")
+        self.load_data()
+        bot.info(f"Updating {self.filename}")
 
         # Get optional (or default) contributor type
-        ctype = params.get("--allcontrib-type", "code")
+        ctype = self.params.get("--allcontrib-type", "code")
         if ctype not in self.contribution_types:
             sys.exit(
                 f"Invalid contribution type {ctype}. See https://allcontributors.org/docs/en/emoji-key for types."
             )
 
         # Load the previous contributors, create a lookup
-        data = read_json(filename)
-        self.lookup = {x["login"]: x for x in data.get("contributors", [])}
+        self.lookup = {x["login"]: x for x in self.data.get("contributors", [])}
 
         # Sanity check that we have the correct repository
-        repo = "%s/%s" % (data["projectOwner"], data["projectName"])
+        repo = "%s/%s" % (self.data["projectOwner"], self.data["projectName"])
 
         if repo != self.repo.uid:
             bot.warning(
-                f"Found different repository {repo} in {filename}, updating from {self.repo.uid}"
+                f"Found different repository {repo} in {self.filename}, updating from {self.repo.uid}"
             )
             self._repo = GitHubRepository(repo)
 
+        # Update the cache from GitHub, and .tributors lookup
         self.update_cache()
 
         for login, _ in self.repo.contributors.items():
@@ -168,11 +162,11 @@ class AllContribParser(ParserBase):
             self.lookup[login] = entry
 
         # Update the contributors
-        data["contributors"] = list(self.lookup.values())
-        write_json(data, filename)
-        return data
+        self.data["contributors"] = list(self.lookup.values())
+        write_json(self.data, self.filename)
+        return self.data
 
-    def _update_cache(self):
+    def update_lookup(self):
         """Each client optionally has it's own function to update the cache.
            In the case of allcontributors, we run this function on update after
            self.lookup is defined with current data. We use this lookup to
@@ -180,12 +174,19 @@ class AllContribParser(ParserBase):
            we also have self.contributors (with GitHub responses) we don't need
            to add items that would be found there.
         """
+        self.load_data()
+        self.lookup = {x["login"]: x for x in self.data.get("contributors", [])}
+        bot.info(f"Updating .tributors cache from {self.filename}")
         for login, metadata in self.lookup.items():
-            entry = {}
             if login in self.cache:
                 entry = self.cache[login]
+            else:
+                entry = {}
+                bot.info(f"⭐️ Found new contributor {login} in {self.filename}")
             if "name" not in entry and "name" in metadata:
                 entry["name"] = metadata["name"]
+                bot.info(f"   Updating {login} with name: {entry['name']}")
             if "blog" not in entry and "profile" in metadata:
                 entry["blog"] = metadata["profile"]
+                bot.info(f"   Updating {login} with blog: {entry['blog']}")
             self.cache[login] = entry

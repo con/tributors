@@ -17,8 +17,8 @@ Here we show basic commands for interacting with the allcontrib generator, and a
 
 | name | description | required | default |
 |------|-------------|----------|---------|
-| `--zenodo_file` | .zenodo.json to update. If does not exist, must define zenodo_doi | false | .zenodo.json | 
-| `--zenodo_doi` | Zenodo DOI needed for init. Leave unset to skip init. | false | unset | 
+| `--zenodo-file` | .zenodo.json to update. If does not exist, must define zenodo_doi | false | .zenodo.json | 
+| `--zenodo-doi` | Zenodo DOI needed for init. Leave unset to skip init. | false | unset | 
 | `--log-level` | Log level to use, one of INFO, DEBUG, CRITICAL, ERROR, WARNING, FATAL (default INFO) | false | INFO | 
 | `--thresh` | the minimum number of contributions required to add a user | false | 1 | 
 | `--force` | if files exist, force overwrit | false | false |
@@ -62,4 +62,20 @@ $ tributors update zenodo
 INFO:zenodo:Updating .zenodo.json
 ```
 
-You can also provide the filename via `--zenodo-file` if different from the default.
+## Update .tributors
+
+Let's say that we have a local .zenodo.json, and we just want to use it to update our
+.tributors file. We could do:
+
+```bash
+$ tributors update-lookup zenodo
+```
+
+And if you want it auto-discovered (with other known files) you can just do:
+
+```bash
+$ tributors update-lookup
+```
+
+
+For both update and update-lookup you can also provide the filename via `--zenodo-file` if different from the default.
