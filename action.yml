@@ -6,6 +6,9 @@ inputs:
   parsers:
     description: space separated list of parsers to use. Defaults to unset (auto-detect)
     default: unset
+  update_lookup:
+    description: before running update, update the .tributors metadata file from these resources. Include custom filenames if necessary
+    required: false
   zenodo_file:
     description: .zenodo.json to update. If does not exist, must define doi variable
     default: .zenodo.json

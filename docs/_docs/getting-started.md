@@ -615,6 +615,9 @@ Inputs are listed below.
 
 #### Inputs
 
+The command line arguments for the action are equivalent but with underscores instead of
+dashes.
+
 | name | description | required | default |
 |------|-------------|----------|---------|
 | parsers | a space separated list of parsers (e.g., "zenodo allcontrib") or "all" or "unset" for autodetect | false | unset | 
@@ -626,7 +629,20 @@ Inputs are listed below.
 | allcontrib_file |The all contributors file | false | .all-contributorsrc |
 | allcontrib_type |Contribution type, which defaults to "code" if not set. | false | code |
 | allcontrib_skip_generate | skip running all-contributors generate | false | false |
-| codemeta-file | the codemeta file to update, if defined | false | unset |
+| codemeta_file | the codemeta file to update, if defined | false | unset |
+| update_lookup | one or more resources to use to update the .tributors file before running update | false | unset |
+
+If you define `update_lookup`, you should list the (space separated) names of the parsers that you want to use. For example:
+
+```yaml
+   update_lookup: "mailmap"
+```
+
+And if you have a custom filename from the default, you should also include it here:
+
+```yaml
+   update_lookup: "mailmap --mailmap-file subfolder/.mailmap
+```
 
 If you aren't familiar with all-contributors, you'll need to add some
 [commenting in your repository README](https://allcontributors.org/docs/en/cli/usage)

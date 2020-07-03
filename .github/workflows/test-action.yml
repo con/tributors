@@ -21,6 +21,9 @@ jobs:
           # Single text list (space separated) of parsers, or all (default)
           parsers: zenodo allcontrib
 
+          # One or more resources (and optional arguments) to update .tributors
+          update_lookup: "mailmap --mailmap-file tests/.mailmap"
+
           # INFO, DEBUG, ERROR, WARNING, etc.
           log_level: DEBUG
 
