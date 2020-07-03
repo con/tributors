@@ -117,11 +117,12 @@ def get_contributors(repo):
     headers = get_headers()
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
-        message = ("Response %s from GitHub: %s, cannot retrieve contributors "
-            % (response.status_code, response.reason)
+        message = "Response %s from GitHub: %s, cannot retrieve contributors " % (
+            response.status_code,
+            response.reason,
         )
         if not os.environ.get("GITHUB_TOKEN"):
-           message += " you should export GITHUB_TOKEN to increase your API limits"
+            message += " you should export GITHUB_TOKEN to increase your API limits"
         sys.exit(message)
 
     # Return a lookup based on GitHub Login

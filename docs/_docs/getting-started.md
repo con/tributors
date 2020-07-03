@@ -12,6 +12,86 @@ description: Getting started with tributors
 This guide will provide getting started instructions for local and Docker Usage,
 along with GitHub Workflows.
 
+## Concepts
+
+### A Contributors File
+
+A contributors file is something like a `.zenodo.json`, a `codemeta.json`, or
+an `.all-contributorsrc`. It's a file that you might find in your repository,
+and it generally has metadata including a list of contributors. Tributors lets you
+interact with (create or update these files) via the `tributors update` command.
+
+```bash
+# auto-detect metadata files in the present working directory
+$ tributors update
+
+# target a specific metadata file, .all-contributorsrc
+$ tributors update allcontrib
+```
+
+### A Tributors Cache File
+
+To share metadata between these files, tributors uses a shared cache, the 
+[.tributors]({{ site.baseurl }}/docs/tributors) file. This file is updated when
+you run `tributors update` in the case that any of your metadata files have additional
+information on a person. For example, let's say that we have a list of contributors
+in an `.zenodo.json`, but they are missing Orcid Ids. By default, tributors will ping
+the GitHub API to look for new contributors, and during this process we might
+discover email addresses. We can then use the email addresses to query the Orcid API
+and discover the correct identifiers. The associated emails, names, and orcid ids
+are then stored to the .tributors cache file. If any future call using a metadata
+parser is looking for one of these fields, we will find it there.
+
+### Lookup From
+
+By default, whenever you issue a `tributors update` command, since the code lives in
+a GitHub repository and we are looking for contributors, we ping the GitHub API to
+find them. We can view this as a tributors resource, or basically any endpoint,
+service, or file that we can use to discover contributors. We are basically saying:
+
+> Tributors, update my metadata file with contributors __from__ github.
+
+However, let's say that we have two metadata files, an .all-contributorsrc
+and .zenodo.json. By default they will (separately) be updated via the GitHub 
+contributors API endpoint, and also share metadata via the .tributors cache.
+But what if there are contributors in one of the files that we want to 
+add to the other, and those contributors aren't found in the GitHub API (and
+thus would not be added?) We would equivalently want to say:
+
+> Tributors, update my metadata file with contributors __from__ this other metadata file.
+
+And in fact, we can do this with `tributors update` by adding the `--from` argument.
+
+```bash
+$ tributors update allcontrib --from zenodo
+```
+
+(note that this feature is currently under development)
+
+### Update .tributors Cache
+
+There are many good places to find metadata about contributors that aren't necessary
+contributor files. For example, a `.mailmap` file would have a mapping between names
+and emails, and any of the previously mentioned files (.zenodo.json, .all-contributorsrc,
+or codemeta.json) can be used as a metadata lookup without touching a contributors
+metadata file. Let's say that we want to just update our .tributors shared metadata
+cache without touching any files. We can do that with `tributors update-lookup`:
+
+```bash
+# auto-detect lookup files in the present working directory
+$ tributors update-lookup
+
+# target a specific metadata file, .mailmap
+$ tributors update-lookup mailmap
+```
+
+This would update fields in our .tributors file, and then we could run `tributors update`
+on one or more contributor files to update them. Notice that for all operations,
+if a field is already defined it won't be over-written, as you might have edited
+it and don't want to lose those edits. You of course are free to update or otherwise
+manually edit all of these files to your liking.
+
+
 ## Quick Start
 
 ### 1. Install
@@ -68,6 +148,20 @@ $ tributors init zenodo
 You can read more about the various [parsers]({{ site.baseurl }}/docs/parsers)
 for specific-parser arguments, and more details about the above commands in the
 sections below.
+
+### 4. Update Lookups
+
+If you have a file that might be used as a lookup to find additional metadata
+fields (e.g., a .mailmap doesn't list contributors but has a list of names and emails)
+you can update your .tributors shared metadata cache using it before running `tributors update`:
+
+```bash
+# auto-detect known metadata files in the present working directory
+$ tributors update-lookup
+
+# update from a mailmap
+$ tributors update-lookup mailmap
+```
 
 ## Docker Usage
 

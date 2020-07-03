@@ -9,91 +9,49 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 import logging
-import os
-import sys
 
-from tributors.utils.file import read_json, write_json
+from tributors.utils.file import write_json
 from .base import ParserBase
 
-bot = logging.getLogger("codemeta")
+bot = logging.getLogger("  codemeta")
 
 
 class CodeMetaParser(ParserBase):
 
     name = "codemeta"
 
-    def __init__(self, filename=None, repo=None, **kwargs):
+    def __init__(self, filename=None, repo=None, params=None, **kwargs):
         filename = filename or "codemeta.json"
         self.data = {}
-        super().__init__(filename, repo)
+        super().__init__(filename, repo, params)
 
-    def init(self, params=None, force=False, contributors=None):
+    def init(self, force=False):
         """Codemeta already has many good generators.
         """
         print(
             "Codemeta provides several tools to generate this for you: https://codemeta.github.io/tools/"
         )
 
-    def update(self, params=None, contributors=None, thresh=1):
+    def load_data(self):
+        """If not yet loaded, load data into client
+        """
+        return self._load_data("--codemeta-file")
+
+    def update(self, thresh=1):
         """Given an existing .zenodo.json file, update it with contributors
            from an allcontributors file.
         """
-        params = params or {}
         self.thresh = thresh
-        filename = params.get("--codemeta-file", self.filename)
+        self.load_data()
 
-        # Ensure codemeta file already exists
-        if not os.path.exists(filename):
-            sys.exit("%s does not exist" % filename)
+        bot.info("Updating %s" % self.filename)
 
-        bot.info("Updating %s" % filename)
-
-        # We don't currently have a reliable identifier for zenodo, so we recreate each time
-        self.data = read_json(filename)
+        # Read in contributors, and update cache (also runs update_lookup)
         self.lookup = self.data.get("contributor", [])
         self.update_cache()
 
         # Get fields from repo
         self.update_metadata()
-
-        # Keep track of orcids and emails that we've seen
-        seen = set()
-
-        # First update current members with emails, orcids in the cache
-        for entry in self.lookup:
-            email = entry.get("email")
-            orcid = entry.get("@id")
-            if orcid and "orcid" in orcid:
-                orcid = orcid.split("/")[-1]
-
-            # Find matches based on orcid and/or email
-            for login, cache in self.cache.items():
-                compare_orcid = cache.get("orcid")
-                compare_email = cache.get("email")
-                seen.add(compare_email)
-                seen.add(compare_orcid)
-
-                # We have a match based on orcid or email
-                if (compare_orcid and orcid and compare_orcid == orcid) or (
-                    compare_email and email and compare_email == email
-                ):
-                    if (
-                        "givenName" not in entry
-                        and "familyName" not in entry
-                        and "name" in cache
-                    ):
-                        entry["givenName"] = cache["name"].split(" ")[0]
-                        entry["familyName"] = " ".join(cache["name"].split(" ")[1:])
-                    if "email" not in entry and "email" in cache:
-                        entry["email"] = cache["email"]
-                    if "orcid" not in entry and "orcid" in cache:
-                        entry["@id"] = "https://orcid.org/%s" % cache["orcid"]
-                    break
-
-        # Ensure empty records are not considered seen
-        for item in [None, ""]:
-            if item in seen:
-                seen.remove(item)
 
         # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
         for login, _ in self.repo.contributors.items():
@@ -106,15 +64,17 @@ class CodeMetaParser(ParserBase):
             email = cache.get("email")
             orcid = cache.get("orcid")
 
-            # We can only update if we have an email or orcid
+            # We can only add completely new entries that don't already exist
             if (email != None or orcid != None) and (
-                email not in seen and orcid not in seen
+                email not in self.email_lookup and orcid not in self.orcid_lookup
             ):
-                entry = {
-                    "@type": "Person",
-                    "givenName": cache["name"].split(" ")[0],
-                    "familyName": " ".join(cache["name"].split(" ")[1:]),
-                }
+                parts = (cache.get("name") or login).split(" ")
+                entry = {"@type": "Person", "givenName": parts[0]}
+
+                # Add the last name if it's defined
+                if len(parts) > 1:
+                    entry["familyName"] = " ".join(parts[1:])
+
                 if email != None:
                     entry["email"] = email
                 if orcid != None:
@@ -122,7 +82,7 @@ class CodeMetaParser(ParserBase):
                 self.lookup.append(entry)
 
         self.data["contributor"] = self.lookup
-        write_json(self.data, filename)
+        write_json(self.data, self.filename)
         return self.data
 
     def update_metadata(self):
@@ -139,41 +99,81 @@ class CodeMetaParser(ParserBase):
         )
         self.data["license"] = self.data.get("license") or self.repo.license
 
-    def _update_cache(self):
+    @property
+    def email_lookup(self):
+        """Return loaded metadata as an email lookup
+        """
+        if not hasattr(self, "_email_lookup"):
+            self._email_lookup = {}
+            self.load_data()
+            for entry in self.data.get("contributor", []):
+                if "email" in entry:
+                    self._email_lookup[entry["email"]] = entry
+        return self._email_lookup
+
+    @property
+    def orcid_lookup(self):
+        """Return loaded metadata as an orcid lookup
+        """
+        if not hasattr(self, "_orcid_lookup"):
+            self._orcid_lookup = {}
+            self.load_data()
+            for entry in self.data.get("contributor", []):
+                if "@id" in entry:
+                    # Orcid represented as full URL but we just want id
+                    orcid = entry["@id"].split("/")[-1]
+                    self._orcid_lookup[orcid] = entry
+        return self._orcid_lookup
+
+    def update_lookup(self):
         """We can only keep track of users here based on email addresses or
            orcid, so we can only update the cache for existing users.
         """
-        for entry in self.lookup:
-            match = False
-            email = entry.get("email")
-            orcid = entry.get("@id")
-            if orcid and "orcid" in orcid:
-                orcid = orcid.split("/")[-1]
+        bot.info(f"Updating .tributors cache from {self.filename}")
 
-            # Find matches based on orcid and/or email
-            for login, metadata in self.cache.items():
-                compare_orcid = metadata.get("orcid")
-                compare_email = metadata.get("email")
+        # Find matches based on orcid and/or email
+        for login, cache in self.cache.items():
+            orcid = cache.get("orcid")
+            email = cache.get("email")
 
-                # We have a match based on orcid
-                if compare_orcid and orcid and compare_orcid == orcid:
-                    match = True
-                elif compare_email and email and compare_email == email:
-                    match = True
+            # Case 1: double match (unlikely but possible)
+            entry = None
+            if email in self.email_lookup and orcid in self.orcid_lookup:
 
-                # If we have a match, update records
-                if match:
-                    if (
-                        "name" not in metadata
-                        and "givenName" in entry
-                        and "familyName" in entry
-                    ):
-                        metadata["name"] = "%s %s" % (
-                            entry["givenName"],
-                            entry["familyName"],
-                        )
-                    if "email" not in metadata:
-                        metadata["email"] = email
-                    if "orcid" not in metadata:
-                        metadata["orcid"] = orcid
-                    break
+                # If they don't point to the same entry, stop
+                if self.email_lookup[email] != self.orcid_lookup[orcid]:
+                    bot.warning(
+                        "Found email {email} and orcid {orcid} in cache from different entries, skipping."
+                    )
+                else:
+                    entry = self.email_lookup[email]
+
+            # Case 2: We have a matching orcid
+            elif orcid in self.orcid_lookup:
+                entry = self.orcid_lookup[entry]
+
+            # Case 2: We have a matching email
+            elif email in self.email_lookup:
+                entry = self.email_lookup[email]
+
+            # If we have a match (entry is defined) use it to update the record
+            if entry is not None:
+
+                # Update the name
+                if (
+                    "givenName" in entry
+                    and "familyName" in entry
+                    and "name" not in cache
+                ):
+                    cache["name"] = "%s %s" % (entry["givenName"], entry["familyName"])
+                    bot.info(f"   Updating {login} with name: {cache['name']}")
+
+                # Update the email
+                if "email" in entry and "emali" not in cache:
+                    cache["email"] = entry["email"]
+                    bot.info(f"   Updating {login} with email: {cache['email']}")
+
+                # Update the orcid id
+                if "@id" in entry and "orcid" not in cache:
+                    cache["orcid"] = entry["@id"].split("/")[-1]
+                    bot.info(f"   Updating {login} with orcid: {cache['orcid']}")

@@ -22,32 +22,30 @@ def main(args, extra):
     extra = parse_extra(extra)
 
     # Start with user provided parsers
-    parsers = args.parsers
+    resources = args.files
 
     # If unset, try to detect files
-    if "unset" in parsers:
+    if "unset" in resources:
         lookup = {
             "allcontrib": extra.get("--allcontrib-file", ".all-contributorsrc"),
             "zenodo": extra.get("--zenodo-file", ".zenodo.json"),
             "codemeta": extra.get("--codemeta-file", "codemeta.json"),
+            "mailmap": extra.get("--mailmap-file", ".mailmap"),
         }
 
-        parsers = []
-        for parser, filename in lookup.items():
+        resources = []
+        for resource, filename in lookup.items():
             if os.path.exists(filename):
-                parsers.append(parser)
+                resources.append(resource)
 
         # Exit if no parsers auto-detected
-        if not parsers:
-            sys.exit("No parsers auto-detected. Specify a parser name instead?")
+        if not resources:
+            sys.exit("No resources auto-detected. Specify one or more instead?")
 
-    if "all" in parsers:
-        client.update(
-            parsers=["zenodo", "allcontrib", "codemeta"],
-            thresh=args.thresh,
-            repo=args.repo,
-            params=extra,
+    if "all" in resources:
+        client.update_resource(
+            resources=["zenodo", "allcontrib", "codemeta", "mailmap"], params=extra,
         )
 
     else:
-        client.update(parsers=parsers, repo=args.repo, params=extra, thresh=args.thresh)
+        client.update_resource(resources=resources, params=extra)

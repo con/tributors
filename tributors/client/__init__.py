@@ -22,7 +22,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Tributors Python Metadata Parser")
 
     parser.add_argument(
-        "--log_level",
+        "--log-level",
         dest="log_level",
         choices=LOG_LEVELS,
         default=LOG_LEVEL,
@@ -66,6 +66,18 @@ def get_parser():
 
     # print version and exit
     subparsers.add_parser("version", help="show software version")
+
+    # Update the .tributors lookup
+    update_lookup = subparsers.add_parser(
+        "update-lookup", help="Update shared .tributors metadata file",
+    )
+    update_lookup.add_argument(
+        "files",
+        help="One or more files to use for update.",
+        nargs="*",
+        default="unset",
+        choices=["mailmap", "allcontrib", "codemeta", "zenodo", "unset"],
+    )
 
     # Update an existing contributors file
     update = subparsers.add_parser("update", help="Update existing all-contributorsrc",)
@@ -125,6 +137,8 @@ def main():
         from .init import main
     elif args.command == "update":
         from .update import main
+    elif args.command == "update-lookup":
+        from .lookup import main
     else:
         help()
 

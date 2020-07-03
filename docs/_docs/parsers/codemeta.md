@@ -55,6 +55,21 @@ You can also target a different filename;
 $ tributors update codemeta --codemeta-file codemeta.jsonld
 ```
 
-Since the cache is kept based on GitHub user id, we aren't able to store
+## Update .tributors
+
+Let's say that we have a local codemeta.json, and we just want to use it to update our
+.tributors file. We could do:
+
+```bash
+$ tributors update-lookup codemeta
+```
+
+And if you want it auto-discovered (with other known files) you can just do:
+
+```bash
+$ tributors update-lookup
+```
+
+For both of the above, since the cache is kept based on GitHub user id, we aren't able to store
 codemeta entries unless they have an email or orcid that we can match
 to an existing entry.

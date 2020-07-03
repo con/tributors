@@ -9,8 +9,8 @@ description: The .tributors file is a shared metadata file.
 
 # The Tributors File
 
-You can save a single metadata file in your repository that includes common fields
-to use to update other metadata files. As an example, here we see a file generated
+After running a `tributors update`, you'll save a single metadata file in your repository that includes common fields
+to use to update other metadata files, the ".tributors" file. As an example, here we see a file generated
 after an initial run - we index by the GitHub username since on GitHub that is our
 "unit of truth." These are a few entries for Singularity Registry Server:
 
@@ -50,9 +50,14 @@ $ cat .tributors
 ```
 
 You'll notice that we only save fields that we can find (e.g., if no email is
-exposed, it won't be defined. At this point we might want to update metadata
+exposed, it won't be defined. 
+
+## Manual Update
+
+At this point we might want to manually update metadata
 to our liking - any particular subfield for a user won't be overwritten if it's
-already defined.
+already defined. For example, my GitHub name from the API is "Vanessasaurus" and
+I might want to put a different name for a "professional" repository:
 
 ```bash
 $ cat .tributors 
@@ -102,6 +107,39 @@ $ cat .tributors
     }
 }
 ```
+
+Notice that for all operations, if a field is already defined it won't be over-written, as you might have edited
+it and don't want to lose those edits. You of course are free to update or otherwise
+manually edit all of these files to your liking.
+
+## Automated Update
+
+Along with providing parsers to update specific contributor files (e.g., .zenodo.json uses
+a Zenodo parser) tributors also provides these parsers (and other resources for metadata)
+that can be used to update the .tributors file. For example, a `.mailmap` file would have a mapping between names
+and emails, and any of the parsers that have contributors files (e.g., Zenodo, All Contributors,
+or CodeMeta) can also be used as metadata lookups without touching a contributors
+metadata file. We do this by way of the `update-lookup` command. Let's say that we 
+want to just update our .tributors shared metadata cache from known lookups
+we find in the present working directory:
+
+```bash
+# auto-detect lookup files in the present working directory
+$ tributors update-lookup
+```
+or from a particular source such as a mailmap file:
+```
+# target a specific metadata file, .mailmap
+$ tributors update-lookup mailmap
+```
+
+This would update fields in our .tributors file, and then we could run `tributors update`
+to pass on new metadata files into our contributor files. To read more about resources
+that are available to update the .tributors file, see the [parsers]({{ site.baseurl }}/docs/parsers)
+documentation.
+
+
+## Fields
 
 The following fields are known to a `.tributors` file
 
