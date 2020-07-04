@@ -28,6 +28,11 @@ def main(args, extra):
     if args.skip_users != "unset":
         skip_users = args.skip_users
 
+    # Does the user want to update from a particular resource?
+    from_resources = args.from_resources
+    if from_resources == "unset":
+        from_resources = None
+
     # Tell the user to init a particular parser
     if "unset" in args.parsers:
         bot.info("Please specify one or more parsers, one of zenodo, codemeta")
@@ -40,6 +45,7 @@ def main(args, extra):
             params=extra,
             force=args.force,
             skip_users=skip_users,
+            from_resources=from_resources,
         )
 
     else:
@@ -50,4 +56,5 @@ def main(args, extra):
             params=extra,
             force=args.force,
             skip_users=skip_users,
+            from_resources=from_resources,
         )

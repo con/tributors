@@ -58,7 +58,15 @@ class TributorsClient:
     def __repr__(self):
         return self.__str__()
 
-    def init(self, parsers=None, repo=None, params=None, force=False, skip_users=None):
+    def init(
+        self,
+        parsers=None,
+        repo=None,
+        params=None,
+        force=False,
+        skip_users=None,
+        from_resources=None,
+    ):
         """Init one or more contributor parsers. Specifically, this is the
            action that runs the parser.init() to generate some initial file.
         """
@@ -67,10 +75,13 @@ class TributorsClient:
         # Generate a shared repository object
         repo = GitHubRepository(repo, skip_users)
 
+        # Get resource lookup ids (emails, orcids, logins, most won't be used for init)
+        resources = self.get_resource_lookups(from_resources, params)
+
         for parser in parsers:
             client = get_named_parser(name=parser, repo=repo, params=params)
             client.cache = self.cache
-            client.init(force=force)
+            client.init(force=force, from_resources=resources)
             self.cache.update(client.cache)
 
         # Save the cache
@@ -89,7 +100,15 @@ class TributorsClient:
         # Save the cache
         self.save_cache()
 
-    def update(self, parsers=None, repo=None, params=None, thresh=1, skip_users=None):
+    def update(
+        self,
+        parsers=None,
+        repo=None,
+        params=None,
+        thresh=1,
+        skip_users=None,
+        from_resources=None,
+    ):
         """Update one or more contributor parsers. Specifically, this is the
            action that runs the parser.update() after obtaining contributions
            from GitHub or a cache.
@@ -100,12 +119,46 @@ class TributorsClient:
         # Generate a shared repository object
         repo = GitHubRepository(repo, skip_users=skip_users)
 
+        # Get resource lookup ids (emails, orcids, logins)
+        resources = self.get_resource_lookups(from_resources, params)
+
+        # Update each metadata file via its parser
         for parser in parsers:
             client = get_named_parser(name=parser, repo=repo, params=params)
             client.orcid_token = self.orcid_token
             client.cache = self.cache
-            client.update(thresh=thresh)
+            client.update(thresh=thresh, from_resources=resources)
             self.cache.update(client.cache)
 
         # Save the cache
         self.save_cache()
+
+    def get_resource_lookups(self, from_resources=None, params=None):
+        """Based on a name (e.g., GitHub or special case tributors) return 
+           as many lookups of unique ids (email, login, orcid) that
+           the resource provides
+        """
+        from_resources = from_resources or ["github"]
+        lookups = {"login": set(), "orcid": set(), "email": set(), "name": set()}
+
+        for name in from_resources:
+
+            # Special case, tributors is just the entire cache
+            if name == "tributors":
+                lookups["login"].update(self.cache)
+                lookups["name"].update(
+                    {x["name"]: x for _, x in self.cache.items() if "name" in x}
+                )
+                lookups["orcid"].update(
+                    {x["orcid"]: x for _, x in self.cache.items() if "orcid" in x}
+                )
+                lookups["email"].update(
+                    {x["email"]: x for _, x in self.cache.items() if "email" in x}
+                )
+            else:
+                parser = get_named_parser(name=name, params=params)
+                lookups["name"].update(parser.name_lookup)
+                lookups["login"].update(parser.login_lookup)
+                lookups["email"].update(parser.email_lookup)
+                lookups["orcid"].update(parser.orcid_lookup)
+        return lookups

@@ -45,11 +45,53 @@ class ParserBase:
     def __repr__(self):
         return self.__str__()
 
+    # Methods that parsers expose to get contributors
+
+    @property
+    def email_lookup(self):
+        """Return loaded metadata as an email lookup.
+        """
+        return {}
+
+    @property
+    def orcid_lookup(self):
+        """Return loaded metadata as an orcid lookup.
+        """
+        return {}
+
+    @property
+    def name_lookup(self):
+        """Return loaded metadata as an name lookup.
+        """
+        return {}
+
+    @property
+    def login_lookup(self):
+        """Return loaded metadata as a github login lookup.
+        """
+        return {}
+
     @property
     def repo(self):
         """after some initial parsing, we can retrieve the name of the GitHub repo
         """
         return self._repo
+
+    def update_from_emails(self, *args, **kwargs):
+        if args:
+            bot.warning(f"{self.name} does not support updating from email.")
+
+    def update_from_logins(self, *args, **kwargs):
+        if args:
+            bot.warning(f"{self.name} does not support updating from logins.")
+
+    def update_from_orcids(self, *args, **kwargs):
+        if args:
+            bot.warning(f"{self.name} does not support updating from orcids.")
+
+    def update_from_names(self, *args, **kwargs):
+        if args:
+            bot.warning(f"{self.name} does not support updating from names.")
 
     def init(self, *args, **kwargs):
         """init a new configuration file
@@ -67,7 +109,6 @@ class ParserBase:
         if not self.data:
             filename = self.params.get(fileattr, self.filename)
 
-            # Ensure codemeta file already exists
             if not os.path.exists(filename):
                 sys.exit("%s does not exist" % filename)
 
@@ -86,11 +127,16 @@ class ParserBase:
             return False
 
         # If they don't meet the threshold, continue
-        if contributor["contributions"] < self.thresh:
+        if contributor and contributor["contributions"] < self.thresh:
             return False
 
         # Skip GitHub bots
-        if contributor["type"] == "Bot" or "[bot]" in contributor["login"]:
+        if (
+            contributor
+            and contributor["type"] == "Bot"
+            or contributor
+            and "[bot]" in contributor["login"]
+        ):
             return False
         return True
 

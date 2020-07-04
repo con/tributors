@@ -40,7 +40,7 @@ class MailmapParser(ParserBase):
             for line in read_file(self.filename):
                 name, email = line.split("<")
                 email = email.strip().rstrip(">")
-                self.data[email] = name.strip()
+                self.data[email] = {"name": name.strip()}
         return self.data
 
     @property
@@ -67,5 +67,5 @@ class MailmapParser(ParserBase):
             email = cache.get("email")
             if email in self.email_lookup:
                 if "name" not in cache:
-                    cache["name"] = self.email_lookup[email]
+                    cache["name"] = self.email_lookup[email]["name"]
                     bot.info(f"   Updating {login} with name: {cache['name']}")

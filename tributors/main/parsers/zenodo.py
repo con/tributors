@@ -32,10 +32,24 @@ class ZenodoParser(ParserBase):
         """
         return self._load_data("--zenodo-file")
 
-    def init(self, force=False):
+    @property
+    def email_lookup(self):
+        """Return loaded metadata as an email lookup.
+        """
+        self.load_data()
+        return {x["email"]: x for x in self.data.get("creators", []) if "email" in x}
+
+    @property
+    def orcid_lookup(self):
+        """Return loaded metadata as an orcid lookup.
+        """
+        self.load_data()
+        return {x["orcid"]: x for x in self.data.get("creators", []) if "orcid" in x}
+
+    def init(self, force=False, from_resources=None, save=True):
         """Generate an empty .zenodo.json if it doesn't exist
         """
-        # A doi is required
+        from_resources = from_resources or {}
         doi = self.params.get("--doi")
 
         # Zenodo file defaults to expected .zenodo.json
@@ -46,32 +60,23 @@ class ZenodoParser(ParserBase):
         bot.info("Generating %s" % zenodo_file)
 
         # If a doi is provided, generate
-        creators = []
         record = None
+        self.data["creators"] = []
         if doi:
             record = get_zenodo_record(doi)
-            creators = record["metadata"].get("creators", [])
+            self.data["creators"] = record["metadata"].get("creators", [])
 
         self.update_cache(update_lookup=False)
 
-        # GitHub contributors are the source of truth
-        for login, _ in self.repo.contributors.items():
-
-            # Check against contribution threshold, and not bot
-            if not self.include_contributor(login):
-                continue
-
-            cache = self.cache.get(login) or {}
-            entry = {"name": cache.get("name") or login}
-            if "orcid" in cache:
-                entry["orcid"] = cache["orcid"]
-            if "bio" in cache or "affiliation" in cache:
-                entry["affilitation"] = cache.get("affiliation", cache.get("bio"))
-            creators.append(entry)
+        # Update zenodo file from GitHub logins (default) or other
+        self.update_from_logins(from_resources.get("login", []))
+        self.update_from_orcids(from_resources.get("orcid", []))
+        self.update_from_names(from_resources.get("name", []))
+        self.update_from_emails(from_resources.get("email", []))
 
         # Update final metadata
         metadata = {
-            "creators": creators,
+            "creators": self.data["creators"],
             "upload_type": "software",
             "keywords": self.repo.topics(),
         }
@@ -83,30 +88,61 @@ class ZenodoParser(ParserBase):
             metadata["access_right"] = record["metadata"]["access_right"]
             metadata["license"] = record["metadata"]["license"]["id"]
 
-        write_json(metadata, zenodo_file)
+        if save:
+            write_json(metadata, zenodo_file)
         return metadata
 
-    def update(self, thresh=1):
-        """Given an existing .zenodo.json file, update it with contributors
-           from an allcontributors file.
+    def update_from_orcids(self, orcids):
+        """Given a list of orcids, update the contributor file from it
         """
-        self.thresh = thresh
-        self.load_data()
-        bot.info("Updating %s" % self.filename)
+        lookup = {x["orcid"]: x for _, x in self.cache.items() if "orcid" in x}
+        for orcid in orcids:
+            if orcid in self.orcid_lookup:
+                continue
+            entry = {"orcid": orcid}
+            if orcid in lookup:
+                for field in ["name", "affiliation", "orcid"]:
+                    if field in lookup[orcid] and field not in entry:
+                        entry[field] = lookup[orcid][field]
+            if entry and entry not in self.data["creators"]:
+                self.data["creators"].append(entry)
+        return self.data["creators"]
 
-        # We don't currently have a reliable identifier for zenodo, so we recreate each time
-        self.lookup = self.data.get("creators", [])
-        creators = []
+    def update_from_emails(self, emails):
+        """Given a list of emails, update the contributor file from it
+        """
+        lookup = {x["email"]: x for _, x in self.cache.items() if "email" in x}
+        for email in emails:
+            if email in self.email_lookup:
+                continue
+            entry = {}
+            for field in ["name", "affiliation", "orcid"]:
+                if email in lookup and field in lookup[email]:
+                    entry[field] = lookup[email][field]
+            if entry and entry not in self.data["creators"]:
+                self.data["creators"].append(entry)
+        return self.data["creators"]
 
-        self.update_cache()
-
-        for login, _ in self.repo.contributors.items():
+    def update_from_logins(self, logins):
+        """Given a list of logins, update the contributor file from it
+        """
+        # GitHub contributors are the source of truth
+        for login in logins:
 
             # Check against contribution threshold, and not bot
             if not self.include_contributor(login):
                 continue
 
             cache = self.cache.get(login) or {}
+            orcid = cache.get("orcid")
+            email = cache.get("email")
+
+            # Make sure we don't have already
+            if (orcid and orcid in self.orcid_lookup) or (
+                email and email in self.email_lookup
+            ):
+                continue
+
             entry = {"name": cache.get("name") or login}
             if login in self.cache:
                 for field in ["name", "affiliation", "orcid"]:
@@ -116,10 +152,29 @@ class ZenodoParser(ParserBase):
                 entry["orcid"] = cache["orcid"]
             if "affiliation" in cache and "affiliation" not in entry:
                 entry["affilitation"] = cache["affiliation"]
-            creators.append(entry)
 
-        self.data["creators"] = creators
-        write_json(self.data, self.filename)
+            # Don't add duplicates
+            if entry not in self.data["creators"]:
+                self.data["creators"].append(entry)
+        return self.data["creators"]
+
+    def update(self, thresh=1, from_resources=None, save=True):
+        """Given an existing .zenodo.json file, update it with contributors
+           from an allcontributors file.
+        """
+        from_resources = from_resources or {}
+        self.thresh = thresh
+        self.load_data()
+        bot.info("Updating %s" % self.filename)
+
+        self.update_cache()
+
+        # Update zenodo file from GitHub logins (default) or other
+        self.update_from_logins(from_resources.get("login", []))
+        self.update_from_orcids(from_resources.get("orcid", []))
+        self.update_from_names(from_resources.get("names", []))
+        if save:
+            write_json(self.data, self.filename)
         return self.data
 
     def update_lookup(self):
