@@ -101,11 +101,11 @@ class ZenodoParser(ParserBase):
                 continue
             if orcid in lookup:
                 entry = lookup[orcid]
+                for field in ["name", "affiliation", "orcid"]:
+                    if field in lookup[orcid] and field not in entry:
+                        entry[field] = lookup[orcid][field]
             else:
                 entry = {"orcid": orcid}
-            for field in ["name", "affiliation", "orcid"]:
-                if field in lookup[orcid] and field not in entry:
-                    entry[field] = lookup[orcid][field]
             if entry and entry not in self.data["creators"]:
                 self.data["creators"].append(entry)
         return self.data["creators"]
