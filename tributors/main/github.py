@@ -94,6 +94,31 @@ class GitHubRepository:
             self._repo = get_repo(self.uid)
         return self._repo
 
+    # Equivalent methods to a parser to get lookups based on primary ids
+    @property
+    def email_lookup(self):
+        """Return loaded metadata as an email lookup.
+        """
+        return {}
+
+    @property
+    def name_lookup(self):
+        """Return loaded metadata as an orcid lookup.
+        """
+        return {}
+
+    @property
+    def orcid_lookup(self):
+        """Return loaded metadata as an orcid lookup.
+        """
+        return {}
+
+    @property
+    def login_lookup(self):
+        """Return loaded metadata as a github login lookup.
+        """
+        return self.contributors
+
     @property
     def contributors(self):
         """Return list of contributors, and retrieve if we don't have yet
@@ -208,6 +233,8 @@ def get_github_repository(repo):
        and then check for a local .git repo. Finally, verify that format is 
        correct. Return the repository name.
     """
+    if isinstance(repo, GitHubRepository):
+        return repo.uid
     repo = repo or os.environ.get("GITHUB_REPOSITORY")
     if not repo:
         command = Command("git config --get remote.origin.url")

@@ -12,6 +12,8 @@
           url: "docs/getting-started#github-workflows"
     - title: "The .tributors File"
       url: "docs/tributors"
+    - title: "Examples"
+      url: "docs/examples"
     - title: "Parsers"
       url: "docs/parsers"
       children:

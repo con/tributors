@@ -107,6 +107,22 @@ def get_parser():
             nargs="*",
             default="unset",
         )
+        command.add_argument(
+            "--from",
+            dest="from_resources",
+            help="Update records FROM one resource TO another using unique ids (email, orcid, GitHub login)",
+            default="unset",
+            choices=[
+                "unset",
+                "tributors",
+                "codemeta",
+                "zenodo",
+                "github",
+                "allcontrib",
+                "mailmap",
+            ],
+            nargs="*",
+        )
 
     return parser
 

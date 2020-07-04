@@ -40,7 +40,7 @@ jobs:
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate testing
           pip install .[all]
-          # pytest -sv tests/*.py
+          pytest -sv tests/*.py
           /bin/bash tests/test_client.sh
 
   build:

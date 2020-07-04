@@ -37,7 +37,7 @@ class CodeMetaParser(ParserBase):
         """
         return self._load_data("--codemeta-file")
 
-    def update(self, thresh=1):
+    def update(self, thresh=1, from_resources=None, save=True):
         """Given an existing .zenodo.json file, update it with contributors
            from an allcontributors file.
         """
@@ -53,36 +53,14 @@ class CodeMetaParser(ParserBase):
         # Get fields from repo
         self.update_metadata()
 
-        # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
-        for login, _ in self.repo.contributors.items():
-
-            # Check against contribution threshold, and not bot
-            if not self.include_contributor(login):
-                continue
-
-            cache = self.cache.get(login) or {}
-            email = cache.get("email")
-            orcid = cache.get("orcid")
-
-            # We can only add completely new entries that don't already exist
-            if (email != None or orcid != None) and (
-                email not in self.email_lookup and orcid not in self.orcid_lookup
-            ):
-                parts = (cache.get("name") or login).split(" ")
-                entry = {"@type": "Person", "givenName": parts[0]}
-
-                # Add the last name if it's defined
-                if len(parts) > 1:
-                    entry["familyName"] = " ".join(parts[1:])
-
-                if email != None:
-                    entry["email"] = email
-                if orcid != None:
-                    entry["@id"] = "https://orcid.org/%s" % orcid
-                self.lookup.append(entry)
+        self.update_from_logins(from_resources.get("login", []))
+        self.update_from_orcids(from_resources.get("orcid", []))
+        self.update_from_names(from_resources.get("name", []))
+        self.update_from_emails(from_resources.get("email", []))
 
         self.data["contributor"] = self.lookup
-        write_json(self.data, self.filename)
+        if save:
+            write_json(self.data, self.filename)
         return self.data
 
     def update_metadata(self):
@@ -99,6 +77,48 @@ class CodeMetaParser(ParserBase):
         )
         self.data["license"] = self.data.get("license") or self.repo.license
 
+    def update_from_emails(self, emails):
+        """Update codemeta entries from emails
+        """
+        # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
+        for email in emails:
+            if email not in self.email_lookup:
+                bot.info(f"   Updating with new added email: {email}")
+                entry = {"@type": "Person", "email": email}
+                self.lookup.append(entry)
+
+    def update_from_logins(self, logins):
+        """Update codemeta entries from GitHub logins
+        """
+        # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
+        for login in logins:
+
+            # Check against contribution threshold, and not bot
+            if not self.include_contributor(login):
+                continue
+
+            cache = self.cache.get(login) or {}
+            email = cache.get("email")
+            orcid = cache.get("orcid")
+
+            # We can only add completely new entries that don't already exist
+            if (email != None or orcid != None) and (
+                email not in self.email_lookup and orcid not in self.orcid_lookup
+            ):
+                bot.info(f"   Updating {login}")
+                parts = (cache.get("name") or login).split(" ")
+                entry = {"@type": "Person", "givenName": parts[0]}
+
+                # Add the last name if it's defined
+                if len(parts) > 1:
+                    entry["familyName"] = " ".join(parts[1:])
+
+                if email != None:
+                    entry["email"] = email
+                if orcid != None:
+                    entry["@id"] = "https://orcid.org/%s" % orcid
+                self.lookup.append(entry)
+
     @property
     def email_lookup(self):
         """Return loaded metadata as an email lookup
@@ -106,9 +126,9 @@ class CodeMetaParser(ParserBase):
         if not hasattr(self, "_email_lookup"):
             self._email_lookup = {}
             self.load_data()
-            for entry in self.data.get("contributor", []):
-                if "email" in entry:
-                    self._email_lookup[entry["email"]] = entry
+        for entry in self.data.get("contributor", []):
+            if "email" in entry:
+                self._email_lookup[entry["email"]] = entry
         return self._email_lookup
 
     @property
@@ -150,7 +170,7 @@ class CodeMetaParser(ParserBase):
 
             # Case 2: We have a matching orcid
             elif orcid in self.orcid_lookup:
-                entry = self.orcid_lookup[entry]
+                entry = self.orcid_lookup[orcid]
 
             # Case 2: We have a matching email
             elif email in self.email_lookup:

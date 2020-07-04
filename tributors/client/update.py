@@ -29,6 +29,11 @@ def main(args, extra):
     if args.skip_users != "unset":
         skip_users = args.skip_users
 
+    # Does the user want to update from a particular resource?
+    from_resources = args.from_resources
+    if from_resources == "unset":
+        from_resources = None
+
     # If unset, try to detect files
     if "unset" in parsers:
         lookup = {
@@ -53,6 +58,7 @@ def main(args, extra):
             repo=args.repo,
             params=extra,
             skip_users=skip_users,
+            from_resources=from_resources,
         )
 
     else:
@@ -62,4 +68,5 @@ def main(args, extra):
             params=extra,
             thresh=args.thresh,
             skip_users=skip_users,
+            from_resources=from_resources,
         )

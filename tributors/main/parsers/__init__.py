@@ -23,6 +23,8 @@ def get_named_parser(name, repo=None, filename=None, params=None):
        have any metadata file to update) the parser is just used as a resource
        to update the cache.
     """
+    if repo and not isinstance(repo, GitHubRepository):
+        repo = GitHubRepository(repo)
     parser = None
 
     # These parsers have contributors files, and used to update .tributors
