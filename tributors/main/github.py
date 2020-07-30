@@ -251,4 +251,4 @@ def get_github_repository(repo):
     if not match:
         sys.exit("Malformed repository address %s" % repo)
     owner, repo = match.groups()
-    return "%s/%s" % (owner, repo)
+    return "%s/%s" % (owner, re.sub(".git$", "", repo, 1))
