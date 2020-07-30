@@ -113,9 +113,6 @@ class ZenodoParser(ParserBase):
         """Zenodo is a special case that has emails and real usernames, so we
            can parse through the existing file and look for orcid identifiers
         """
-        import IPython
-
-        IPython.embed()
         creators = []
         for user in self.data.get("creators", []):
             orcid = user.get("orcid")
