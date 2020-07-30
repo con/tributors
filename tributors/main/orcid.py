@@ -176,12 +176,33 @@ def get_orcid(email, token, name=None):
 
     # Attempt # 2 will use the first and last name
     if name is not None and not orcid_id:
-        parts = name.split(" ")
-        first, last = parts[0], " ".join(parts[1:])
+
+        # If no comma, likely a space delimiter
+        delim = "," if "," in name else " "
+        cleaner = "," if delim == " " else " "
+
+        parts = name.split(delim)
+        last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
         url = (
             "https://pub.orcid.org/v3.0/search/?q=given-names:%s+AND+family-name:%s"
             % (first, last)
         )
         orcid_id = record_search(url, token, name)
+
+        # Attempt # 3 will try removing the middle name
+        if " " in first:
+            url = (
+                "https://pub.orcid.org/v3.0/search/?q=given-names:%s+AND+family-name:%s"
+                % (first.split(" ")[0].strip(), last)
+            )
+            orcid_id = record_search(url, token, name)
+
+        # Attempt # 4 will reverse (some orcid entries are last, first, others the opposite
+        if orcid_id is None:
+            url = (
+                "https://pub.orcid.org/v3.0/search/?q=given-names:%s+AND+family-name:%s"
+                % (last, first)
+            )
+            orcid_id = record_search(url, token, name)
 
     return orcid_id
