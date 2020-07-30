@@ -178,11 +178,9 @@ def get_orcid(email, token, name=None):
     if name is not None and not orcid_id:
 
         # If no comma, likely a space delimiter
-        delim = ","
-        if delim not in name:
-            delim = " "
-
+        delim = "," if "," in name else " "
         cleaner = "," if delim == " " else " "
+
         parts = name.split(delim)
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
         url = (
