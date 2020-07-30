@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.0.x](https://github.com/con/tributors/tree/master) (0.0.x)
+ - searching for last, first and reverse for orcid lookup (0.0.18)
  - unicode characters allowed, and dont update users with orcids (0.0.17)
  - should allow for repository names with .git extension (0.0.15)
  - adding support to do updates `--from` (between) resources (0.0.14)
