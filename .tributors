@@ -2,15 +2,19 @@
     "yarikoptic": {
         "name": "Yaroslav Halchenko",
         "blog": "www.onerussian.com",
+        "email": "debian@onerussian.com",
+        "bio": "Cheers!",
         "orcid": "0000-0003-3456-2493",
         "affiliation": "Dartmouth College"
     },
     "vsoch": {
         "name": "Vanessasaurus",
-        "blog": "https://vsoch.github.io"
+        "blog": "https://vsoch.github.io",
+        "bio": "I'm the Vanessasaurus!"
     },
     "pgrimaud": {
         "name": "Pierre Grimaud",
-        "blog": "https://github.com/pgrimaud"
+        "blog": "https://github.com/pgrimaud",
+        "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator"
     }
 }

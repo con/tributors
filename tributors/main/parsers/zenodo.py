@@ -15,6 +15,7 @@ import sys
 
 from tributors.utils.file import write_json
 from .base import ParserBase
+from tributors.main.orcid import get_orcid
 
 bot = logging.getLogger("    zenodo")
 
@@ -108,9 +109,26 @@ class ZenodoParser(ParserBase):
                 self.data["creators"].append(entry)
         return self.data["creators"]
 
-    def update_from_emails(self, emails):
-        """Given a list of emails, update the contributor file from it
+    def update_orcids(self):
+        """Zenodo is a special case that has emails and real usernames, so we
+           can parse through the existing file and look for orcid identifiers
         """
+        creators = []
+        for user in self.data.get("creators", []):
+            name = user.get("name")
+            email = user.get("email")
+            if email or name and self.orcid_token is not None:
+                orcid = get_orcid(email=email, token=self.orcid_token, name=name)
+                if orcid:
+                    user["orcid"] = orcid
+            creators.append(user)
+        self.data["creators"] = creators
+
+    def update_from_emails(self, emails):
+        """Given a list of emails, update the contributor file from it. We also
+           look for new orcid ids for emails that don't have them.
+        """
+        # First loop through emails in the cache
         lookup = {x["email"]: x for _, x in self.cache.items() if "email" in x}
         for email in emails:
             if email in self.email_lookup:
@@ -124,7 +142,9 @@ class ZenodoParser(ParserBase):
         return self.data["creators"]
 
     def update_from_logins(self, logins):
-        """Given a list of logins, update the contributor file from it
+        """Given a list of logins, update the zenodo.json from it. We only
+           do this on init when we haven't added /updated logins with
+           people's actual names.
         """
         # GitHub contributors are the source of truth
         for login in logins:
@@ -169,8 +189,9 @@ class ZenodoParser(ParserBase):
 
         self.update_cache()
 
-        # Update zenodo file from GitHub logins (default) or other
-        self.update_from_logins(from_resources.get("login", []))
+        # Here we can only reasonable update from orcids (not logins)
+        self.update_orcids()
+        self.update_from_emails(from_resources.get("email", []))
         self.update_from_orcids(from_resources.get("orcid", []))
         self.update_from_names(from_resources.get("names", []))
         if save:

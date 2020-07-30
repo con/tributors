@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.0.x](https://github.com/con/tributors/tree/master) (0.0.x)
+ - should allow for repository names with .git extension (0.0.15)
  - adding support to do updates `--from` (between) resources (0.0.14)
  - adding github to update-lookup, not doing by default (0.0.13)
  - support for updating .tributors from a lookup (0.0.12)
