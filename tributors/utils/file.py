@@ -20,11 +20,15 @@ def write_json(json_obj, filename, pretty=True):
         - json_obj (dict) : the dict to print to json
         - filename (str)  : the output file to write to
     """
-    with open(filename, "w") as filey:
+    with open(filename, "w", encoding="utf8") as filey:
         if pretty:
-            filey.writelines(json.dumps(json_obj, indent=4, separators=(",", ": ")))
+            filey.writelines(
+                json.dumps(
+                    json_obj, indent=4, ensure_ascii=False, separators=(",", ": ")
+                )
+            )
         else:
-            filey.writelines(json.dumps(json_obj))
+            filey.writelines(json.dumps(json_obj), ensure_ascii=False)
     return filename
 
 

@@ -115,8 +115,11 @@ class ZenodoParser(ParserBase):
         """
         creators = []
         for user in self.data.get("creators", []):
+            orcid = user.get("orcid")
             name = user.get("name")
             email = user.get("email")
+            if orcid is not None:
+                continue
             if email or name and self.orcid_token is not None:
                 orcid = get_orcid(email=email, token=self.orcid_token, name=name)
                 if orcid:
