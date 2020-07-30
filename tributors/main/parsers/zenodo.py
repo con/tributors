@@ -119,9 +119,12 @@ class ZenodoParser(ParserBase):
             name = user.get("name")
             email = user.get("email")
             if orcid is not None:
+                creators.append(user)
                 continue
             if email or name and self.orcid_token is not None:
-                orcid = get_orcid(email=email, token=self.orcid_token, name=name)
+                orcid = get_orcid(
+                    email=email, token=self.orcid_token, name=name.strip()
+                )
                 if orcid:
                     user["orcid"] = orcid
             creators.append(user)
