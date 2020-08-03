@@ -91,6 +91,13 @@ def get_parser():
 
     for command in [update, init]:
         command.add_argument(
+            "--interactive",
+            dest="interactive",
+            help="Allow interactive selection of orcid ids.",
+            default=False,
+            action="store_true",
+        )
+        command.add_argument(
             "parsers",
             help="Metadata file parsers to update or initialize.",
             nargs="*",

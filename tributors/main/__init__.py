@@ -10,7 +10,6 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from tributors.main.parsers import get_named_parser
 from tributors.utils.file import write_json, read_json
-from .orcid import get_orcid_token
 from .github import GitHubRepository
 import logging
 import os
@@ -114,10 +113,10 @@ class TributorsClient:
            from GitHub or a cache.
         """
         parsers = parsers or []
-        self.orcid_token = get_orcid_token()
 
         # Generate a shared repository object
         repo = GitHubRepository(repo, skip_users=skip_users)
+        bot.debug(f"Found repository {repo}")
 
         # Get resource lookup ids (emails, orcids, logins)
         resources = self.get_resource_lookups(from_resources, params)
@@ -125,7 +124,6 @@ class TributorsClient:
         # Update each metadata file via its parser
         for parser in parsers:
             client = get_named_parser(name=parser, repo=repo, params=params)
-            client.orcid_token = self.orcid_token
             client.cache = self.cache
             client.update(thresh=thresh, from_resources=resources)
             self.cache.update(client.cache)

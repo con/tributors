@@ -33,7 +33,6 @@ class ParserBase:
         self.cache = {}
         self.contributors = {}
         self.thresh = 1
-        self.orcid_token = None
         self.params = params or {}
         self.data = {}
 
@@ -144,6 +143,8 @@ class ParserBase:
         """A shared function to run additional parsing on the cache, such
            as adding an orcid id when an email is defined. 
         """
+        interactive = self.params.get("--interactive", False)
+
         # If the parser can be used as a resource, use it to update .tributors
         if hasattr(self, "update_lookup") and update_lookup:
             self.update_lookup()
@@ -154,11 +155,11 @@ class ParserBase:
             # If we have an email, and orcid isn't defined
             if "orcid" not in entry:
                 orcid = get_orcid(
-                    entry.get("email"), self.orcid_token, entry.get("name")
+                    entry.get("email"), entry.get("name"), interactive=interactive
                 )
                 if orcid:
                     entry["orcid"] = orcid
-                    cli = OrcidIdentifier(orcid, self.orcid_token)
+                    cli = OrcidIdentifier(orcid)
 
                     # If we found the record, update metadata
                     if (
