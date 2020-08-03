@@ -182,6 +182,12 @@ def get_orcid(email, token, name=None):
         cleaner = "," if delim == " " else " "
 
         parts = name.split(delim)
+
+        # No go if only a first or last name
+        if len(parts) == 1:
+            bot.debug(f"Skipping {name}, first and last are required for search.")
+            break
+
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
         url = (
             "https://pub.orcid.org/v3.0/search/?q=given-names:%s+AND+family-name:%s"
@@ -203,6 +209,11 @@ def get_orcid(email, token, name=None):
                 "https://pub.orcid.org/v3.0/search/?q=given-names:%s+AND+family-name:%s"
                 % (last, first)
             )
+            orcid_id = record_search(url, token, name)
+
+        # Last attempt looks in "Other names"
+        if orcid_id is None:
+            url = "https://pub.orcid.org/v3.0/search/?q=other-names:%s" % (name)
             orcid_id = record_search(url, token, name)
 
     return orcid_id
