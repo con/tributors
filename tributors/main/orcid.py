@@ -158,7 +158,7 @@ def record_search(url, email, interactive=False):
 
     # One or more results
     if len(results) > 10:
-        bot.warning(f"Found ,ore than 10 results found, will only show top 10.")
+        bot.warning("Found more than 10 results, will only show top 10.")
 
     print("\n\n%s\n======================================================" % email)
     for idx, r in enumerate(results):
