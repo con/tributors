@@ -186,7 +186,7 @@ def get_orcid(email, token, name=None):
         # No go if only a first or last name
         if len(parts) == 1:
             bot.debug(f"Skipping {name}, first and last are required for search.")
-            break
+            return orcid_id
 
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
         url = (
