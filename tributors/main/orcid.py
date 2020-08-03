@@ -73,15 +73,12 @@ class OrcidIdentifier:
         )
 
     def get_record(self):
-        if not self.orcid or not self.token:
+        if not self.orcid:
             return
 
         response = requests.get(
             "https://pub.orcid.org/v2.1/%s/record" % self.orcid,
-            headers={
-                "Authorization": "bearer %s" % self.token,
-                "Accept": "application/json",
-            },
+            headers={"Accept": "application/json",},
         )
         if response.status_code != 200:
             return
