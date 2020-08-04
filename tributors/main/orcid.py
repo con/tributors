@@ -229,17 +229,14 @@ def get_orcid(email, name=None, interactive=False):
             return orcid_id
 
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
-        url = (
-            "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s"
-            % (first, last)
-        )
+        url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (first, last)
         orcid_id = record_search(url, name, interactive)
 
         # Attempt # 3 will try removing the middle name
         if " " in first:
-            url = (
-                "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s"
-                % (first.split(" ")[0].strip(), last)
+            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (
+                first.split(" ")[0].strip(),
+                last,
             )
             orcid_id = record_search(url, name, interactive)
 
