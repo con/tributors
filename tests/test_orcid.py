@@ -30,13 +30,14 @@ def test_queries(tmp_path):
     result = get_orcid(email="debian@onerussian.com")
     assert result == orcid_id
 
+    # Test search for other name
+    result = get_orcid(email=None, name="Ярослав Олеговіч Гальченко")
+    assert result == orcid_id
+
     # Test returning None
     result = get_orcid(email=None, name="Zumbudda")
     assert not result
 
     # Test find by other-names (can't do because more than one result)
-    # result =  get_orcid(email=None, name="Horea Christian")
-
-    # Test search for a unicode name
-    # This returns 94 results, mostly guys named Yaroslav, so not sure will work
-    # result = get_orcid(email=None, name="Ярослав Олеговіч Гальченко")
+    result = get_orcid(email=None, name="Horea Christian")
+    assert result == "0000-0001-7037-2449"
