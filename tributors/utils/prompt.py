@@ -40,6 +40,8 @@ def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
     """
     choice = None
     print(prompt)
+
+    # Support for Python 2 (raw_input)
     get_input = getattr(__builtins__, "raw_input", input)
 
     if not choice_prefix:
@@ -54,5 +56,5 @@ def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
             contenders = choice.strip().split(" ")
             if all([x in choices for x in contenders]):
                 choices.append(choice)
-        message = "Please enter a valid option in [%s]" % (choice_prefix)
+        message = "Please enter a valid option in [%s]" % choice_prefix
     return choice

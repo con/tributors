@@ -242,7 +242,7 @@ def get_orcid(email, name=None, interactive=False):
 
         # Last attempt tries full name
         if orcid_id is None:
-            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s" % (name)
+            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s" % name
             orcid_id = record_search(url, name, interactive)
 
     return orcid_id
