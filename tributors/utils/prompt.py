@@ -54,7 +54,7 @@ def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
         # If multiple allowed, add selection to choices if includes all vaid
         if multiple is True:
             contenders = choice.strip().split(" ")
-            if all([x in choices for x in contenders]):
+            if all(x in choices for x in contenders):
                 choices.append(choice)
         message = "Please enter a valid option in [%s]" % choice_prefix
     return choice
