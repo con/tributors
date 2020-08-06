@@ -22,6 +22,7 @@ def main(args, extra):
 
     # Parse extra arguments
     extra = parse_extra(extra)
+    extra["--interactive"] = args.interactive
 
     # Skip users, if a space separated list is defined
     skip_users = []

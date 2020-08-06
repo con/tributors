@@ -99,22 +99,10 @@ pip install tributors
 
 ### 2. Environment
 
-Especially if you need orcid ids in your metadata, for a first time go you
-should export an id and secret to interact with the Orcid API. It'a also recommended
-to export a GitHub token to increase your API limit:
+It's recommended to export a GitHub token to increase your API limit:
 
 ```bash
-export ORCID_ID=APP-XXXXXXX
-export ORCID_SECRET=12345678910111213141516171819202122
 export GITHUB_TOKEN=XXXXXXXXXXXXXXX
-```
-
-Once you generate an orcid token, it will be written to a temporary file,
-and you can read the file and export the variable for later discovery (and you'll
-no longer need the ID and secret):
-
-```bash
-export ORCID_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ### 3. Update Lookups
@@ -151,6 +139,36 @@ or update a specific one:
 $ tributors update allcontrib
 $ tributors update zenodo
 $ tributors update codemeta
+```
+
+If the client finds more than one orcid identifier for a name, you'll be prompted
+to run in `--interactive` mode. Running in interactive mode will allow you
+to choose a number for each one:
+
+```bash
+$ tributors update zenodo --interactive
+INFO:    zenodo:Updating .zenodo.json
+INFO:    zenodo:Updating .tributors cache from .zenodo.json
+
+Meyer, Kyle
+======================================================
+[1]
+  Name: Meyer, Kyle
+  Orcid: 0000-0002-1933-2908
+  Institutions: University of California Davis, University of Michigan, University of Texas at Austin
+
+[2]
+  Name: Meyer, Kyle
+  Orcid: 0000-0001-8632-4425
+  Institutions: Kroger Co, Northeastern Ohio Medical University, University of Toledo, University of Toledo Medical Center
+
+[3]
+  Name: Meyer, Kyle
+  Orcid: 0000-0001-8846-7411
+  Institutions: University of Auckland, University of Oregon, University of Wisconsin Milwaukee
+
+Please enter a choice, or s to skip.
+[1:3 or s to skip] : 
 ```
 
 ### 3. Init
@@ -410,30 +428,6 @@ Tokens can also be exported to increase interaction limits with various APIs:
 export ZENODO_TOKEN=xxxxxx
 export GITHUB_TOKEN=xxxxxx
 ```
-
-If you want to link emails with Orcid id's, it is suggested to generate and export an `ORCID_TOKEN` to ensure that you can look up these identifiers based on email addresses. 
-However to disable this, simply export the token as "disabled"
-
-```bash
-export ORCID_TOKEN=disabled
-```
-
-In order to generate this token
-for the first time, you should export an `ORCID_ID` and `ORCID_SECRET` that you need to 
-generate in the [developer tools](https://orcid.org/developer-tools). The callback
-uri can be either one of the defaults that they provide (we don't use it).
-Once you have your id and secret, export them to the environment.
-
-```bash
-export ORCID_ID=xxxxxxxx
-export ORCID_SECRET=xxxxx
-```
-
-The `ORCID_TOKEN` and `ORCID_REFRESH_TOKEN` will be written to a temporary file,
-and you can export these in the future to be discovered by the tributors client.
-Subsequent requests use the token to interact with the [public search API](https://members.orcid.org/api/tutorial/search-orcid-registry). Note that we haven't
-yet implemented using the refresh token to request a new one, so if you
-hit this use case, please [open an issue](https://github.com/con/tributors/issues).
 
 ### 2. Generate
 

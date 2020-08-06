@@ -113,6 +113,7 @@ class ZenodoParser(ParserBase):
         """Zenodo is a special case that has emails and real usernames, so we
            can parse through the existing file and look for orcid identifiers
         """
+        interactive = self.params.get("--interactive", False)
         creators = []
         for user in self.data.get("creators", []):
             orcid = user.get("orcid")
@@ -121,9 +122,9 @@ class ZenodoParser(ParserBase):
             if orcid is not None:
                 creators.append(user)
                 continue
-            if email or name and self.orcid_token is not None:
+            if email or name:
                 orcid = get_orcid(
-                    email=email, token=self.orcid_token, name=name.strip()
+                    email=email, name=name.strip(), interactive=interactive
                 )
                 if orcid:
                     user["orcid"] = orcid

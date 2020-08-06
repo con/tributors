@@ -20,6 +20,7 @@ def main(args, extra):
 
     # Parse extra arguments
     extra = parse_extra(extra)
+    extra["--interactive"] = args.interactive
 
     # Start with user provided parsers
     parsers = args.parsers
