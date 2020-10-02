@@ -42,7 +42,7 @@ See the full [documentation](https://con.github.io/tributors/) for getting start
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="www.onerussian.com"><img src="https://avatars3.githubusercontent.com/u/39889?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yaroslav Halchenko</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=yarikoptic" title="Code">💻</a> <a href="https://github.com/con/tributors/commits?author=yarikoptic" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://www.onerussian.com"><img src="https://avatars3.githubusercontent.com/u/39889?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yaroslav Halchenko</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=yarikoptic" title="Code">💻</a> <a href="https://github.com/con/tributors/commits?author=yarikoptic" title="Documentation">📖</a></td>
     <td align="center"><a href="https://vsoch.github.io"><img src="https://avatars0.githubusercontent.com/u/814322?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vanessasaurus</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=vsoch" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/pgrimaud"><img src="https://avatars1.githubusercontent.com/u/1866496?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pierre Grimaud</b></sub></a><br /><a href="https://github.com/con/tributors/commits?author=pgrimaud" title="Code">💻</a></td>
   </tr>
