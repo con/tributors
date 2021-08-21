@@ -17,6 +17,7 @@ jobs:
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate black
+          pip install --upgrade black
           black --check tributors
 
       - name: Check imports with pyflakes
