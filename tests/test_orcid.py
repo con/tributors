@@ -38,5 +38,5 @@ def test_queries(tmp_path):
     assert not result
 
     # Test find by other-names (can't do because more than one result)
-    result = get_orcid(email=None, name="Horea Christian")
-    assert result == "0000-0001-7037-2449"
+    result = get_orcid(email=None, name="Chris Gorgolewski")
+    assert result == "0000-0003-3321-7583"

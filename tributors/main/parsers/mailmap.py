@@ -38,13 +38,29 @@ class MailmapParser(ParserBase):
                 sys.exit("%s does not exist" % self.filename)
 
             for line in read_file(self.filename):
+
+                # keep track of the previous name, in case multiple per line
+                last_name = ""
+
                 # mailmap line can have more than one entry, split by right >
                 for entry in line.strip().split(">"):
                     if not entry:
                         continue
                     name, email = entry.split("<")
                     email = email.strip()
-                    self.data[email] = {"name": name.strip()}
+
+                    # Use the name before the email, unless it is empty
+                    chosen_name = name.strip()
+                    if not chosen_name and last_name:
+                        chosen_name = last_name
+
+                    # Update the last name we saw
+                    last_name = chosen_name
+
+                    # If we still don't have a name, don't add it
+                    if not chosen_name:
+                        continue
+                    self.data[email] = {"name": chosen_name}
         return self.data
 
     @property
