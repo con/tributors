@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2021 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -20,14 +20,13 @@ bot = logging.getLogger("tributors")
 
 class ParserBase:
     """A parser base exists to provide structure to init and update contributor
-       configuration files.
+    configuration files.
     """
 
     name = "base"
 
     def __init__(self, filename=None, repo=None, params=None):
-        """initialize a new contributor parser.
-        """
+        """initialize a new contributor parser."""
         self.filename = filename
         self._repo = repo
         self.cache = {}
@@ -48,32 +47,27 @@ class ParserBase:
 
     @property
     def email_lookup(self):
-        """Return loaded metadata as an email lookup.
-        """
+        """Return loaded metadata as an email lookup."""
         return {}
 
     @property
     def orcid_lookup(self):
-        """Return loaded metadata as an orcid lookup.
-        """
+        """Return loaded metadata as an orcid lookup."""
         return {}
 
     @property
     def name_lookup(self):
-        """Return loaded metadata as an name lookup.
-        """
+        """Return loaded metadata as an name lookup."""
         return {}
 
     @property
     def login_lookup(self):
-        """Return loaded metadata as a github login lookup.
-        """
+        """Return loaded metadata as a github login lookup."""
         return {}
 
     @property
     def repo(self):
-        """after some initial parsing, we can retrieve the name of the GitHub repo
-        """
+        """after some initial parsing, we can retrieve the name of the GitHub repo"""
         return self._repo
 
     def update_from_emails(self, *args, **kwargs):
@@ -93,18 +87,15 @@ class ParserBase:
             bot.warning(f"{self.name} does not support updating from names.")
 
     def init(self, *args, **kwargs):
-        """init a new configuration file
-        """
+        """init a new configuration file"""
         raise NotImplementedError
 
     def update(self, *args, **kwargs):
-        """update a configuration file
-        """
+        """update a configuration file"""
         raise NotImplementedError
 
     def _load_data(self, fileattr):
-        """Load self.filename unless a file attribute is defined
-        """
+        """Load self.filename unless a file attribute is defined"""
         if not self.data:
             filename = self.params.get(fileattr, self.filename)
 
@@ -117,7 +108,7 @@ class ParserBase:
 
     def include_contributor(self, login):
         """Given a threshold (and preference to not include bots) return a boolean
-           to indicate including the contributor or not
+        to indicate including the contributor or not
         """
         contributor = self.repo.contributors.get(login)
 
@@ -141,7 +132,7 @@ class ParserBase:
 
     def update_cache(self, update_lookup=True):
         """A shared function to run additional parsing on the cache, such
-           as adding an orcid id when an email is defined. 
+        as adding an orcid id when an email is defined.
         """
         interactive = self.params.get("--interactive", False)
 

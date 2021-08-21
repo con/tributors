@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.0.x](https://github.com/con/tributors/tree/master) (0.0.x)
+ - fixing mailmap bug https://github.com/con/tributors/issues/60 (0.0.20)
  - searching orcid for other-names as final resort, requiring first/last (0.0.19)
  - searching for last, first and reverse for orcid lookup (0.0.18)
  - unicode characters allowed, and dont update users with orcids (0.0.17)

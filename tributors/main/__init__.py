@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2021 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -19,15 +19,15 @@ bot = logging.getLogger("tributors.main")
 
 class TributorsClient:
     """The tributors client is the handler to interact with one or more
-       contributor actions. If we do an update for multiple, for example,
-       we can cache and re-use the GitHub calls.
+    contributor actions. If we do an update for multiple, for example,
+    we can cache and re-use the GitHub calls.
     """
 
     def __init__(self, skip_cache=False):
         """create a tributors client to control one or more updates to
-           contribution files. The .tributors cache stores identifiers that
-           would need to be looked up, and the client stores a contributors
-           cache (from GitHub) that can be used between parser clients.
+        contribution files. The .tributors cache stores identifiers that
+        would need to be looked up, and the client stores a contributors
+        cache (from GitHub) that can be used between parser clients.
         """
         if not skip_cache:
             self.load_cache()
@@ -35,18 +35,17 @@ class TributorsClient:
 
     def load_cache(self):
         """load a cache to serve as a lookup for contributors.
-           Each parser will use the cache to find common identifiers,
-           and update it if necessary. We use the cache as a place to
-           store emails / orcid id / username combos. For temporary 
-           (GitHub request) caches, we use /tmp.
+        Each parser will use the cache to find common identifiers,
+        and update it if necessary. We use the cache as a place to
+        store emails / orcid id / username combos. For temporary
+        (GitHub request) caches, we use /tmp.
         """
         self.cache = {}
         if os.path.exists(".tributors"):
             self.cache = read_json(".tributors")
 
     def save_cache(self):
-        """Save the current self.cache to the cache file .tributors in the PWD
-        """
+        """Save the current self.cache to the cache file .tributors in the PWD"""
         if not self.skip_cache:
             bot.debug("Saving cache to .tributors")
             write_json(self.cache, ".tributors")
@@ -67,7 +66,7 @@ class TributorsClient:
         from_resources=None,
     ):
         """Init one or more contributor parsers. Specifically, this is the
-           action that runs the parser.init() to generate some initial file.
+        action that runs the parser.init() to generate some initial file.
         """
         parsers = parsers or []
 
@@ -88,7 +87,7 @@ class TributorsClient:
 
     def update_resource(self, resources=None, params=None, skip_users=None):
         """Given one or more resource types (an external file or source of
-           metadata) update the .tributors cache lookup
+        metadata) update the .tributors cache lookup
         """
         resources = resources or []
         for name in resources:
@@ -109,8 +108,8 @@ class TributorsClient:
         from_resources=None,
     ):
         """Update one or more contributor parsers. Specifically, this is the
-           action that runs the parser.update() after obtaining contributions
-           from GitHub or a cache.
+        action that runs the parser.update() after obtaining contributions
+        from GitHub or a cache.
         """
         parsers = parsers or []
 
@@ -132,9 +131,9 @@ class TributorsClient:
         self.save_cache()
 
     def get_resource_lookups(self, from_resources=None, params=None):
-        """Based on a name (e.g., GitHub or special case tributors) return 
-           as many lookups of unique ids (email, login, orcid) that
-           the resource provides
+        """Based on a name (e.g., GitHub or special case tributors) return
+        as many lookups of unique ids (email, login, orcid) that
+        the resource provides
         """
         from_resources = from_resources or ["github"]
         lookups = {"login": set(), "orcid": set(), "email": set(), "name": set()}

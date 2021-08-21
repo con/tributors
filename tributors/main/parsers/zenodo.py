@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2021 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -29,27 +29,23 @@ class ZenodoParser(ParserBase):
         super().__init__(filename, repo, params)
 
     def load_data(self):
-        """A shared function to load the zenodo file, if data is not defined
-        """
+        """A shared function to load the zenodo file, if data is not defined"""
         return self._load_data("--zenodo-file")
 
     @property
     def email_lookup(self):
-        """Return loaded metadata as an email lookup.
-        """
+        """Return loaded metadata as an email lookup."""
         self.load_data()
         return {x["email"]: x for x in self.data.get("creators", []) if "email" in x}
 
     @property
     def orcid_lookup(self):
-        """Return loaded metadata as an orcid lookup.
-        """
+        """Return loaded metadata as an orcid lookup."""
         self.load_data()
         return {x["orcid"]: x for x in self.data.get("creators", []) if "orcid" in x}
 
     def init(self, force=False, from_resources=None, save=True):
-        """Generate an empty .zenodo.json if it doesn't exist
-        """
+        """Generate an empty .zenodo.json if it doesn't exist"""
         from_resources = from_resources or {}
         doi = self.params.get("--doi")
 
@@ -94,8 +90,7 @@ class ZenodoParser(ParserBase):
         return metadata
 
     def update_from_orcids(self, orcids):
-        """Given a list of orcids, update the contributor file from it
-        """
+        """Given a list of orcids, update the contributor file from it"""
         lookup = {x["orcid"]: x for _, x in self.cache.items() if "orcid" in x}
         for orcid in orcids:
             if orcid in self.orcid_lookup:
@@ -111,7 +106,7 @@ class ZenodoParser(ParserBase):
 
     def update_orcids(self):
         """Zenodo is a special case that has emails and real usernames, so we
-           can parse through the existing file and look for orcid identifiers
+        can parse through the existing file and look for orcid identifiers
         """
         interactive = self.params.get("--interactive", False)
         creators = []
@@ -133,7 +128,7 @@ class ZenodoParser(ParserBase):
 
     def update_from_emails(self, emails):
         """Given a list of emails, update the contributor file from it. We also
-           look for new orcid ids for emails that don't have them.
+        look for new orcid ids for emails that don't have them.
         """
         # First loop through emails in the cache
         lookup = {x["email"]: x for _, x in self.cache.items() if "email" in x}
@@ -150,8 +145,8 @@ class ZenodoParser(ParserBase):
 
     def update_from_logins(self, logins):
         """Given a list of logins, update the zenodo.json from it. We only
-           do this on init when we haven't added /updated logins with
-           people's actual names.
+        do this on init when we haven't added /updated logins with
+        people's actual names.
         """
         # GitHub contributors are the source of truth
         for login in logins:
@@ -187,7 +182,7 @@ class ZenodoParser(ParserBase):
 
     def update(self, thresh=1, from_resources=None, save=True):
         """Given an existing .zenodo.json file, update it with contributors
-           from an allcontributors file.
+        from an allcontributors file.
         """
         from_resources = from_resources or {}
         self.thresh = thresh
@@ -207,9 +202,9 @@ class ZenodoParser(ParserBase):
 
     def update_lookup(self):
         """Each client optionally has it's own function to update the cache.
-            In the case of zenodo, we aren't necessarily aware of GitHub
-            login (the current mapping mechanism) so we cannot update the
-            cache yet. When orcid is added this might be an option.
+        In the case of zenodo, we aren't necessarily aware of GitHub
+        login (the current mapping mechanism) so we cannot update the
+        cache yet. When orcid is added this might be an option.
         """
         self.load_data()
         bot.info(f"Updating .tributors cache from {self.filename}")
@@ -231,14 +226,14 @@ class ZenodoParser(ParserBase):
 
 
 def get_zenodo_record(doi):
-    """Given a doi, retrieve a record using the Zenodo API
-    """
+    """Given a doi, retrieve a record using the Zenodo API"""
     # Get the record number from the doi
     record = doi.split("/")[-1].replace("zenodo.", "")
     token = os.environ.get("ZENODO_TOKEN")
     if token:
         response = requests.get(
-            "https://zenodo.org/api/records/%s" % record, json={"access_token": token},
+            "https://zenodo.org/api/records/%s" % record,
+            json={"access_token": token},
         )
     else:
         response = requests.get("https://zenodo.org/api/records/%s" % record)

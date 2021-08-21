@@ -14,8 +14,7 @@ import pytest
 
 
 def test_queries(tmp_path):
-    """test that changing order of First Last and Last, First returns same result
-    """
+    """test that changing order of First Last and Last, First returns same result"""
     from tributors.main.orcid import get_orcid, record_search
 
     orcid_id = "0000-0003-3456-2493"

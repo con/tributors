@@ -2,7 +2,7 @@
 
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2021 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -69,7 +69,8 @@ def get_parser():
 
     # Update the .tributors lookup
     update_lookup = subparsers.add_parser(
-        "update-lookup", help="Update shared .tributors metadata file",
+        "update-lookup",
+        help="Update shared .tributors metadata file",
     )
     update_lookup.add_argument(
         "files",
@@ -80,7 +81,10 @@ def get_parser():
     )
 
     # Update an existing contributors file
-    update = subparsers.add_parser("update", help="Update existing all-contributorsrc",)
+    update = subparsers.add_parser(
+        "update",
+        help="Update existing all-contributorsrc",
+    )
     update.add_argument(
         "--thresh",
         dest="thresh",
@@ -105,7 +109,8 @@ def get_parser():
             choices=["zenodo", "allcontrib", "codemeta", "all", "unset"],
         )
         command.add_argument(
-            "--repo", help="The repository URI, if not exported to GITHUB_REPOSITORY",
+            "--repo",
+            help="The repository URI, if not exported to GITHUB_REPOSITORY",
         )
         command.add_argument(
             "--skip-users",
@@ -135,8 +140,7 @@ def get_parser():
 
 
 def main():
-    """main entrypoint for tributors
-    """
+    """main entrypoint for tributors"""
 
     parser = get_parser()
 

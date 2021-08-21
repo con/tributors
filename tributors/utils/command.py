@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2021 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -19,21 +19,21 @@ from .file import read_file
 
 class Capturing:
     """capture output from stdout and stderr into capture object.
-       This is based off of github.com/vsoch/gridtest but modified
-       to write files. The stderr and stdout are set to temporary files at
-       the init of the capture, and then they are closed when we exit. This
-       means expected usage looks like:
+    This is based off of github.com/vsoch/gridtest but modified
+    to write files. The stderr and stdout are set to temporary files at
+    the init of the capture, and then they are closed when we exit. This
+    means expected usage looks like:
 
-       with Capturing() as capture:
-           process = subprocess.Popen(...)
-           
-       And then the output and error are retrieved from reading the files:
-       and exposed as properties to the client:
+    with Capturing() as capture:
+        process = subprocess.Popen(...)
 
-           capture.out
-           capture.err
+    And then the output and error are retrieved from reading the files:
+    and exposed as properties to the client:
 
-       And cleanup means deleting these files, if they exist.
+        capture.out
+        capture.err
+
+    And cleanup means deleting these files, if they exist.
     """
 
     def __enter__(self):
@@ -54,7 +54,7 @@ class Capturing:
     @property
     def out(self):
         """Return output stream. Returns empty string if empty or doesn't exist.
-           Returns (str) : output stream written to file
+        Returns (str) : output stream written to file
         """
         if os.path.exists(self.stdout.name):
             return read_file(self.stdout.name)
@@ -63,7 +63,7 @@ class Capturing:
     @property
     def err(self):
         """Return error stream. Returns empty string if empty or doesn't exist.
-           Returns (str) : error stream written to file
+        Returns (str) : error stream written to file
         """
         if os.path.exists(self.stderr.name):
             return read_file(self.stderr.name)
@@ -77,8 +77,8 @@ class Capturing:
 
 class Command:
     """Class method to invoke shell commands and retrieve output and error.
-       This class is inspired and derived from utils functions in
-       https://github.com/vsoch/scif
+    This class is inspired and derived from utils functions in
+    https://github.com/vsoch/scif
     """
 
     def __init__(self, cmd=None):
@@ -94,8 +94,8 @@ class Command:
 
     def set_command(self, cmd):
         """parse is called when a new command is provided to ensure we have
-           a list. We don't check that the executable is on the path,
-           as the initialization might not occur in the runtime environment.
+        a list. We don't check that the executable is on the path,
+        as the initialization might not occur in the runtime environment.
         """
         if not isinstance(cmd, list):
             cmd = shlex.split(cmd)
@@ -158,7 +158,7 @@ class Command:
 
     def decode(self, line):
         """Given a line of output (error or regular) decode using the
-           system default, if appropriate
+        system default, if appropriate
         """
         loc = locale.getdefaultlocale()[1]
 

@@ -14,8 +14,7 @@ import pytest
 
 
 def test_from_resources_default(tmp_path):
-    """test that from resources returns appropriate resources
-    """
+    """test that from resources returns appropriate resources"""
     from tributors.main import TributorsClient
 
     client = TributorsClient()
@@ -28,8 +27,7 @@ def test_from_resources_default(tmp_path):
 
 
 def test_parser_allcontrib(tmp_path):
-    """test each executor type with the filesystem
-    """
+    """test each executor type with the filesystem"""
     from tributors.main.parsers import get_named_parser
 
     # Prepare from resources
@@ -82,8 +80,7 @@ def test_parser_allcontrib(tmp_path):
 
 
 def test_parser_zenodo(tmp_path):
-    """test each executor type with the filesystem
-    """
+    """test each executor type with the filesystem"""
     from tributors.main.parsers import get_named_parser
 
     # Prepare from resources
