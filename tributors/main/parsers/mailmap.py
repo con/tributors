@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2021 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -38,8 +38,12 @@ class MailmapParser(ParserBase):
                 sys.exit("%s does not exist" % self.filename)
 
             for line in read_file(self.filename):
-                name, email = line.split("<")
-                email = email.strip().rstrip(">")
+                # mailmap line can have more than one entry, split by right >
+                for entry in line.strip().split(">"):
+                    if not entry:
+                        continue
+                    name, email = entry.split("<")
+                    email = email.strip()
                 self.data[email] = {"name": name.strip()}
         return self.data
 
