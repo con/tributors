@@ -28,7 +28,7 @@ class MailmapParser(ParserBase):
 
     def load_data(self):
         """Since mailmap has format Name <email> on each line, we have a custom
-           loading function, and we don't ever need to write anything
+        loading function, and we don't ever need to write anything
         """
         if not self.data:
             self.filename = self.params.get("--mailmap-file", self.filename)
@@ -46,7 +46,7 @@ class MailmapParser(ParserBase):
     @property
     def email_lookup(self):
         """Return loaded metadata as an email lookup. In this case, this
-           is just the entire data.
+        is just the entire data.
         """
         if not hasattr(self, "_email_lookup"):
             self.load_data()
@@ -55,9 +55,9 @@ class MailmapParser(ParserBase):
 
     def update_lookup(self):
         """Each client optionally has it's own function to update the cache.
-            In the case of zenodo, we aren't necessarily aware of GitHub
-            login (the current mapping mechanism) so we cannot update the
-            cache yet. When orcid is added this might be an option.
+        In the case of zenodo, we aren't necessarily aware of GitHub
+        login (the current mapping mechanism) so we cannot update the
+        cache yet. When orcid is added this might be an option.
         """
         bot.info(f"Updating .tributors cache from {self.filename}")
         self.load_data()

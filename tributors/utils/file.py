@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2022 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -16,9 +16,9 @@ import tempfile
 def write_json(json_obj, filename, pretty=True):
     """write_json will write a json object to file, pretty printed
 
-       Arguments:
-        - json_obj (dict) : the dict to print to json
-        - filename (str)  : the output file to write to
+    Arguments:
+     - json_obj (dict) : the dict to print to json
+     - filename (str)  : the output file to write to
     """
     with open(filename, "w", encoding="utf8") as filey:
         if pretty:
@@ -35,8 +35,8 @@ def write_json(json_obj, filename, pretty=True):
 def read_json(input_file):
     """Read json from an input file.
 
-       Arguments:
-         - input_file (str) : the filename to read
+    Arguments:
+      - input_file (str) : the filename to read
     """
     with open(input_file, "r") as filey:
         data = json.loads(filey.read())
@@ -45,11 +45,11 @@ def read_json(input_file):
 
 def read_file(filename, readlines=True):
     """write_file will open a file, "filename" and write content
-       and properly close the file.
+    and properly close the file.
 
-       Arguments:
-         - filename (str) : the filename to read
-         - readlines (bool) : read lines of the file (vs all raw)
+    Arguments:
+      - filename (str) : the filename to read
+      - readlines (bool) : read lines of the file (vs all raw)
     """
     with open(filename, "r") as filey:
         if readlines is True:
@@ -68,10 +68,10 @@ def write_file(filename, content):
 
 def get_tmpfile(prefix="tributors-"):
     """get a temporary file with an optional prefix. By default, the file
-       is closed (and just a name returned).
+    is closed (and just a name returned).
 
-       Arguments:
-        - prefix (str) : prefix with this string
+    Arguments:
+     - prefix (str) : prefix with this string
     """
     tmpdir = tempfile.gettempdir()
     prefix = os.path.join(tmpdir, os.path.basename(prefix))

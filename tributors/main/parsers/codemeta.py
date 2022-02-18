@@ -26,20 +26,18 @@ class CodeMetaParser(ParserBase):
         super().__init__(filename, repo, params)
 
     def init(self, force=False):
-        """Codemeta already has many good generators.
-        """
+        """Codemeta already has many good generators."""
         print(
             "Codemeta provides several tools to generate this for you: https://codemeta.github.io/tools/"
         )
 
     def load_data(self):
-        """If not yet loaded, load data into client
-        """
+        """If not yet loaded, load data into client"""
         return self._load_data("--codemeta-file")
 
     def update(self, thresh=1, from_resources=None, save=True):
         """Given an existing .zenodo.json file, update it with contributors
-           from an allcontributors file.
+        from an allcontributors file.
         """
         self.thresh = thresh
         self.load_data()
@@ -64,8 +62,7 @@ class CodeMetaParser(ParserBase):
         return self.data
 
     def update_metadata(self):
-        """Update codemeta metadata from the repository, if we can.
-        """
+        """Update codemeta metadata from the repository, if we can."""
         self.data["keywords"] = self.repo.topics(self.data["keywords"])
         self.data["description"] = self.data.get("description") or self.repo.description
         self.data["codeRepository"] = (
@@ -78,8 +75,7 @@ class CodeMetaParser(ParserBase):
         self.data["license"] = self.data.get("license") or self.repo.license
 
     def update_from_emails(self, emails):
-        """Update codemeta entries from emails
-        """
+        """Update codemeta entries from emails"""
         # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
         for email in emails:
             if email not in self.email_lookup:
@@ -88,8 +84,7 @@ class CodeMetaParser(ParserBase):
                 self.lookup.append(entry)
 
     def update_from_logins(self, logins):
-        """Update codemeta entries from GitHub logins
-        """
+        """Update codemeta entries from GitHub logins"""
         # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
         for login in logins:
 
@@ -121,8 +116,7 @@ class CodeMetaParser(ParserBase):
 
     @property
     def email_lookup(self):
-        """Return loaded metadata as an email lookup
-        """
+        """Return loaded metadata as an email lookup"""
         if not hasattr(self, "_email_lookup"):
             self._email_lookup = {}
             self.load_data()
@@ -133,8 +127,7 @@ class CodeMetaParser(ParserBase):
 
     @property
     def orcid_lookup(self):
-        """Return loaded metadata as an orcid lookup
-        """
+        """Return loaded metadata as an orcid lookup"""
         if not hasattr(self, "_orcid_lookup"):
             self._orcid_lookup = {}
             self.load_data()
@@ -147,7 +140,7 @@ class CodeMetaParser(ParserBase):
 
     def update_lookup(self):
         """We can only keep track of users here based on email addresses or
-           orcid, so we can only update the cache for existing users.
+        orcid, so we can only update the cache for existing users.
         """
         bot.info(f"Updating .tributors cache from {self.filename}")
 
