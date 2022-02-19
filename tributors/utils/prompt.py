@@ -31,6 +31,7 @@ def request_input():
 def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
     """Ask the user for a prompt, and only return when one of the requested
     options is provided.
+
     Parameters
     ==========
     prompt: the prompt to ask the user
