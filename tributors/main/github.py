@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2022 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -22,7 +22,7 @@ bot = logging.getLogger("github")
 
 class GitHubRepository:
     """A GitHub repository parses a repo and exposes repository and contributor
-       metadata.
+    metadata.
     """
 
     def __init__(self, repo, skip_users=None, params=None):
@@ -36,7 +36,7 @@ class GitHubRepository:
 
     def include_contributor(self, login):
         """Given a threshold (and preference to not include bots) return a boolean
-           to indicate including the contributor or not
+        to indicate including the contributor or not
         """
         contributor = self.contributors.get(login)
 
@@ -51,8 +51,7 @@ class GitHubRepository:
 
     # GitHub repository can serve as a metadata parser
     def update_lookup(self):
-        """update the .tributors file using GitHub contributors
-        """
+        """update the .tributors file using GitHub contributors"""
         if not self.skip_users:
             self.skip_users = self.params.get("--skip-users", "").split(" ")
 
@@ -88,8 +87,7 @@ class GitHubRepository:
 
     @property
     def repo(self):
-        """Retrieve the GitHub repository, if we don't have it yet
-        """
+        """Retrieve the GitHub repository, if we don't have it yet"""
         if not self._repo:
             self._repo = get_repo(self.uid)
         return self._repo
@@ -97,39 +95,33 @@ class GitHubRepository:
     # Equivalent methods to a parser to get lookups based on primary ids
     @property
     def email_lookup(self):
-        """Return loaded metadata as an email lookup.
-        """
+        """Return loaded metadata as an email lookup."""
         return {}
 
     @property
     def name_lookup(self):
-        """Return loaded metadata as an orcid lookup.
-        """
+        """Return loaded metadata as an orcid lookup."""
         return {}
 
     @property
     def orcid_lookup(self):
-        """Return loaded metadata as an orcid lookup.
-        """
+        """Return loaded metadata as an orcid lookup."""
         return {}
 
     @property
     def login_lookup(self):
-        """Return loaded metadata as a github login lookup.
-        """
+        """Return loaded metadata as a github login lookup."""
         return self.contributors
 
     @property
     def contributors(self):
-        """Return list of contributors, and retrieve if we don't have yet
-        """
+        """Return list of contributors, and retrieve if we don't have yet"""
         if not self._contributors:
             self._contributors = get_contributors(self.uid)
         return self._contributors
 
     def topics(self, topics=None):
-        """Return list of topics, optionally add extras and return unique set
-        """
+        """Return list of topics, optionally add extras and return unique set"""
         if not self._topics:
             self._topics = get_topics(self.uid)
         topics = topics or []
@@ -157,15 +149,14 @@ class GitHubRepository:
 
 
 def get_topics(repo):
-    """Given a repository, get topics associated.
-    """
+    """Given a repository, get topics associated."""
     repo = get_repo(repo) or {}
     return repo.get("topics", [])
 
 
 def get_repo(repo):
     """get_repo will return a single repo, username/reponame
-       given authentication with user    
+    given authentication with user
     """
     headers = get_headers()
     headers["Accept"] = "application/vnd.github.mercy-preview+json"
@@ -182,30 +173,41 @@ def get_repo(repo):
 
 def get_contributors(repo):
     """Given a GitHub repository address, retrieve a lookup of contributors
-       from the API endpoint. We look to use the GITHUB_TOKEN if exported
-       to the environment, and exit if the response has any issue.
+    from the API endpoint. We look to use the GITHUB_TOKEN if exported
+    to the environment, and exit if the response has any issue.
     """
     if not repo:
         sys.exit("A repository is required to get contributors.")
     url = "https://api.github.com/repos/%s/contributors" % repo
     headers = get_headers()
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        message = "Response %s from GitHub: %s, cannot retrieve contributors " % (
-            response.status_code,
-            response.reason,
-        )
-        if not os.environ.get("GITHUB_TOKEN"):
-            message += " you should export GITHUB_TOKEN to increase your API limits"
-        sys.exit(message)
+    page = 1
+    contributors = {}
+    while True:
+        paginated_url = "%s?page=%s" % (url, page)
+        bot.debug(paginated_url)
+        response = requests.get(paginated_url, headers=headers)
+        if response.status_code != 200:
+            message = "Response %s from GitHub: %s, cannot retrieve contributors " % (
+                response.status_code,
+                response.reason,
+            )
+            if not os.environ.get("GITHUB_TOKEN"):
+                message += " you should export GITHUB_TOKEN to increase your API limits"
+            sys.exit(message)
+        new_contributors = {x["login"]: x for x in response.json()}
+
+        # This is the signal for we don't have any more pages
+        if not new_contributors:
+            break
+        contributors.update(new_contributors)
+        page += 1
 
     # Return a lookup based on GitHub Login
-    return {x["login"]: x for x in response.json()}
+    return contributors
 
 
 def get_headers():
-    """Get headers, including a Github token if found in the environment
-    """
+    """Get headers, including a Github token if found in the environment"""
     token = os.environ.get("GITHUB_TOKEN")
     headers = {"Accept": "application/vnd.github.v3+json"}
     if token:
@@ -215,7 +217,7 @@ def get_headers():
 
 def get_user(username):
     """Given a username, retrieve the user metadata from GitHub. We need to do
-       this to get the profile (blog) url from the metadata
+    this to get the profile (blog) url from the metadata
     """
     url = "https://api.github.com/users/%s" % username
     headers = get_headers()
@@ -230,8 +232,8 @@ def get_user(username):
 
 def get_github_repository(repo):
     """First preference goes to repo variable provided, then check the environment,
-       and then check for a local .git repo. Finally, verify that format is 
-       correct. Return the repository name.
+    and then check for a local .git repo. Finally, verify that format is
+    correct. Return the repository name.
     """
     if isinstance(repo, GitHubRepository):
         return repo.uid

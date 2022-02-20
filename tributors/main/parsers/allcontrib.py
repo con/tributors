@@ -76,22 +76,21 @@ class AllContribParser(ParserBase):
 
     @property
     def name_lookup(self):
-        """Return loaded metadata as an name lookup.
-        """
+        """Return loaded metadata as an name lookup."""
         self.load_data()
         return {x["name"]: x for x in self.data.get("contributors", []) if "name" in x}
 
     def init(self, force=False, from_resources=None, save=True):
         """Given an allcontributors file (we default to the one expected) and
-           a preference to force, write the empty file to the repository.
-           If the file exists and force is false, exit on error. If the user
-           has not provided a full repository name and it's not in the environment,
-           also exit on error
+        a preference to force, write the empty file to the repository.
+        If the file exists and force is false, exit on error. If the user
+        has not provided a full repository name and it's not in the environment,
+        also exit on error
 
-           Arguments:
-            - repo (str)     : the full name of the repository on GitHub
-            - force (bool)   : if the contributors file exists, overwrite
-            - filename (str) : default filename to write to.
+        Arguments:
+         - repo (str)     : the full name of the repository on GitHub
+         - force (bool)   : if the contributors file exists, overwrite
+         - filename (str) : default filename to write to.
         """
         filename = self.params.get("--allcontrib-file", self.filename)
         if os.path.exists(filename) and not force:
@@ -119,7 +118,7 @@ class AllContribParser(ParserBase):
 
     def update(self, thresh=1, from_resources=None, save=True):
         """Given an existing contributors file, use the GitHub API to retrieve
-           all contributors, and then use subprocess to update the file
+        all contributors, and then use subprocess to update the file
         """
         self.thresh = thresh
         self.load_data()
@@ -166,8 +165,7 @@ class AllContribParser(ParserBase):
         return self.data
 
     def update_from_names(self, names, ctype):
-        """Given a list of names, update the loaded logins
-        """
+        """Given a list of names, update the loaded logins"""
         for name in names:
             if name not in self.name_lookup:
                 bot.info(f"⭐️ Found new contributor {name} in {self.filename}")
@@ -178,8 +176,7 @@ class AllContribParser(ParserBase):
                 self.extras.append(entry)
 
     def update_from_logins(self, logins, ctype):
-        """Given a list of logins, update the loaded logins
-        """
+        """Given a list of logins, update the loaded logins"""
         for login in logins:
 
             # Check against contribution threshold, and not bot
@@ -213,11 +210,11 @@ class AllContribParser(ParserBase):
 
     def update_lookup(self):
         """Each client optionally has it's own function to update the cache.
-           In the case of allcontributors, we run this function on update after
-           self.lookup is defined with current data. We use this lookup to
-           update a shared cache that might be used for other clients. Since
-           we also have self.contributors (with GitHub responses) we don't need
-           to add items that would be found there.
+        In the case of allcontributors, we run this function on update after
+        self.lookup is defined with current data. We use this lookup to
+        update a shared cache that might be used for other clients. Since
+        we also have self.contributors (with GitHub responses) we don't need
+        to add items that would be found there.
         """
         self.load_data()
         bot.info(f"Updating .tributors cache from {self.filename}")

@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2022 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -18,8 +18,7 @@ bot = logging.getLogger("github")
 
 
 class OrcidIdentifier:
-    """A simple class to retrieve an orcid record, and expose needed fields
-    """
+    """A simple class to retrieve an orcid record, and expose needed fields"""
 
     def __init__(self, orcid):
         self.orcid = orcid
@@ -36,8 +35,7 @@ class OrcidIdentifier:
 
     @property
     def record(self):
-        """Given an orcid id, retrieve a record for it
-        """
+        """Given an orcid id, retrieve a record for it"""
         if not self._record and self.orcid:
             self.get_record()
         return self._record
@@ -53,8 +51,7 @@ class OrcidIdentifier:
 
     @property
     def affiliation(self):
-        """We consider the affiliation the most recent employment (top of the list)
-        """
+        """We consider the affiliation the most recent employment (top of the list)"""
         employer = (
             self.record.get("activities-summary", {})
             .get("employments", {})
@@ -78,7 +75,9 @@ class OrcidIdentifier:
 
         response = requests.get(
             "https://pub.orcid.org/v2.1/%s/record" % self.orcid,
-            headers={"Accept": "application/json",},
+            headers={
+                "Accept": "application/json",
+            },
         )
         if response.status_code != 200:
             return
@@ -88,9 +87,9 @@ class OrcidIdentifier:
 
 def get_orcid_token():
     """If the user has exported a token, we discover and return it here.
-       Otherwise we prompt him or her to open a browser and copy paste a code
-       to the calling client. This is currently not used, but kept in case
-       we need to add it back.
+    Otherwise we prompt him or her to open a browser and copy paste a code
+    to the calling client. This is currently not used, but kept in case
+    we need to add it back.
     """
     orcid_token = os.environ.get("ORCID_TOKEN")
     orcid_id = os.environ.get("ORCID_ID")
@@ -131,8 +130,7 @@ def get_orcid_token():
 
 
 def record_search(url, email, interactive=False):
-    """Given a url (with a name or email) do a record search looking for an orcid id
-    """
+    """Given a url (with a name or email) do a record search looking for an orcid id"""
     response = requests.get(url, headers={"Accept": "application/json"})
     if response.status_code != 200:
         return
@@ -203,8 +201,7 @@ def record_search(url, email, interactive=False):
 
 
 def get_orcid(email, name=None, interactive=False):
-    """Get an orcid identifier for a given email or name.
-    """
+    """Get an orcid identifier for a given email or name."""
     # We must have an email OR name
     if not email and not name:
         return

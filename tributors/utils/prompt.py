@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2022 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -13,8 +13,7 @@ enter_input = getattr(__builtins__, "raw_input", input)
 
 
 def request_input():
-    """Wait for the user to input some string, optionally with multiple lines.
-    """
+    """Wait for the user to input some string, optionally with multiple lines."""
     lines = []
 
     # The message can be multiple lines
@@ -31,12 +30,13 @@ def request_input():
 
 def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
     """Ask the user for a prompt, and only return when one of the requested
-       options is provided.
-       Parameters
-       ==========
-       prompt: the prompt to ask the user
-       choices: a list of choices that are valid.   
-       multiple: allow multiple responses (separated by spaces)
+    options is provided.
+
+    Parameters
+    ==========
+    prompt: the prompt to ask the user
+    choices: a list of choices that are valid.
+    multiple: allow multiple responses (separated by spaces)
     """
     choice = None
     print(prompt)

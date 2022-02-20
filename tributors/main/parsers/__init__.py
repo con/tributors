@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2022 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -18,10 +18,10 @@ import re
 
 def get_named_parser(name, repo=None, filename=None, params=None):
     """get a named parser, meaning determining based on name and not uri.
-       Typically a parser is used to update a metadata file and also
-       update the shared .tributors cache, but in a few cases (where we don't
-       have any metadata file to update) the parser is just used as a resource
-       to update the cache.
+    Typically a parser is used to update a metadata file and also
+    update the shared .tributors cache, but in a few cases (where we don't
+    have any metadata file to update) the parser is just used as a resource
+    to update the cache.
     """
     if repo and not isinstance(repo, GitHubRepository):
         repo = GitHubRepository(repo)
