@@ -48,6 +48,7 @@ See the full [documentation](https://con.github.io/tributors/) for getting start
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
