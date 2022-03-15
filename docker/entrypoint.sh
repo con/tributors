@@ -89,7 +89,15 @@ if [ "${RUN_CODEMETA}" == "true" ]; then
 fi
 
 echo $COMMAND
+
+# First time might just create content
 $COMMAND
+
+# Run twice to get additional metadata
+if [ "${INPUT_RUN_TWICE}" == "true" ]; then
+    printf "Running twice to get additional updates...\n"
+    $COMMAND
+fi
 
 # Finally, run all-contributors generate
 if [ "${INPUT_ALLCONTRIB_SKIP_GENERATE}" == "false" ]; then
