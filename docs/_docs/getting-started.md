@@ -629,6 +629,7 @@ dashes.
 | codemeta_file | the codemeta file to update, if defined | false | codemeta.json |
 | mailmap_file | the mailmap file to use for update-lookup, if needed | false | .mailmap |
 | update_lookup | one or more resources to use to update the .tributors file before running update | false | unset |
+| run_twice | if you find the action opens two PRs, run the command twice so new folks are added and then metadata updated | false | false |
 
 If you define `update_lookup`, you should list the (space separated) names of the parsers that you want to use. For example:
 
@@ -636,7 +637,38 @@ If you define `update_lookup`, you should list the (space separated) names of th
    update_lookup: mailmap zenodo
 ```
 
-The same file names (e.g., *_file) will be used.
+The same file names (e.g., *_file) will be used. Here is an example to update contributors, asking to run twice.
+
+```yaml
+name: allcontributors-auto-detect
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Update:
+    name: Generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Tributors Update      
+        uses: con/tributors@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:        
+          parsers: unset
+          update_lookup: github
+          log_level: DEBUG
+          force: true
+          threshold: 1
+          run_twice: true
+```
+
+The above would be followed by a pull request action (e.g., commit and push to main branch
+or open a pull request).
 
 
 If you aren't familiar with all-contributors, you'll need to add some
