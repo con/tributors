@@ -44,8 +44,8 @@ inputs:
     description: "skip running all-contributors generate"
     default: false
   run_twice:
-    description: "run twice to avoid opening two pull requests"
-    default: false
+    description: "run twice to avoid opening two pull requests (defaults to true)"
+    default: true
 
 runs:
   using: docker

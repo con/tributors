@@ -629,7 +629,7 @@ dashes.
 | codemeta_file | the codemeta file to update, if defined | false | codemeta.json |
 | mailmap_file | the mailmap file to use for update-lookup, if needed | false | .mailmap |
 | update_lookup | one or more resources to use to update the .tributors file before running update | false | unset |
-| run_twice | if you find the action opens two PRs, run the command twice so new folks are added and then metadata updated | false | false |
+| run_twice | if you find the action opens two PRs, run the command twice so new folks are added and then metadata updated | false | true |
 
 If you define `update_lookup`, you should list the (space separated) names of the parsers that you want to use. For example:
 
@@ -637,7 +637,7 @@ If you define `update_lookup`, you should list the (space separated) names of th
    update_lookup: mailmap zenodo
 ```
 
-The same file names (e.g., *_file) will be used. Here is an example to update contributors, asking to run twice.
+The same file names (e.g., *_file) will be used. Here is an example to update contributors, asking to not run twice.
 
 ```yaml
 name: allcontributors-auto-detect
@@ -664,7 +664,7 @@ jobs:
           log_level: DEBUG
           force: true
           threshold: 1
-          run_twice: true
+          run_twice: false
 ```
 
 The above would be followed by a pull request action (e.g., commit and push to main branch
