@@ -94,7 +94,7 @@ echo $COMMAND
 $COMMAND
 
 # Run twice to get additional metadata
-if [ "${INPUT_RUN_TWICE}" == "true" ]; then
+if [ "${INPUT_RUN_TWICE:-true}" == "true" ]; then
     printf "Running twice to get additional updates...\n"
     $COMMAND
 fi
