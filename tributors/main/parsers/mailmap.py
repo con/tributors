@@ -40,27 +40,19 @@ class MailmapParser(ParserBase):
             for line in read_file(self.filename):
 
                 # keep track of the previous name, in case multiple per line
-                last_name = ""
+                name = None
 
                 # mailmap line can have more than one entry, split by right >
                 for entry in line.strip().split(">"):
                     if not entry:
                         continue
-                    name, email = entry.split("<")
-                    email = email.strip()
-
-                    # Use the name before the email, unless it is empty
-                    chosen_name = name.strip()
-                    if not chosen_name and last_name:
-                        chosen_name = last_name
-
-                    # Update the last name we saw
-                    last_name = chosen_name
-
-                    # If we still don't have a name, don't add it
-                    if not chosen_name:
-                        continue
-                    self.data[email] = {"name": chosen_name}
+                    new_name, email = map(str.strip, entry.split("<"))
+                    # only the first name matters
+                    if not name and new_name:
+                        name = new_name
+                    if not name:
+                        raise ValueError(f"Could not figure out name in {line!r}")
+                    self.data[email] = {"name": name}
         return self.data
 
     @property
