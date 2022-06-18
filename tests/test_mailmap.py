@@ -1,4 +1,4 @@
-from ..mailmap import MailmapParser
+from tributors.main.parsers.mailmap import MailmapParser
 
 import pytest
 
