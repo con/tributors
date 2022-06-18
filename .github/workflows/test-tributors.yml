@@ -8,8 +8,7 @@ jobs:
   formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
+      - uses: actions/checkout@v3
       - name: Setup black environment
         run: conda create --quiet --name black pyflakes
 
@@ -30,7 +29,7 @@ jobs:
     needs: formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup testing environment
         run: conda create --quiet --name testing pytest
 
@@ -50,7 +49,7 @@ jobs:
     env:
       CONTAINER: quay.io/con/tributors
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build Docker Image
         run: docker build -t "${CONTAINER}" .
       - name: Tag and Preview Container
