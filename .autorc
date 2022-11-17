@@ -1,5 +1,4 @@
 {
-    "onlyPublishWithReleaseLabel": true,
     "baseBranch": "master",
     "author": "auto <auto@nil>",
     "noVersionPrefix": false,
