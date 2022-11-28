@@ -63,7 +63,7 @@ class CodeMetaParser(ParserBase):
 
     def update_metadata(self):
         """Update codemeta metadata from the repository, if we can."""
-        self.data["keywords"] = self.repo.topics(self.data["keywords"])
+        self.data["keywords"] = self.repo.topics(self.data.get("keywords", []))
         self.data["description"] = self.data.get("description") or self.repo.description
         self.data["codeRepository"] = (
             self.data.get("codeRepository") or self.repo.html_url
