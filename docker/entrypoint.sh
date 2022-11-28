@@ -2,18 +2,18 @@
 
 set -e
 
-printf "Found files in workspace:\n"
+echo "Found files in workspace:"
 ls
 
 # GITHUB_REPOSITORY is required for actions
 if [ -z "${GITHUB_REPOSITORY}" ]; then
-    printf "GitHub Repository (GITHUB_REPOSITORY) environment variable is required for generation.\n"
+    echo "GitHub Repository (GITHUB_REPOSITORY) environment variable is required for generation."
     exit 1
 fi
 
 # GITHUB_TOKEN is recommended
 if [ -z "${GITHUB_TOKEN}" ]; then
-    printf "Warning, you might want to export GITHUB_TOKEN to increase API limits.\n"
+    echo "Warning, you might want to export GITHUB_TOKEN to increase API limits."
 else
     export PRIVATE_TOKEN="${GITHUB_TOKEN}"
 fi
@@ -52,26 +52,26 @@ elif [[ "${INPUT_PARSERS}" == *"allcontrib"* ]]; then
 fi
 
 # First update via a lookup, if specified
-if [ ! -z "${INPUT_UPDATE_LOOKUP}" ]; then
+if [ -n "${INPUT_UPDATE_LOOKUP}" ]; then
     tributors update-lookup "${INPUT_UPDATE_LOOKUP}" --mailmap-file "${INPUT_MAILMAP_FILE}" --allcontrib-file "${INPUT_ALLCONTRIB_FILE}" --zenodo-file "${INPUT_ZENODO_FILE}" --codemeta-file "${INPUT_CODEMETA_FILE}" --skip-users "${INPUT_SKIP_USERS}"
 fi
 
 # Update the user:
-printf "Run zenodo: ${RUN_ZENODO}\n"
-printf "Run allcontrib: ${RUN_ALLCONTRIB}\n"
-printf "Run codemeta: ${RUN_CODEMETA}\n"
+echo "Run zenodo: ${RUN_ZENODO}"
+echo "Run allcontrib: ${RUN_ALLCONTRIB}"
+echo "Run codemeta: ${RUN_CODEMETA}"
 
 # The .all-contributorsrc is required, generate headless if doesn't exist
 if [ ! -f "${INPUT_ALLCONTRIB_FILE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
-    printf "Generating ${INPUT_ALLCONTRIB_FILE} for ${GITHUB_REPOSITORY}\n"
+    echo "Generating ${INPUT_ALLCONTRIB_FILE} for ${GITHUB_REPOSITORY}"
     tributors init allcontrib --skip-users "${INPUT_SKIP_USERS}"
     cat "${INPUT_ALLCONTRIB_FILE}"
 else
-    printf "${INPUT_ALLCONTRIB_FILE} already exists.\n"
+    echo "${INPUT_ALLCONTRIB_FILE} already exists."
 fi
 
 # If a Zenodo DOI is set, use it to init the repository
-if [ ! -z "${INPUT_ZENODO_DOI}" ] && [ "${RUN_ZENODO}" == "true" ]; then
+if [ -n "${INPUT_ZENODO_DOI}" ] && [ "${RUN_ZENODO}" == "true" ]; then
     if [ "$INPUT_FORCE" == "true" ]; then
         tributors init zenodo --doi "${INPUT_ZENODO_DOI}" --zenodo-file "${INPUT_ZENODO_FILE}" --force --skip-users "${INPUT_SKIP_USERS}"
     else
@@ -81,26 +81,26 @@ fi
 
 # Update all types request
 COMMAND="tributors update ${INPUT_PARSERS} --thresh ${INPUT_THRESHOLD} --skip-users ${INPUT_SKIP_USERS}"
-if [ ! -z "${INPUT_ALLCONTRIB_TYPE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
+if [ -n "${INPUT_ALLCONTRIB_TYPE}" ] && [ "${RUN_ALLCONTRIB}" == "true" ]; then
     COMMAND="${COMMAND} --allcontrib-type ${INPUT_ALLCONTRIB_TYPE}"
 fi
 if [ "${RUN_CODEMETA}" == "true" ]; then
     COMMAND="${COMMAND} --codemeta-file ${INPUT_CODEMETA_FILE}"
 fi
 
-echo $COMMAND
+echo "$COMMAND"
 
 # First time might just create content
 $COMMAND
 
 # Run twice to get additional metadata
 if [ "${INPUT_RUN_TWICE:-true}" == "true" ]; then
-    printf "Running twice to get additional updates...\n"
+    echo "Running twice to get additional updates..."
     $COMMAND
 fi
 
 # Finally, run all-contributors generate
 if [ "${INPUT_ALLCONTRIB_SKIP_GENERATE}" == "false" ]; then
-    printf "Running all-contributors generate\n"
+    echo "Running all-contributors generate"
     cli.js generate
 fi
