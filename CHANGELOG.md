@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.0.x](https://github.com/con/tributors/tree/master) (0.0.x)
+ - fix mailmap parsing which could have lead to "too many values unpack" (0.0.22)
  - add to action ability to run command twice (0.0.21)
  - searching orcid for other-names as final resort, requiring first/last (0.0.19)
  - searching for last, first and reverse for orcid lookup (0.0.18)
