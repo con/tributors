@@ -19,7 +19,6 @@ bot = logging.getLogger("   mailmap")
 
 
 class MailmapParser(ParserBase):
-
     name = "mailmap"
 
     def __init__(self, filename=None, params=None, **kwargs):
@@ -38,7 +37,6 @@ class MailmapParser(ParserBase):
                 sys.exit("%s does not exist" % self.filename)
 
             for line in read_file(self.filename):
-
                 # keep track of the previous name, in case multiple per line
                 name = None
 

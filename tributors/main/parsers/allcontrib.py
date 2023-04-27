@@ -22,7 +22,6 @@ bot = logging.getLogger("allcontrib")
 
 
 class AllContribParser(ParserBase):
-
     name = "allcontrib"
 
     # https://allcontributors.org/docs/en/emoji-key
@@ -178,7 +177,6 @@ class AllContribParser(ParserBase):
     def update_from_logins(self, logins, ctype):
         """Given a list of logins, update the loaded logins"""
         for login in logins:
-
             # Check against contribution threshold, and not bot
             if not self.include_contributor(login):
                 continue

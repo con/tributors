@@ -21,7 +21,6 @@ bot = logging.getLogger("    zenodo")
 
 
 class ZenodoParser(ParserBase):
-
     name = "zenodo"
 
     def __init__(self, filename=None, repo=None, params=None, **kwargs):
@@ -150,7 +149,6 @@ class ZenodoParser(ParserBase):
         """
         # GitHub contributors are the source of truth
         for login in logins:
-
             # Check against contribution threshold, and not bot
             if not self.include_contributor(login):
                 continue
