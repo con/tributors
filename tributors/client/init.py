@@ -17,7 +17,6 @@ bot = logging.getLogger("github")
 
 
 def main(args, extra):
-
     client = TributorsClient(skip_cache=args.skip_cache)
 
     # Parse extra arguments

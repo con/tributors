@@ -139,7 +139,6 @@ class TributorsClient:
         lookups = {"login": set(), "orcid": set(), "email": set(), "name": set()}
 
         for name in from_resources:
-
             # Special case, tributors is just the entire cache
             if name == "tributors":
                 lookups["login"].update(self.cache)
