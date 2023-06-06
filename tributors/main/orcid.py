@@ -164,9 +164,10 @@ def record_search(url, email, interactive=False, how=""):
         if idx > 10:
             break
 
-        record = "  Name: %s, %s\n  Orcid: %s" % (
+        record = "  Name: %s, %s\n  ORCID: %s (https://orcid.org/%s)" % (
             r["family-names"],
             r["given-names"],
+            r["orcid-id"],
             r["orcid-id"],
         )
         if r["institution-name"]:
