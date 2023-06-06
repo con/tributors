@@ -218,7 +218,7 @@ class ZenodoParser(ParserBase):
             if "orcid" in cache and cache["orcid"] in lookup:
                 for field in ["name", "affiliation"]:
                     if field in lookup[cache["orcid"]] and field not in cache:
-                        value = lookup[cache]["orcid"][field]
+                        value = lookup[cache["orcid"]][field]
                         bot.info(f"   Updating {login} with {field}: {value}")
                         cache[field] = value
 
