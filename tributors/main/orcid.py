@@ -186,8 +186,8 @@ def record_search(url, email, interactive=False, how=""):
 
     # If interactive, ask for choice prompt
     if interactive:
-        choices = [str(i) for i, _ in enumerate(results)] + ["s", "S", "skip"]
-        prefix = "1:%s or s to skip" % ("10" if len(results) > 10 else len(results))
+        choices = [str(i) for i, _ in enumerate(results, 1)] + ["s", "S", "skip"]
+        prefix = "1:%s or s to skip" % min(10, len(results))
         choice = choice_prompt(
             "Please enter a choice, or s to skip.",
             choices=choices,
