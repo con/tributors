@@ -221,7 +221,7 @@ def get_orcid(email, name=None, interactive=False):
         orcid_id = record_search(url, email, interactive, "by email")
 
     # Attempt # 2 will use the first and last name
-    if name is not None and not orcid_id:
+    if not orcid_id and name is not None:
         delim = "," if "," in name else " "
         cleaner = "," if delim == " " else " "
 
@@ -237,7 +237,7 @@ def get_orcid(email, name=None, interactive=False):
         orcid_id = record_search(url, name, interactive, "by name")
 
         # Attempt # 3 will try removing the middle name
-        if " " in first:
+        if not orcid_id and " " in first:
             url = extended_search_url(
                 "%s+AND+%s",
                 first.split(" ")[0].strip(),
@@ -245,8 +245,8 @@ def get_orcid(email, name=None, interactive=False):
             )
             orcid_id = record_search(url, name, interactive, "by name without middle")
 
-        # Last attempt tries full name
-        if orcid_id is None:
+        # Last attempt tries full name "as is"
+        if not orcid_id:
             url = extended_search_url('%s', name)
             orcid_id = record_search(url, name, interactive, "full name")
 
