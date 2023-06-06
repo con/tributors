@@ -129,7 +129,7 @@ def get_orcid_token():
     return orcid_token
 
 
-def record_search(url, email, interactive=False):
+def record_search(url, email, interactive=False, how=""):
     """Given a url (with a name or email) do a record search looking for an orcid id"""
     response = requests.get(url, headers={"Accept": "application/json"})
     if response.status_code != 200:
@@ -147,7 +147,8 @@ def record_search(url, email, interactive=False):
     # Only stream results to screen in interactive mode
     if not interactive:
         bot.info(
-            f"{email}: found more than 1 result, run with --interactive mode to select."
+            f"{email}: found more than 1 ({len(results)}) result for ORCID search {how}, "
+            "run with --interactive mode to select."
         )
         return
 
@@ -209,7 +210,7 @@ def get_orcid(email, name=None, interactive=False):
     orcid_id = None
     if email:
         url = "https://pub.orcid.org/v3.0/expanded-search?q=email:%s" % email
-        orcid_id = record_search(url, email, interactive)
+        orcid_id = record_search(url, email, interactive, "by email")
 
     # Attempt # 2 will use the first and last name
     if name is not None and not orcid_id:
@@ -225,7 +226,7 @@ def get_orcid(email, name=None, interactive=False):
 
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
         url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (first, last)
-        orcid_id = record_search(url, name, interactive)
+        orcid_id = record_search(url, name, interactive, "by name")
 
         # Attempt # 3 will try removing the middle name
         if " " in first:
@@ -233,11 +234,11 @@ def get_orcid(email, name=None, interactive=False):
                 first.split(" ")[0].strip(),
                 last,
             )
-            orcid_id = record_search(url, name, interactive)
+            orcid_id = record_search(url, name, interactive, "by name without middle")
 
         # Last attempt tries full name
         if orcid_id is None:
             url = "https://pub.orcid.org/v3.0/expanded-search?q=%s" % name
-            orcid_id = record_search(url, name, interactive)
+            orcid_id = record_search(url, name, interactive, "full name")
 
     return orcid_id
