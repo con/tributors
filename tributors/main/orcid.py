@@ -13,6 +13,7 @@ from tributors.utils.prompt import choice_prompt
 import logging
 import os
 import requests
+import urllib
 
 bot = logging.getLogger("github")
 
@@ -206,10 +207,17 @@ def get_orcid(email, name=None, interactive=False):
     if not email and not name:
         return
 
+    def extended_search_url(q, *args):
+        """Helper to properly quote args and avoid duplicating URL etc"""
+        url = f"https://pub.orcid.org/v3.0/expanded-search?q={q}"
+        if args:
+            url %= tuple(map(urllib.parse.quote, args))
+        return url
+
     # First look for records based on email
     orcid_id = None
     if email:
-        url = "https://pub.orcid.org/v3.0/expanded-search?q=email:%s" % email
+        url = extended_search_url("email:%s", email)
         orcid_id = record_search(url, email, interactive, "by email")
 
     # Attempt # 2 will use the first and last name
@@ -225,12 +233,13 @@ def get_orcid(email, name=None, interactive=False):
             return orcid_id
 
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
-        url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (first, last)
+        url = extended_search_url("%s+AND+%s", first, last)
         orcid_id = record_search(url, name, interactive, "by name")
 
         # Attempt # 3 will try removing the middle name
         if " " in first:
-            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (
+            url = extended_search_url(
+                "%s+AND+%s",
                 first.split(" ")[0].strip(),
                 last,
             )
@@ -238,7 +247,7 @@ def get_orcid(email, name=None, interactive=False):
 
         # Last attempt tries full name
         if orcid_id is None:
-            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s" % name
+            url = extended_search_url('%s', name)
             orcid_id = record_search(url, name, interactive, "full name")
 
     return orcid_id
