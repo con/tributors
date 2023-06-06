@@ -207,20 +207,21 @@ class ZenodoParser(ParserBase):
         self.load_data()
         bot.info(f"Updating .tributors cache from {self.filename}")
 
-        # We have to update based on orcid
-        lookup = {}
-        for entry in self.data.get("creators", []):
-            if "orcid" in entry:
-                lookup[entry["orcid"]] = entry
+        # We have to update based on (non-degenerate) orcid
+        lookup = {
+            entry["orcid"]: entry
+            for entry in self.data.get("creators", [])
+            if entry.get('orcid')
+        }
 
         # Now loop through cache
-        for login, cache in self.cache.items():
-            if "orcid" in cache and cache["orcid"] in lookup:
+        for login, cached in self.cache.items():
+            orcid = cached.get('orcid')
+            if orcid in lookup:
                 for field in ["name", "affiliation"]:
-                    if field in lookup[cache["orcid"]] and field not in cache:
-                        value = lookup[cache["orcid"]][field]
-                        bot.info(f"   Updating {login} with {field}: {value}")
-                        cache[field] = value
+                    if lookup[orcid].get(field) and not cached.get(field):
+                        cached[field] = lookup[orcid][field]
+                        bot.info(f"   Updating {login} with {field}: {cached[field]}")
 
 
 def get_zenodo_record(doi):
