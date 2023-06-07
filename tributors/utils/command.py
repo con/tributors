@@ -82,7 +82,6 @@ class Command:
     """
 
     def __init__(self, cmd=None):
-
         cmd = cmd or []
         self.returncode = None
         self.out = []

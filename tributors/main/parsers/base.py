@@ -142,7 +142,6 @@ class ParserBase:
 
         # Then add an Orcid lookup
         for login, entry in self.cache.items():
-
             # If we have an email, and orcid isn't defined
             if "orcid" not in entry:
                 orcid = get_orcid(

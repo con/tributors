@@ -57,7 +57,6 @@ class GitHubRepository:
 
         # Iterate through GitHub and update metadata
         for login, contributor in self.contributors.items():
-
             # Don't include bots, and others specified with --skip-user
             if not self.include_contributor(login):
                 continue

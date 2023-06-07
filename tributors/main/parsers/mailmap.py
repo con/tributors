@@ -1,6 +1,6 @@
 """
 
-Copyright (C) 2020 Vanessa Sochat.
+Copyright (C) 2020-2022 Vanessa Sochat.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -19,7 +19,6 @@ bot = logging.getLogger("   mailmap")
 
 
 class MailmapParser(ParserBase):
-
     name = "mailmap"
 
     def __init__(self, filename=None, params=None, **kwargs):
@@ -38,9 +37,20 @@ class MailmapParser(ParserBase):
                 sys.exit("%s does not exist" % self.filename)
 
             for line in read_file(self.filename):
-                name, email = line.split("<")
-                email = email.strip().rstrip(">")
-                self.data[email] = {"name": name.strip()}
+                # keep track of the previous name, in case multiple per line
+                name = None
+
+                # mailmap line can have more than one entry, split by right >
+                for entry in line.strip().split(">"):
+                    if not entry:
+                        continue
+                    new_name, email = map(str.strip, entry.split("<"))
+                    # only the first name matters
+                    if not name and new_name:
+                        name = new_name
+                    if not name:
+                        raise ValueError(f"Could not figure out name in {line!r}")
+                    self.data[email] = {"name": name}
         return self.data
 
     @property

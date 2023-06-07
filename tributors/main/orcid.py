@@ -157,7 +157,6 @@ def record_search(url, email, interactive=False):
 
     print("\n\n%s\n======================================================" % email)
     for idx, r in enumerate(results):
-
         # Limit is ten results, count starting at 0
         idx = idx + 1
         if idx > 10:
@@ -214,7 +213,6 @@ def get_orcid(email, name=None, interactive=False):
 
     # Attempt # 2 will use the first and last name
     if name is not None and not orcid_id:
-
         delim = "," if "," in name else " "
         cleaner = "," if delim == " " else " "
 

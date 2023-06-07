@@ -17,7 +17,6 @@ bot = logging.getLogger("  codemeta")
 
 
 class CodeMetaParser(ParserBase):
-
     name = "codemeta"
 
     def __init__(self, filename=None, repo=None, params=None, **kwargs):
@@ -63,7 +62,7 @@ class CodeMetaParser(ParserBase):
 
     def update_metadata(self):
         """Update codemeta metadata from the repository, if we can."""
-        self.data["keywords"] = self.repo.topics(self.data["keywords"])
+        self.data["keywords"] = self.repo.topics(self.data.get("keywords", []))
         self.data["description"] = self.data.get("description") or self.repo.description
         self.data["codeRepository"] = (
             self.data.get("codeRepository") or self.repo.html_url
@@ -87,7 +86,6 @@ class CodeMetaParser(ParserBase):
         """Update codemeta entries from GitHub logins"""
         # Now add contributors using cache (new GitHub contributors) with known email or orcid that isn't present
         for login in logins:
-
             # Check against contribution threshold, and not bot
             if not self.include_contributor(login):
                 continue
@@ -152,7 +150,6 @@ class CodeMetaParser(ParserBase):
             # Case 1: double match (unlikely but possible)
             entry = None
             if email in self.email_lookup and orcid in self.orcid_lookup:
-
                 # If they don't point to the same entry, stop
                 if self.email_lookup[email] != self.orcid_lookup[orcid]:
                     bot.warning(
@@ -171,7 +168,6 @@ class CodeMetaParser(ParserBase):
 
             # If we have a match (entry is defined) use it to update the record
             if entry is not None:
-
                 # Update the name
                 if (
                     "givenName" in entry
