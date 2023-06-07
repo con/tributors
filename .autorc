@@ -1,7 +1,7 @@
 {
     "baseBranch": "master",
     "author": "auto <auto@nil>",
-    "noVersionPrefix": false,
+    "noVersionPrefix": true,
     "plugins": [
         "git-tag",
         [
