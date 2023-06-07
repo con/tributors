@@ -1,3 +1,19 @@
+# 0.1.1 (Wed Jun 07 2023)
+
+#### ⚠️ Pushed to `master`
+
+- auto: Do not prefix version ([@yarikoptic](https://github.com/yarikoptic))
+
+#### 🏠 Internal
+
+- Add codespell: config, workflow and have present typos fixed [#83](https://github.com/con/tributors/pull/83) ([@yarikoptic](https://github.com/yarikoptic))
+
+#### Authors: 1
+
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v0.1.0 (Wed Jun 07 2023)
 
 #### 🚀 Enhancement
