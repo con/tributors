@@ -13,6 +13,7 @@ from tributors.utils.prompt import choice_prompt
 import logging
 import os
 import requests
+import urllib
 
 bot = logging.getLogger("github")
 
@@ -129,8 +130,15 @@ def get_orcid_token():
     return orcid_token
 
 
-def record_search(url, email, interactive=False):
-    """Given a url (with a name or email) do a record search looking for an orcid id"""
+def record_search(url, email, interactive=False, search_type=""):
+    """Given a url (with a name or email) do a record search looking for an orcid id.
+
+    Arguments:
+      - url (str) : url to perform request
+      - email (str) : email, used just for logging
+      - interactive (bool) : if True, ask user if there is more than a single response
+      - search_type (str) : description on what search is based on, used just for logging
+    """
     response = requests.get(url, headers={"Accept": "application/json"})
     if response.status_code != 200:
         return
@@ -147,7 +155,8 @@ def record_search(url, email, interactive=False):
     # Only stream results to screen in interactive mode
     if not interactive:
         bot.info(
-            f"{email}: found more than 1 result, run with --interactive mode to select."
+            f"{email}: found more than 1 ({len(results)}) result for ORCID search {search_type}, "
+            "run with --interactive mode to select."
         )
         return
 
@@ -162,9 +171,10 @@ def record_search(url, email, interactive=False):
         if idx > 10:
             break
 
-        record = "  Name: %s, %s\n  Orcid: %s" % (
+        record = "  Name: %s, %s\n  ORCID: %s (https://orcid.org/%s)" % (
             r["family-names"],
             r["given-names"],
+            r["orcid-id"],
             r["orcid-id"],
         )
         if r["institution-name"]:
@@ -183,8 +193,8 @@ def record_search(url, email, interactive=False):
 
     # If interactive, ask for choice prompt
     if interactive:
-        choices = [str(i) for i, _ in enumerate(results)] + ["s", "S", "skip"]
-        prefix = "1:%s or s to skip" % ("10" if len(results) > 10 else len(results))
+        choices = [str(i) for i, _ in enumerate(results, 1)] + ["s", "S", "skip"]
+        prefix = "1:%s or s to skip" % min(10, len(results))
         choice = choice_prompt(
             "Please enter a choice, or s to skip.",
             choices=choices,
@@ -205,14 +215,21 @@ def get_orcid(email, name=None, interactive=False):
     if not email and not name:
         return
 
+    def extended_search_url(q, *args):
+        """Helper to properly quote args and avoid duplicating URL etc"""
+        url = f"https://pub.orcid.org/v3.0/expanded-search?q={q}"
+        if args:
+            url %= tuple(map(urllib.parse.quote, args))
+        return url
+
     # First look for records based on email
     orcid_id = None
     if email:
-        url = "https://pub.orcid.org/v3.0/expanded-search?q=email:%s" % email
-        orcid_id = record_search(url, email, interactive)
+        url = extended_search_url("email:%s", email)
+        orcid_id = record_search(url, email, interactive, "by email")
 
     # Attempt # 2 will use the first and last name
-    if name is not None and not orcid_id:
+    if not orcid_id and name is not None:
         delim = "," if "," in name else " "
         cleaner = "," if delim == " " else " "
 
@@ -224,20 +241,21 @@ def get_orcid(email, name=None, interactive=False):
             return orcid_id
 
         last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
-        url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (first, last)
-        orcid_id = record_search(url, name, interactive)
+        url = extended_search_url("%s+AND+%s", first, last)
+        orcid_id = record_search(url, name, interactive, "by name")
 
         # Attempt # 3 will try removing the middle name
-        if " " in first:
-            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s+AND+%s" % (
+        if not orcid_id and " " in first:
+            url = extended_search_url(
+                "%s+AND+%s",
                 first.split(" ")[0].strip(),
                 last,
             )
-            orcid_id = record_search(url, name, interactive)
+            orcid_id = record_search(url, name, interactive, "by name without middle")
 
-        # Last attempt tries full name
-        if orcid_id is None:
-            url = "https://pub.orcid.org/v3.0/expanded-search?q=%s" % name
-            orcid_id = record_search(url, name, interactive)
+        # Last attempt tries full name "as is"
+        if not orcid_id:
+            url = extended_search_url("%s", name)
+            orcid_id = record_search(url, name, interactive, "full name")
 
     return orcid_id
