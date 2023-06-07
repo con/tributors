@@ -51,7 +51,7 @@ def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
     while choice not in choices:
         choice = get_input(message).strip()
 
-        # If multiple allowed, add selection to choices if includes all vaid
+        # If multiple allowed, add selection to choices if includes all valid
         if multiple is True:
             contenders = choice.strip().split(" ")
             if all(x in choices for x in contenders):

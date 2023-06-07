@@ -1,6 +1,6 @@
 ---
 title: Mailmap
-description: How to interact with a Mailmap fle
+description: How to interact with a Mailmap file
 ---
 
 # MailMap
