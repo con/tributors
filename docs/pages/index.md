@@ -18,7 +18,7 @@ contributors. Tribute interacts with several well-known repository metadata file
 Each of the services above allows you to generate some kind of metadata file
 that has one or more repository contributors. This file typically needs to be
 generated and updated manually, and this is where tributors comes in to help!
-Tributors will allow you to programatically create and update these files.
+Tributors will allow you to programmatically create and update these files.
 By way of using a shared cache, a `.tributors` file that can store common
 identifiers, it becomes easy to update several of these metadata files at once.
 You can set criteria such as a threshold for contributions to add a contributor,

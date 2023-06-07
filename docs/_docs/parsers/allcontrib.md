@@ -38,7 +38,7 @@ $ tributors init allcontrib
 .all-contributorsrc exists, set --force to overwrite.
 ```
 
-If you cann't parse the name from the repository, you can either define it on
+If you can't parse the name from the repository, you can either define it on
 the command line:
 
 ```bash
