@@ -37,6 +37,28 @@
             "contributions": [
                 "code"
             ]
+        },
+        {
+            "login": "vuillaut",
+            "name": "vuillaut",
+            "contributions": [
+                "code"
+            ],
+            "profile": "https://github.com/vuillaut",
+            "avatar_url": [
+                "https://avatars.githubusercontent.com/u/4263646?v=4"
+            ]
+        },
+        {
+            "login": "jwodder",
+            "name": "jwodder",
+            "contributions": [
+                "code"
+            ],
+            "profile": "https://github.com/jwodder",
+            "avatar_url": [
+                "https://avatars.githubusercontent.com/u/98207?v=4"
+            ]
         }
     ],
     "contributorsPerLine": 7
