@@ -15,5 +15,13 @@
         "name": "Pierre Grimaud",
         "blog": "https://github.com/pgrimaud",
         "bio": "Technical Manager @bigyouth / IT Teacher / Retired gladiator"
+    },
+    "vuillaut": {
+        "name": "vuillaut",
+        "blog": "https://github.com/vuillaut"
+    },
+    "jwodder": {
+        "name": "jwodder",
+        "blog": "https://github.com/jwodder"
     }
 }
