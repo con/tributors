@@ -248,7 +248,7 @@ def get_orcid(email, name=None, interactive=False):
 
         # Last attempt tries full name "as is"
         if not orcid_id:
-            url = extended_search_url('%s', name)
+            url = extended_search_url("%s", name)
             orcid_id = record_search(url, name, interactive, "full name")
 
     return orcid_id

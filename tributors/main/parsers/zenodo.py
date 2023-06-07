@@ -211,12 +211,12 @@ class ZenodoParser(ParserBase):
         lookup = {
             entry["orcid"]: entry
             for entry in self.data.get("creators", [])
-            if entry.get('orcid')
+            if entry.get("orcid")
         }
 
         # Now loop through cache
         for login, cached in self.cache.items():
-            orcid = cached.get('orcid')
+            orcid = cached.get("orcid")
             if orcid in lookup:
                 for field in ["name", "affiliation"]:
                     if lookup[orcid].get(field) and not cached.get(field):
