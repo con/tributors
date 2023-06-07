@@ -130,8 +130,15 @@ def get_orcid_token():
     return orcid_token
 
 
-def record_search(url, email, interactive=False, how=""):
-    """Given a url (with a name or email) do a record search looking for an orcid id"""
+def record_search(url, email, interactive=False, search_type=""):
+    """Given a url (with a name or email) do a record search looking for an orcid id.
+
+    Arguments:
+      - url (str) : url to perform request
+      - email (str) : email, used just for logging
+      - interactive (bool) : if True, ask user if there is more than a single response
+      - search_type (str) : description on what search is based on, used just for logging
+    """
     response = requests.get(url, headers={"Accept": "application/json"})
     if response.status_code != 200:
         return
@@ -148,7 +155,7 @@ def record_search(url, email, interactive=False, how=""):
     # Only stream results to screen in interactive mode
     if not interactive:
         bot.info(
-            f"{email}: found more than 1 ({len(results)}) result for ORCID search {how}, "
+            f"{email}: found more than 1 ({len(results)}) result for ORCID search {search_type}, "
             "run with --interactive mode to select."
         )
         return
