@@ -20,15 +20,13 @@ def write_json(json_obj, filename, pretty=True):
      - json_obj (dict) : the dict to print to json
      - filename (str)  : the output file to write to
     """
+    kw = dict(indent=4, separators=(",", ": ")) if pretty else {}
     with open(filename, "w", encoding="utf8") as filey:
-        if pretty:
-            filey.writelines(
-                json.dumps(
-                    json_obj, indent=4, ensure_ascii=False, separators=(",", ": ")
-                )
-            )
-        else:
-            filey.writelines(json.dumps(json_obj), ensure_ascii=False)
+        dump = json.dumps(json_obj, ensure_ascii=False, **kw)
+        if pretty and not dump.endswith(os.linesep):
+            # Add newline as it is typically desired
+            dump += os.linesep
+        filey.write(dump)
     return filename
 
 
