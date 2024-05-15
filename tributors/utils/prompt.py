@@ -9,6 +9,8 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
+import re
+
 
 def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
     """Ask the user for a prompt, and only return when one of the requested
@@ -39,3 +41,20 @@ def choice_prompt(prompt, choices, choice_prefix=None, multiple=False):
     return choice
 
 
+def entry_prompt(prompt, regex=None):
+    """Ask the user for a prompt, and only return when a valid entry is provided.
+
+    Parameters
+    ==========
+    prompt: the prompt to ask the user
+    regex: a regular expression to match the entry
+    """
+    entry = None
+    print(prompt)
+    message = "Please enter a value. Empty to skip: "
+    while not entry:
+        entry = input(message).strip()
+        if entry and regex is not None and not re.match(regex, entry):
+            entry = None
+            message = r"Please enter a valid response. Should match regex {regex!r}"
+    return entry
