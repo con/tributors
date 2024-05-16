@@ -196,8 +196,15 @@ def record_search(url, email, interactive=False, search_type=""):
         skip_choices = ["s", "S", "skip"]
         enter_choices = ["e", "E", "enter"]
         quit_choices = ["q"]
-        choices = [str(i) for i, _ in enumerate(results, 1)] + skip_choices + enter_choices + quit_choices
-        prefix = "1:%s or s to skip, e to enter, q to quit the loop" % min(10, len(results))
+        choices = (
+            [str(i) for i, _ in enumerate(results, 1)]
+            + skip_choices
+            + enter_choices
+            + quit_choices
+        )
+        prefix = "1:%s or s to skip, e to enter, q to quit the loop" % min(
+            10, len(results)
+        )
         choice = choice_prompt(
             "Please enter a choice, or s to skip, e to enter.",
             choices=choices,
@@ -210,7 +217,7 @@ def record_search(url, email, interactive=False, search_type=""):
         if choice in enter_choices:
             return entry_prompt(
                 f"Please enter the ORCID for {email}.",
-                regex='[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$',
+                regex="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$",
             )
 
         if not choice or choice in skip_choices:
