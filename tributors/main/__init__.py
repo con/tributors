@@ -20,7 +20,7 @@ bot = logging.getLogger("tributors.main")
 class TributorsClient:
     """The tributors client is the handler to interact with one or more
     contributor actions. If we do an update for multiple, for example,
-    we can cache and re-use the GitHub calls.
+    we can cache and reuse the GitHub calls.
     """
 
     def __init__(self, skip_cache=False):
