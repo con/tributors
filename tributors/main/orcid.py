@@ -9,7 +9,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 from tributors.utils.file import write_file, get_tmpfile
-from tributors.utils.prompt import choice_prompt
+from tributors.utils.prompt import choice_prompt, entry_prompt
 import logging
 import os
 import requests
@@ -193,16 +193,34 @@ def record_search(url, email, interactive=False, search_type=""):
 
     # If interactive, ask for choice prompt
     if interactive:
-        choices = [str(i) for i, _ in enumerate(results, 1)] + ["s", "S", "skip"]
-        prefix = "1:%s or s to skip" % min(10, len(results))
+        skip_choices = ["s", "S", "skip"]
+        enter_choices = ["e", "E", "enter"]
+        quit_choices = ["q"]
+        choices = (
+            [str(i) for i, _ in enumerate(results, 1)]
+            + skip_choices
+            + enter_choices
+            + quit_choices
+        )
+        prefix = "1:%s or s to skip, e to enter, q to quit the loop" % min(
+            10, len(results)
+        )
         choice = choice_prompt(
-            "Please enter a choice, or s to skip.",
+            "Please enter a choice, or s to skip, e to enter.",
             choices=choices,
             choice_prefix=prefix,
             multiple=False,
         )
+        if choice in quit_choices:
+            raise StopIteration("Requested by user")
 
-        if not choice or choice in ["s", "S", "skip"]:
+        if choice in enter_choices:
+            return entry_prompt(
+                f"Please enter the ORCID for {email}.",
+                regex="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$",
+            )
+
+        if not choice or choice in skip_choices:
             return
 
         # Return the orcid identifier

@@ -142,23 +142,26 @@ class ParserBase:
 
         # Then add an Orcid lookup
         for login, entry in self.cache.items():
-            # If we have an email, and orcid isn't defined
-            if "orcid" not in entry:
-                orcid = get_orcid(
-                    entry.get("email"), entry.get("name"), interactive=interactive
-                )
-                if orcid:
-                    entry["orcid"] = orcid
-                    cli = OrcidIdentifier(orcid)
+            try:
+                # If we have an email, and orcid isn't defined
+                if "orcid" not in entry:
+                    orcid = get_orcid(
+                        entry.get("email"), entry.get("name"), interactive=interactive
+                    )
+                    if orcid:
+                        entry["orcid"] = orcid
+                        cli = OrcidIdentifier(orcid)
 
-                    # If we found the record, update metadata
-                    if (
-                        cli.found
-                        and not entry.get("name")
-                        or entry.get("name") == login
-                    ):
-                        entry["name"] = "%s %s" % (cli.firstName, cli.lastName)
-                    if cli.affiliation and not entry.get("affiliation"):
-                        entry["affiliation"] = cli.affiliation
+                        # If we found the record, update metadata
+                        if (
+                            cli.found
+                            and not entry.get("name")
+                            or entry.get("name") == login
+                        ):
+                            entry["name"] = "%s %s" % (cli.firstName, cli.lastName)
+                        if cli.affiliation and not entry.get("affiliation"):
+                            entry["affiliation"] = cli.affiliation
 
-            self.cache[login] = entry
+                self.cache[login] = entry
+            except StopIteration:
+                break
