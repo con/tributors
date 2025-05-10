@@ -11,7 +11,7 @@ jobs:
     env:
       CONTAINER: quay.io/con/tributors
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build Docker Image
         run: docker build -t "${CONTAINER}" .
       - name: Log In to Quay.io
