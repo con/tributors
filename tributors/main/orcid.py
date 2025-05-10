@@ -220,7 +220,7 @@ def record_search(url, terms, interactive=False, search_type=""):
 
         if choice in enter_choices:
             return entry_prompt(
-                f"Please enter the ORCID for {email}.",
+                f"Please enter the ORCID for {term_str}.",
                 regex="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$",
             )
 
