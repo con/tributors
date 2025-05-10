@@ -55,7 +55,7 @@ jobs:
           allcontrib_skip_generate: false
 
       - name: Upload zenodo data as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
 
         # Path is relative to GITHUB_WORKSPACE
         with:
@@ -63,13 +63,13 @@ jobs:
           path: .zenodo.json
 
       - name: Upload allcontributors data as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allcontrib
           path: .all-contributorsrc
 
       - name: Upload README as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: readme
           path: README.md
