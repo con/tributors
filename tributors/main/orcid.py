@@ -230,6 +230,7 @@ def record_search(url, terms, interactive=False, search_type=""):
         # Return the orcid identifier
         return results[int(choice) - 1]["orcid-id"]
 
+
 def extended_search_url(q, *args):
     """Helper to properly quote args and avoid duplicating URL etc"""
     # We will show only up to 10, so requesting 11, no need to get all default 1000
@@ -238,7 +239,10 @@ def extended_search_url(q, *args):
         url %= tuple(map(urllib.parse.quote, args))
     return url
 
+
 strict, loose = True, False
+
+
 def gen_searches(email, name):
     if email:
         yield (("email:%s", email), "by email", strict)
@@ -256,32 +260,46 @@ def gen_searches(email, name):
             return
 
         # Just as is
-        yield (('credit-name:"%s"+OR+other-names:"%s"', name, name),
-               "by full credit or other names", strict)
+        yield (
+            ('credit-name:"%s"+OR+other-names:"%s"', name, name),
+            "by full credit or other names",
+            strict,
+        )
 
-        if delim == ',':
-             # Last, First Middle
-             last, given = parts[0], " ".join(parts[1:])
+        if delim == ",":
+            # Last, First Middle
+            last, given = parts[0], " ".join(parts[1:])
         else:
-             # First Middle Last
-             given, last = " ".join(parts[:-1]), parts[-1]
+            # First Middle Last
+            given, last = " ".join(parts[:-1]), parts[-1]
 
-        yield (('given-names:"%s"+AND+family-name:"%s"', given, last), "by name", strict)
+        yield (
+            ('given-names:"%s"+AND+family-name:"%s"', given, last),
+            "by name",
+            strict,
+        )
 
         # Attempt # 3 will try removing the middle name
         if " " in given:
             yield (
-                ('given-names:"%s"+AND+family-name:"%s"',
-                 given.split(" ")[0].strip(), last),
+                (
+                    'given-names:"%s"+AND+family-name:"%s"',
+                    given.split(" ")[0].strip(),
+                    last,
+                ),
                 "by name",
-                loose
+                loose,
             )
 
         # Just a combination of all parts of the name
-        yield (("+AND+".join(["%s"] * len(parts)),) + tuple(parts), "by name parts", loose)
+        yield (
+            ("+AND+".join(["%s"] * len(parts)),) + tuple(parts),
+            "by name parts",
+            loose,
+        )
 
 
-def get_orcid(email: str|None, name: str|None=None, interactive=False):
+def get_orcid(email: str | None, name: str | None = None, interactive=False):
     """Get an orcid identifier for a given email or name."""
     # We must have an email OR name
     if not email and not name:
@@ -289,7 +307,9 @@ def get_orcid(email: str|None, name: str|None=None, interactive=False):
 
     for search_args, search_desc, strictness in gen_searches(email, name):
         url = extended_search_url(*search_args)
-        if (orcid_id := record_search(url, search_args, interactive, search_desc)) is not Ellipsis:
+        if (
+            orcid_id := record_search(url, search_args, interactive, search_desc)
+        ) is not Ellipsis:
             return orcid_id
         if orcid_id is Ellipsis:
             orcid_id = None
