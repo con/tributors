@@ -309,7 +309,7 @@ def get_orcid(email: str | None, name: str | None = None, interactive=False):
         url = extended_search_url(*search_args)
         if (
             orcid_id := record_search(url, search_args, interactive, search_desc)
-        ) is not Ellipsis:
+        ) is not Ellipsis and orcid_id:
             return orcid_id
         if orcid_id is Ellipsis:
             orcid_id = None
