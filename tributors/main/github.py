@@ -15,7 +15,7 @@ import re
 import requests
 import sys
 
-repository_regex = "(?P<owner>[\w,\-,\_]+)/(?P<repo>[\w,\-,\_\.]+)"
+repository_regex = r"(?P<owner>[\w,\-,\_]+)/(?P<repo>[\w,\-,\_\.]+)"
 
 bot = logging.getLogger("github")
 

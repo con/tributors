@@ -130,12 +130,12 @@ def get_orcid_token():
     return orcid_token
 
 
-def record_search(url, email, interactive=False, search_type=""):
-    """Given a url (with a name or email) do a record search looking for an orcid id.
+def record_search(url, terms, interactive=False, search_type=""):
+    """Given a url (with a name or terms) do a record search looking for an orcid id.
 
     Arguments:
       - url (str) : url to perform request
-      - email (str) : email, used just for logging
+      - terms (str) : terms, used just for logging
       - interactive (bool) : if True, ask user if there is more than a single response
       - search_type (str) : description on what search is based on, used just for logging
     """
@@ -152,19 +152,20 @@ def record_search(url, email, interactive=False, search_type=""):
     if len(results) == 1:
         return results[0]["orcid-id"]
 
+    term_str = terms[0] % terms[1:]
     # Only stream results to screen in interactive mode
     if not interactive:
         bot.info(
-            f"{email}: found more than 1 ({len(results)}) result for ORCID search {search_type}, "
+            f"{term_str}: found more than one ({len(results)}) result for ORCID search {search_type}, "
             "run with --interactive mode to select."
         )
-        return
+        return Ellipsis
 
     # One or more results
     if len(results) > 10:
         bot.warning("Found more than 10 results, will only show top 10.")
 
-    print("\n\n%s\n======================================================" % email)
+    print("\n\n%s\n======================================================" % term_str)
     for idx, r in enumerate(results):
         # Limit is ten results, count starting at 0
         idx = idx + 1
@@ -191,6 +192,9 @@ def record_search(url, email, interactive=False, search_type=""):
         else:
             print("[%s]\n%s\n" % (idx, record))
 
+    # TODO: here we should remember for a person on what we already presented as
+    # options and not to show them again.
+    #
     # If interactive, ask for choice prompt
     if interactive:
         skip_choices = ["s", "S", "skip"]
@@ -216,7 +220,7 @@ def record_search(url, email, interactive=False, search_type=""):
 
         if choice in enter_choices:
             return entry_prompt(
-                f"Please enter the ORCID for {email}.",
+                f"Please enter the ORCID for {term_str}.",
                 regex="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$",
             )
 
@@ -227,53 +231,88 @@ def record_search(url, email, interactive=False, search_type=""):
         return results[int(choice) - 1]["orcid-id"]
 
 
-def get_orcid(email, name=None, interactive=False):
+def extended_search_url(q, *args):
+    """Helper to properly quote args and avoid duplicating URL etc"""
+    # We will show only up to 10, so requesting 11, no need to get all default 1000
+    url = f"https://pub.orcid.org/v3.0/expanded-search?q={q}&args=11"
+    if args:
+        url %= tuple(map(urllib.parse.quote, args))
+    return url
+
+
+strict, loose = True, False
+
+
+def gen_searches(email, name):
+    if email:
+        yield (("email:%s", email), "by email", strict)
+
+    # Next attempts will use name
+    if name is not None:
+        delim = "," if "," in name else " "
+        cleaner = "," if delim == " " else " "
+
+        parts = [_.strip(cleaner) for _ in name.split(delim)]
+
+        # No go if only a first or last name
+        if len(parts) == 1:
+            bot.debug(f"Skipping {name}, first and last are required for search.")
+            return
+
+        # Just as is
+        yield (
+            ('credit-name:"%s"+OR+other-names:"%s"', name, name),
+            "by full credit or other names",
+            strict,
+        )
+
+        if delim == ",":
+            # Last, First Middle
+            last, given = parts[0], " ".join(parts[1:])
+        else:
+            # First Middle Last
+            given, last = " ".join(parts[:-1]), parts[-1]
+
+        yield (
+            ('given-names:"%s"+AND+family-name:"%s"', given, last),
+            "by name",
+            strict,
+        )
+
+        # Attempt # 3 will try removing the middle name
+        if " " in given:
+            yield (
+                (
+                    'given-names:"%s"+AND+family-name:"%s"',
+                    given.split(" ")[0].strip(),
+                    last,
+                ),
+                "by name",
+                loose,
+            )
+
+        # Just a combination of all parts of the name
+        yield (
+            ("+AND+".join(["%s"] * len(parts)),) + tuple(parts),
+            "by name parts",
+            loose,
+        )
+
+
+def get_orcid(email: str | None, name: str | None = None, interactive=False):
     """Get an orcid identifier for a given email or name."""
     # We must have an email OR name
     if not email and not name:
         return
 
-    def extended_search_url(q, *args):
-        """Helper to properly quote args and avoid duplicating URL etc"""
-        url = f"https://pub.orcid.org/v3.0/expanded-search?q={q}"
-        if args:
-            url %= tuple(map(urllib.parse.quote, args))
-        return url
-
-    # First look for records based on email
-    orcid_id = None
-    if email:
-        url = extended_search_url("email:%s", email)
-        orcid_id = record_search(url, email, interactive, "by email")
-
-    # Attempt # 2 will use the first and last name
-    if not orcid_id and name is not None:
-        delim = "," if "," in name else " "
-        cleaner = "," if delim == " " else " "
-
-        parts = name.split(delim)
-
-        # No go if only a first or last name
-        if len(parts) == 1:
-            bot.debug(f"Skipping {name}, first and last are required for search.")
+    for search_args, search_desc, strictness in gen_searches(email, name):
+        url = extended_search_url(*search_args)
+        if (
+            orcid_id := record_search(url, search_args, interactive, search_desc)
+        ) is not Ellipsis and orcid_id:
             return orcid_id
-
-        last, first = parts[0].strip(cleaner), " ".join(parts[1:]).strip(cleaner)
-        url = extended_search_url("%s+AND+%s", first, last)
-        orcid_id = record_search(url, name, interactive, "by name")
-
-        # Attempt # 3 will try removing the middle name
-        if not orcid_id and " " in first:
-            url = extended_search_url(
-                "%s+AND+%s",
-                first.split(" ")[0].strip(),
-                last,
-            )
-            orcid_id = record_search(url, name, interactive, "by name without middle")
-
-        # Last attempt tries full name "as is"
-        if not orcid_id:
-            url = extended_search_url("%s", name)
-            orcid_id = record_search(url, name, interactive, "full name")
-
-    return orcid_id
+        if orcid_id is Ellipsis:
+            orcid_id = None
+            if strict:
+                break
+        # if loose, and still got multiple results, continue
